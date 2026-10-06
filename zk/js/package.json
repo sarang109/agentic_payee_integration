@@ -1,0 +1,18 @@
+{
+  "name": "meridian-zk",
+  "version": "1.0.0",
+  "scripts": {},
+  "keywords": [],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "description": "V4 proof worker",
+  "dependencies": {
+    "@digitalbazaar/bbs-signatures": "3.1.0",
+    "circom2": "0.2.23",
+    "circomlib": "2.0.5",
+    "circomlibjs": "0.1.7",
+    "snarkjs": "0.7.6"
+  },
+  "type": "module",
+  "private": true
+}

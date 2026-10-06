@@ -1,0 +1,94 @@
+# Rail timing assumptions (seconds after authorization).
+#
+# These are modelling inputs, not measurements. Each value is chosen from
+# public scheme/product behaviour and is swept or replaced where it matters:
+#   * card void latency is replaced by Stripe test-mode measurements in E6
+#     when STRIPE_SECRET_KEY (sk_test_...) is set;
+#   * observer corruption f and the escrow window are swept in E6.
+#
+# window          time during which funds can still be stopped
+#                 card: authorization -> capture (manual capture at fulfilment)
+#                 a2a_instant / stablecoin: ~0 (SEPA Inst <= 10 s, L2 finality ~2 s)
+# observers       independent post-authorization evidence and the level it reaches
+# decision        verifier decision latency
+# void            authorization reversal / cancel latency, or recall latency
+# void_success    probability the void or recall succeeds
+# transfer_delay  delay of onward custodial transfers after authorization
+#                 (separate charges and transfers move funds after capture)
+
+rails:
+  card:
+    window: {median: 7200, sigma: 1.0}
+    observers:
+      - {name: issuer_authorization_record, level: G1, latency: {median: 2, sigma: 0.5}}
+      - {name: network_token_service_record, level: G1, latency: {median: 6, sigma: 0.6}}
+      - {name: platform_transfer_record, level: G3, latency: {median: 60, sigma: 0.8}}
+      - {name: psp_transfer_webhook, level: G3, latency: {median: 20, sigma: 0.6}}
+      - {name: bank_credit_confirmation, level: G4, latency: {median: 3600, sigma: 0.5}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {median: 1.2, sigma: 0.4}
+    void_success: 0.995
+    onward_after_window: true
+    transfer_delay: {median: 86400, sigma: 0.5}
+  psp_token:
+    window: {median: 7200, sigma: 1.0}
+    observers:
+      - {name: issuer_authorization_record, level: G1, latency: {median: 2, sigma: 0.5}}
+      - {name: psp_charge_webhook, level: G1, latency: {median: 3, sigma: 0.5}}
+      - {name: platform_transfer_record, level: G3, latency: {median: 60, sigma: 0.8}}
+      - {name: psp_transfer_webhook, level: G3, latency: {median: 20, sigma: 0.6}}
+      - {name: bank_credit_confirmation, level: G4, latency: {median: 3600, sigma: 0.5}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {median: 1.2, sigma: 0.4}
+    void_success: 0.995
+    onward_after_window: true
+    transfer_delay: {median: 86400, sigma: 0.5}
+  wallet:
+    window: {median: 3600, sigma: 1.0}
+    observers:
+      - {name: wallet_merchant_record, level: G1, latency: {median: 3, sigma: 0.5}}
+      - {name: issuer_authorization_record, level: G1, latency: {median: 2, sigma: 0.5}}
+      - {name: platform_transfer_record, level: G3, latency: {median: 60, sigma: 0.8}}
+      - {name: bank_credit_confirmation, level: G4, latency: {median: 3600, sigma: 0.5}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {median: 1.5, sigma: 0.4}
+    void_success: 0.99
+    onward_after_window: true
+    transfer_delay: {median: 86400, sigma: 0.5}
+  bnpl:
+    window: {median: 3600, sigma: 1.0}
+    observers:
+      - {name: lender_funding_record, level: G1, latency: {median: 30, sigma: 0.6}}
+      - {name: bank_credit_confirmation, level: G4, latency: {median: 7200, sigma: 0.5}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {median: 5, sigma: 0.5}
+    void_success: 0.98
+    onward_after_window: true
+    transfer_delay: {median: 172800, sigma: 0.5}
+  a2a_instant:
+    window: {kind: constant, value: 0}
+    observers:
+      - {name: beneficiary_bank_credit, level: G4, latency: {median: 4, sigma: 0.4}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {median: 86400, sigma: 0.5}   # recall request (camt.056)
+    void_success: 0.3
+    escrow_supported: true
+    escrow_window: 600
+    escrow_latency: {median: 2, sigma: 0.3}
+    onward_after_window: true
+    transfer_delay: {median: 0, sigma: 0}
+    irreversible: true
+  stablecoin:
+    window: {kind: constant, value: 0}
+    observers:
+      - {name: chain_receipt, level: G4, latency: {median: 2, sigma: 0.3}}
+      - {name: facilitator_settlement_record, level: G3, latency: {median: 3, sigma: 0.4}}
+    decision: {median: 0.05, sigma: 0.5}
+    void: {kind: constant, value: 1.0e9}
+    void_success: 0.0
+    escrow_supported: true
+    escrow_window: 600
+    escrow_latency: {median: 4, sigma: 0.3}
+    onward_after_window: true
+    transfer_delay: {median: 0, sigma: 0}
+    irreversible: true

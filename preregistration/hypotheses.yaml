@@ -1,0 +1,67 @@
+# MERIDIAN pre-registration
+#
+# Fixed before experiments E2-E6 were run. Thresholds marked `target` are
+# design goals, not results. The runner records the SHA-256 of this file in
+# every results manifest and refuses to run E2-E6 if the hash differs from
+# preregistration/LOCK.
+
+version: 1
+registered: 2026-10-06
+seeds: {world: 7, attacks: 7017, rails: 0}
+
+hypotheses:
+  H1:
+    statement: >
+      In-model, V1 admits no payment to an identifier outside the intended
+      brand's delegation closure, while baselines B1-B5 admit some.
+    measures: [E2 diversion success on in-model A3, A4, A5, A7, A8 for M1 vs B1-B5, E3 false-block rate]
+    target: {false_block_rate_legitimate_structures: {max: 0.01}}
+    decision_rule: >
+      Supported if M1 diversion success is 0 on the classes V1 is designed for
+      (A3, A4, A5, A7, A8) and every baseline B1-B5 has non-zero success on at
+      least one of them, and the M1 false-block rate on S1-S9, S12, S13 is at
+      most 1%.
+  H2:
+    statement: V2 lowers lookalike-brand success compared with V1 alone.
+    measures: [E2 A1-A2 M2 vs M1, E4 step-up rate on benign requests]
+    target: {benign_step_up_rate: {max: 0.05}}
+    decision_rule: >
+      Supported if M2 diversion success on A1-A2 is lower than M1 (exact
+      McNemar p < 0.05 on paired cases) and the CBA step-up rate on benign
+      requests at the calibrated operating point is at most 5%.
+  H3:
+    statement: >
+      On card rails V3 detects in-model post-authorization diversions before
+      capture whenever POST-safe_f holds; on instant account-to-account and
+      stablecoin rails only pre-commit checks or escrow-wrapped flows are safe.
+    measures: [E6 detection before finality per rail and RWS mode, E2 A11 and A12]
+    decision_rule: >
+      Supported if detection-before-finality on card A11 cases is at least
+      1 - eps (eps = 0.01) where POST-safe holds, and POST mode on instant and
+      stablecoin rails detects none in time while PRE (synchronous) or ESCROW
+      does.
+  H4:
+    statement: V4 keeps V1-V3 decisions unchanged.
+    measures: [E7 decision agreement M4 vs M3, added p95 latency]
+    target: {added_p95_latency_ms_per_payment: {max: 150}}
+    decision_rule: >
+      Supported if decisions agree on 100% of evaluated cases and the added
+      payer-side p95 latency is at most 150 ms. Prover-side latency is
+      reported separately.
+  H5:
+    statement: >
+      No version dominates on every rail: V1 is enough where a wallet operator
+      is also the trust root, while V3 is necessary where payment facilitators
+      or custodians sit between brand and acquirer.
+    measures: [E2 per-rail loss and step-up for M1-M3, RQ5 table]
+    decision_rule: >
+      Supported if the configuration with the lowest (loss, step-up) on at
+      least one rail differs from the one on another rail.
+
+analysis:
+  constructed_cases: exact counts, no intervals
+  sampled_measurements: Wilson 95% intervals
+  clustering: cluster bootstrap by merchant topology (structure x brand)
+  paired_comparisons: exact McNemar
+  partitions: in-model and premise-violation results reported separately
+  ethics: no real money; no attacks on live merchants; passive measurement only

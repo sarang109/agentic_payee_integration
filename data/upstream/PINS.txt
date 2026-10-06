@@ -1,0 +1,5 @@
+AP2 google-agentic-commerce/AP2@e1ea56db72a6385bce3e5c1112b3a56ce60acb43
+ACP agentic-commerce-protocol/agentic-commerce-protocol@7fdd78df677a94dce04c770644b0fbbb1401272b
+x402 x402-foundation/x402@10b2d06b9472bc467d139b272d01bface38ae2d8
+Tranco list id 56WKN (downloaded 2026-10-06)
+Unicode confusables.txt 18.0.0
