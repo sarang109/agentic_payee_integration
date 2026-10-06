@@ -1,5 +1,6 @@
-### X2/X3 on Stripe Connect test mode
+### X2/X3 reproduced on Stripe Connect test mode
 
-| status                                                                                                                                                                                                                                                                                                       |
-|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| skipped: You can only create new accounts if you've signed up for Connect, which you can do at https://dashboard.stripe.com/connect. Alternatively, you can enable Connect using the Stripe MCP (search for 'EnableConnect' using the stripe_api_search tool) or use the Stripe CLI to run 'stripe tools sea |
+| case                     | committed destination      | observed destination       | deviation detected   | breach certificate verifies   | transfer reversed   |   observe_s |   reversal_s | verifier decision                             |
+|:-------------------------|:---------------------------|:---------------------------|:---------------------|:------------------------------|:--------------------|------------:|-------------:|:----------------------------------------------|
+| X2 seller substitution   | ...sq9LHc                  | ...jzOwya                  | True                 | True                          | True                |       1.381 |        0.899 | nan                                           |
+| X3 payout-account change | bank fingerprint ...mkZGG3 | bank fingerprint ...80OElh | True                 |                               |                     |     nan     |      nan     | DENY (grammar:terminal subject discontinuity) |

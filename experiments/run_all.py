@@ -20,7 +20,7 @@ import traceback
 
 from .common import RESULTS, ROOT, Timer, environment, manifest, write_json
 
-STEPS = ["formal", "toys", "e4", "e4b", "e1", "e2", "e5", "e6", "stripe", "e7", "e8", "e9", "e10", "ablations"]
+STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "e7", "e8", "e9", "e10", "ablations"]
 PREREG_GATED = {"e2", "e5", "e6"}
 
 
@@ -51,6 +51,9 @@ def _run(step: str):
     if step == "e4b":
         from .e4b_phishing import run_e4b
         return run_e4b()
+    if step == "e4c":
+        from .e4c_kaggle import run_e4c
+        return run_e4c()
     if step == "stripe":
         from .stripe_connect import run_connect
         return run_connect()

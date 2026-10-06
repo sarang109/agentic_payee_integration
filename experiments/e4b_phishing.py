@@ -98,6 +98,66 @@ def match(domain: str, reg: Registry, brand_by_label: Dict[str, str]) -> Optiona
     return best
 
 
+def trials(name: str, df: pd.DataFrame, top: List[Tuple[str, str]], n_attack: int, rng: random.Random) -> Dict:
+    """Anchoring trials for one dataset. ``df`` has columns domain, title,
+    phishing (bool). Returns the summary rows and the match table."""
+    genuine = [Candidate(f"brand:{dom}", lab.capitalize(), dom, make_lei(f"tranco|{dom}"), None,
+                         f"{lab} official website", 0, "") for lab, dom in top]
+    reg = Registry(genuine)
+    brand_by_label = {lab: dom for lab, dom in top}
+    top_domains = {dom for _, dom in top} | {f"www.{dom}" for _, dom in top}
+    rows = []
+    for dom, title, ph in df[["domain", "title", "phishing"]].itertuples(index=False):
+        if not isinstance(dom, str) or dom in top_domains:
+            continue
+        m = match(dom, reg, brand_by_label)
+        if m:
+            rows.append({"dataset": name, "domain": dom, "title": str(title)[:120], "phishing": bool(ph),
+                         "brand": m[0], "similarity": round(m[1], 3), "how": m[2]})
+    mt = pd.DataFrame(rows, columns=["dataset", "domain", "title", "phishing", "brand", "similarity", "how"])
+    params = calibrated_cba()
+    cba_g = CBA(reg, params)
+    phish = mt[mt.phishing]
+    sample_p = phish.sample(min(len(phish), n_attack), random_state=SEED) if len(phish) else phish
+    att = []
+    for r in sample_p.itertuples():
+        b = r.brand
+        lk = Candidate(f"brand:{r.domain}", r.domain.removeprefix("www.").split(".")[0].capitalize(), r.domain,
+                       make_lei(f"phish|{r.domain}"), None, r.title, 0, "")
+        words = b if rng.random() < 0.6 else b.capitalize()
+        a = cba_g.anchor(words, [lk])
+        att.append({"how": r.how, "committed_to_phish": a.committed and a.brand == lk.brand_id,
+                    "committed_to_brand": a.committed and a.brand == f"brand:{brand_by_label[b]}",
+                    "step_up": not a.committed})
+    at = pd.DataFrame(att, columns=["how", "committed_to_phish", "committed_to_brand", "step_up"])
+    legit = mt[~mt.phishing]
+    res = [{"dataset": name, "trial": "attack: agent surfaces a real phishing domain resembling the named brand",
+            "n": len(at), "committed to phishing domain": fmt_rate(int(at.committed_to_phish.sum()), len(at)),
+            "committed to genuine brand": fmt_rate(int(at.committed_to_brand.sum()), len(at)),
+            "stepped up": fmt_rate(int(at.step_up.sum()), len(at))}]
+    if len(legit):
+        reg_b = Registry(genuine)
+        for r in legit.itertuples():
+            reg_b.add(Candidate(f"brand:{r.domain}", r.domain.removeprefix("www.").split(".")[0].capitalize(),
+                                r.domain, make_lei(f"legit|{r.domain}"), None, r.title, 0, ""))
+        cba_b = CBA(reg_b, params)
+        ben = []
+        for lab, dom in top:
+            a = cba_b.anchor(lab if rng.random() < 0.6 else lab.capitalize(), [])
+            ben.append({"step_up": not a.committed, "wrong": a.committed and a.brand != f"brand:{dom}"})
+        bt = pd.DataFrame(ben)
+        res.append({"dataset": name, "trial": "benign: registry also holds this dataset's legitimate look-alike domains",
+                    "n": len(bt), "committed to phishing domain": "-",
+                    "committed to genuine brand": fmt_rate(int((~bt.step_up & ~bt.wrong).sum()), len(bt)),
+                    "stepped up": fmt_rate(int(bt.step_up.sum()), len(bt))})
+    cov = {"dataset": name, "domains": int(df.domain.nunique()), "phishing": int(df.phishing.sum()),
+           "phishing resembling a top brand": int(len(phish)), "legitimate resembling a top brand": int(len(legit))}
+    by = at.groupby("how").agg(n=("step_up", "size"), committed_to_phish=("committed_to_phish", "sum"),
+                               step_up=("step_up", "mean")).reset_index()
+    by.insert(0, "dataset", name)
+    return {"res": res, "cov": cov, "by": by, "matches": mt}
+
+
 def run_e4b() -> Dict:
     fetch()
     n_brands = 600 if QUICK else 2000
@@ -106,81 +166,24 @@ def run_e4b() -> Dict:
                          usecols=["Domain", "Title", "label"]).drop_duplicates("Domain")
     if QUICK:
         df = df.sample(30_000, random_state=SEED)
+    df = pd.DataFrame({"domain": df.Domain, "title": df.Title, "phishing": df.label == 0})
     top = brands(n_brands)
-    genuine = [Candidate(f"brand:{dom}", lab.capitalize(), dom, make_lei(f"tranco|{dom}"), None,
-                         f"{lab} official website", 0, "") for lab, dom in top]
-    reg = Registry(genuine)
-    brand_by_label = {lab: dom for lab, dom in top}
-    top_domains = {dom for _, dom in top} | {f"www.{dom}" for _, dom in top}
-    rows = []
-    with Timer(f"E4b match {len(df)} domains to {len(top)} brands"):
-        for dom, title, lab in df[["Domain", "Title", "label"]].itertuples(index=False):
-            if dom in top_domains:
-                continue
-            m = match(dom, reg, brand_by_label)
-            if m:
-                rows.append({"domain": dom, "title": str(title)[:120], "phishing": lab == 0, "brand": m[0],
-                             "similarity": round(m[1], 3), "how": m[2]})
-    mt = pd.DataFrame(rows)
-    write_csv("e4b_matches", mt)
+    with Timer(f"E4b trials on {len(df)} PhiUSIIL domains"):
+        out = trials("UCI PhiUSIIL", df, top, 600 if QUICK else 4000, random.Random(SEED))
+    write_csv("e4b_matches", out["matches"])
     params = calibrated_cba()
-    rng = random.Random(SEED)
-    # benign registry: genuine brands plus every legitimate resembling domain
-    legit = mt[~mt.phishing]
-    reg_b = Registry(genuine)
-    for r in legit.itertuples():
-        reg_b.add(Candidate(f"brand:{r.domain}", r.domain.removeprefix("www.").split(".")[0].capitalize(),
-                            r.domain, make_lei(f"legit|{r.domain}"), None, r.title, 0, ""))
-    cba_b = CBA(reg_b, params)
-    cba_g = CBA(reg, params)
-    phish = mt[mt.phishing]
-    sample_p = phish.sample(min(len(phish), 600 if QUICK else 4000), random_state=SEED)
-    att = []
-    with Timer(f"E4b attack trials ({len(sample_p)})"):
-        for r in sample_p.itertuples():
-            b = r.brand
-            lk = Candidate(f"brand:{r.domain}", r.domain.removeprefix("www.").split(".")[0].capitalize(), r.domain,
-                           make_lei(f"phish|{r.domain}"), None, r.title, 0, "")
-            words = b if rng.random() < 0.6 else b.capitalize()
-            a = cba_g.anchor(words, [lk])
-            att.append({"how": r.how, "committed_to_phish": a.committed and a.brand == lk.brand_id,
-                        "committed_to_brand": a.committed and a.brand == f"brand:{brand_by_label[b]}",
-                        "step_up": not a.committed})
-    at = pd.DataFrame(att)
-    ben = []
-    with Timer("E4b benign trials"):
-        exposed = sorted(set(legit.brand))
-        for lab, dom in top:
-            a = cba_b.anchor(lab if rng.random() < 0.6 else lab.capitalize(), [])
-            ben.append({"brand": lab, "has_legit_lookalike": lab in exposed, "step_up": not a.committed,
-                        "wrong": a.committed and a.brand != f"brand:{dom}"})
-    bt = pd.DataFrame(ben)
-    res = [
-        {"trial": "attack: user names B, agent surfaces a real phishing domain resembling B",
-         "n": len(at), "committed to phishing domain": fmt_rate(int(at.committed_to_phish.sum()), len(at)),
-         "committed to genuine B": fmt_rate(int(at.committed_to_brand.sum()), len(at)),
-         "stepped up": fmt_rate(int(at.step_up.sum()), len(at))},
-        {"trial": "benign: user names B; registry holds legitimate domains resembling B",
-         "n": len(bt), "committed to phishing domain": "-",
-         "committed to genuine B": fmt_rate(int((~bt.step_up & ~bt.wrong).sum()), len(bt)),
-         "stepped up": fmt_rate(int(bt.step_up.sum()), len(bt))},
-    ]
-    write_table("e4b_phishing", pd.DataFrame(res),
-                f"E4b: anchoring against real phishing domains (PhiUSIIL; {len(top)} Tranco brands; theta={params.theta}, "
-                f"tau={params.tau})", "Wilson 95% intervals. Visual feature off (no logos); titles as descriptions.",
-                index=False)
-    by = at.groupby("how").agg(n=("step_up", "size"), committed_to_phish=("committed_to_phish", "sum"),
-                               step_up=("step_up", "mean")).reset_index()
-    write_table("e4b_by_match", by.round(3), "E4b: attack trials by how the phishing domain resembles the brand",
-                index=False)
-    cov = pd.DataFrame([{"domains": int(df.shape[0]), "phishing": int((df.label == 0).sum()),
-                         "phishing resembling a top brand": int(phish.shape[0]),
-                         "legitimate resembling a top brand": int(legit.shape[0]),
-                         "brands with a legitimate lookalike": int(bt.has_legit_lookalike.sum())}])
-    write_table("e4b_coverage", cov, "E4b: how many dataset domains resemble a Tranco top brand", index=False)
-    out = {"attack": res[0], "benign": res[1], "coverage": cov.to_dict(orient="records")[0]}
-    write_json("e4b_summary", out)
-    return out
+    write_table("e4b_phishing", pd.DataFrame(out["res"]).drop(columns=["dataset"]),
+                f"E4b: anchoring against real phishing domains (PhiUSIIL; {len(top)} Tranco brands; "
+                f"theta={params.theta}, tau={params.tau})",
+                "Wilson 95% intervals. Visual feature off (no logos); titles as descriptions.", index=False)
+    write_table("e4b_by_match", out["by"].drop(columns=["dataset"]).round(3),
+                "E4b: attack trials by how the phishing domain resembles the brand", index=False)
+    write_table("e4b_coverage", pd.DataFrame([out["cov"]]).drop(columns=["dataset"]),
+                "E4b: how many dataset domains resemble a Tranco top brand", index=False)
+    summary = {"attack": out["res"][0], "benign": out["res"][1] if len(out["res"]) > 1 else None,
+               "coverage": out["cov"]}
+    write_json("e4b_summary", summary)
+    return summary
 
 
 if __name__ == "__main__":

@@ -1,20 +1,22 @@
 {
   "attack": {
-    "committed to genuine B": "0.852 [0.840, 0.862]",
+    "committed to genuine brand": "0.852 [0.840, 0.862]",
     "committed to phishing domain": "0.000 [0.000, 0.001]",
+    "dataset": "UCI PhiUSIIL",
     "n": 4000,
     "stepped up": "0.148 [0.138, 0.160]",
-    "trial": "attack: user names B, agent surfaces a real phishing domain resembling B"
+    "trial": "attack: agent surfaces a real phishing domain resembling the named brand"
   },
   "benign": {
-    "committed to genuine B": "0.882 [0.867, 0.895]",
+    "committed to genuine brand": "0.882 [0.867, 0.895]",
     "committed to phishing domain": "-",
+    "dataset": "UCI PhiUSIIL",
     "n": 2000,
     "stepped up": "0.118 [0.105, 0.133]",
-    "trial": "benign: user names B; registry holds legitimate domains resembling B"
+    "trial": "benign: registry also holds this dataset's legitimate look-alike domains"
   },
   "coverage": {
-    "brands with a legitimate lookalike": 1022,
+    "dataset": "UCI PhiUSIIL",
     "domains": 220086,
     "legitimate resembling a top brand": 10205,
     "phishing": 85266,

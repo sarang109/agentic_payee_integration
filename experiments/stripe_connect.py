@@ -56,20 +56,44 @@ class Stripe:
         return out
 
 
+V2_VERSION = "2026-09-30.endive"
+
+
 def connected_account(st: Stripe, label: str) -> dict:
-    now = int(time.time())
-    return st.post("/accounts", {
-        "type": "custom", "country": "US", "email": f"{label}@example.com", "business_type": "individual",
-        "capabilities[transfers][requested]": "true", "capabilities[card_payments][requested]": "true",
-        "tos_acceptance[date]": now, "tos_acceptance[ip]": "127.0.0.1",
-        "individual[first_name]": "Jenny", "individual[last_name]": "Rosen", "individual[email]": f"{label}@example.com",
-        "individual[phone]": "0000000000", "individual[dob][day]": 1, "individual[dob][month]": 1,
-        "individual[dob][year]": 1901, "individual[ssn_last_4]": "0000",
-        "individual[address][line1]": "address_full_match", "individual[address][city]": "San Francisco",
-        "individual[address][state]": "CA", "individual[address][postal_code]": "94111",
-        "business_profile[mcc]": "5734", "business_profile[url]": "https://accessible.stripe.com",
-        "external_account": "btok_us_verified", "metadata[meridian]": label,
-    })
+    """A platform-managed recipient account (Accounts v2) that can receive
+    transfers, filled with Stripe's documented test identity values."""
+    import json
+
+    h = {"Authorization": f"Bearer {st.s.auth[0]}", "Stripe-Version": V2_VERSION, "Content-Type": "application/json"}
+    body = {
+        "contact_email": f"{label}@example.com", "display_name": label, "dashboard": "none",
+        "identity": {
+            "country": "us", "entity_type": "individual",
+            "individual": {"given_name": "Jenny", "surname": "Rosen", "email": f"{label}@example.com",
+                           "phone": "+14155550100", "date_of_birth": {"day": 1, "month": 1, "year": 1901},
+                           "id_numbers": [{"type": "us_ssn_last_4", "value": "0000"}],
+                           "address": {"country": "us", "line1": "address_full_match", "city": "San Francisco",
+                                       "state": "CA", "postal_code": "94111"}},
+            "attestations": {"terms_of_service": {"account": {
+                "date": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "ip": "127.0.0.1"}}}},
+        "configuration": {"recipient": {"capabilities": {"stripe_balance": {"stripe_transfers": {"requested": True}}}}},
+        "defaults": {"currency": "usd", "profile": {"business_url": "https://accessible.stripe.com"},
+                     "responsibilities": {"fees_collector": "application", "losses_collector": "application"}},
+        "metadata": {"meridian": label},
+    }
+    r = st.s.post("https://api.stripe.com/v2/core/accounts", headers=h, data=json.dumps(body), timeout=60).json()
+    if "error" in r:
+        raise RuntimeError(r["error"].get("message", "account creation failed"))
+    acct = r["id"]
+    st.post(f"/accounts/{acct}/external_accounts", {"external_account": "btok_us_verified"})
+    for _ in range(20):
+        g = st.s.get(f"https://api.stripe.com/v2/core/accounts/{acct}", headers=h,
+                     params={"include": ["configuration.recipient"]}, timeout=60).json()
+        status = g["configuration"]["recipient"]["capabilities"]["stripe_balance"]["stripe_transfers"]["status"]
+        if status == "active":
+            break
+        time.sleep(1.5)
+    return {"id": acct, "transfers": status}
 
 
 def default_bank_fingerprint(st: Stripe, acct: str) -> str:
@@ -78,6 +102,50 @@ def default_bank_fingerprint(st: Stripe, acct: str) -> str:
         if b.get("default_for_currency"):
             return b["fingerprint"]
     return ext["data"][0]["fingerprint"]
+
+
+def _short(x: str) -> str:
+    """Published tables keep only the last characters of Stripe object ids."""
+    return x if len(x) < 10 else f"...{x[-6:]}"
+
+
+def x3_decision(bound_fp: str, attested_fp: str):
+    """Run the v2-core verifier on X3: the brand's bank bound the onboarding
+    payout account (identified by Stripe's bank fingerprint) to the brand's
+    entity; the processor now attests the current default payout account."""
+    from meridian.core.edges import AG
+    from meridian.core.pav import RAP
+    from meridian.core.policy import Policy
+    from meridian.core.routes import RouteBundle, verify_route
+    from meridian.core.scope import Scope
+    from meridian.core.status import StatusRegistry
+    from meridian.issuers import QVI, Bank, DomainVerifier, PSPOperator, make_entity
+
+    sr, trust = StatusRegistry(), TrustStore()
+    dv, qvi, psp, bank = DomainVerifier("dv", sr), QVI("qvi", sr), PSPOperator("stripe", sr), Bank("stripebank", sr)
+    for i in (dv, qvi, psp, bank):
+        i.register(trust)
+    brand = make_entity("Meridian Brand Inc", "5493001KJTIIGC8Y1R12")
+    other = make_entity("Unknown Payee LLC", "5493009ZZTIIGC8Y1R99")
+    for e in (brand, other):
+        trust.add_role_credential(qvi.role_credential(e, 10**10))
+    t = int(time.time())
+    dns = {"_meridian-challenge.meridian-brand.example": [dv.challenge("meridian-brand.example", brand.rep)]}
+    e0 = dv.bind("meridian-brand.example", brand, dns, t - 86400, t + 86400 * 365)
+    p = psp.new_account()
+    e1 = psp.issue(AG, brand.lei_id, p, Scope.make(rails={"card"}), t - 86400, t + 86400 * 365, psp.key,
+                   signing_key=brand.rep)
+    bound_acct = bank.open_account(brand, iban=bound_fp)
+    # the new payout account is not the brand's: the bank binds it to whoever holds it
+    new_acct = bank.open_account(brand if attested_fp == bound_fp else other, iban=attested_fp)
+    term = bank.terminal_binding(new_acct, t - 3600, t + 86400 * 365)
+    pay = Payment("x3", p, "card", "USD", 4200, "5734", "US", t, "cart-x3", "n-x3")
+    beta = psp.binding_token(pay)
+    snaps = {e.status.list_id: sr.lists[e.status.list_id].snapshot(t) for e in (e0, e1, term)}
+    bundle = RouteBundle(RAP([e0, e1], snaps, beta), [], [psp.payout_attestation(pay, p, new_acct, beta.digest)],
+                         term, snaps)
+    _ = bound_acct
+    return verify_route(bundle, pay, "brand:meridian-brand.example", Policy(), trust)
 
 
 def run_connect() -> Dict:
@@ -89,6 +157,8 @@ def run_connect() -> Dict:
     st = Stripe(key)
     try:
         brand = connected_account(st, "meridian-brand")
+        if brand["transfers"] != "active":
+            raise RuntimeError(f"transfers capability is {brand['transfers']}")
     except RuntimeError as e:
         out = {"status": f"skipped: {e}"[:300]}
         write_json("stripe_connect_summary", out)
@@ -132,11 +202,14 @@ def run_connect() -> Dict:
             "external_account[currency]": "usd", "external_account[routing_number]": "110000000",
             "external_account[account_number]": "000111111116", "default_for_currency": "true"})
         attested = default_bank_fingerprint(st, brand["id"])
-        rows.append({"case": "X3 payout-account change", "committed destination": f"bank fingerprint {bound}",
-                     "observed destination": f"bank fingerprint {attested}",
+        decision = x3_decision(bound, attested)
+        rows.append({"case": "X3 payout-account change", "committed destination": f"bank fingerprint {_short(bound)}",
+                     "observed destination": f"bank fingerprint {_short(attested)}",
                      "deviation detected": attested != bound, "breach certificate verifies": None,
                      "transfer reversed": None, "observe_s": None, "reversal_s": None,
-                     "verifier decision": "DENY (terminal subject discontinuity)" if attested != bound else "ALLOW"})
+                     "verifier decision": f"{decision.verdict} ({';'.join(decision.reasons[:1]) or 'G2'})"})
+        rows[0]["committed destination"] = _short(rows[0]["committed destination"])
+        rows[0]["observed destination"] = _short(rows[0]["observed destination"])
     df = pd.DataFrame(rows)
     write_csv("stripe_connect_runs", df)
     write_table("stripe_connect", df, "X2/X3 reproduced on Stripe Connect test mode", index=False)

@@ -28,6 +28,9 @@ SECTIONS = [
      "e4_cba_tradeoff.png", ""),
     ("E4b anchoring against real phishing domains (UCI PhiUSIIL)", ["e4b_phishing", "e4b_by_match", "e4b_coverage"],
      None, ""),
+    ("E4c anchoring on Kaggle phishing and homograph datasets", ["e4c_homograph", "e4c_url_datasets", "e4c_coverage",
+                                                                 "e4c_by_match", "e4c_files"], None,
+     "Runs with a Kaggle API token; the files used are listed with their SHA-256."),
     ("E5 probation sweep", ["e5_probation", "e5_monitor_reaction", "e5_cap"], "e5_probation.png", ""),
     ("E6 rail scheduling", ["e6_residual_loss_f0", "e6_observer_corruption", "e6_rws_choice", "e6_theorem3", "f4_toy"],
      "e6_rail_residual.png", ""),
@@ -77,6 +80,7 @@ def build_report() -> str:
     toys = _load("toys_summary") or {}
     e1 = _load("e1_summary") or {}
     e4b = _load("e4b_summary") or {}
+    e4c = _load("e4c_summary") or {}
     env = status.get("environment", {})
     lines = ["# MERIDIAN results", ""]
     lines += [f"Generated {env.get('time_utc', '?')} from commit `{env.get('git', '?')}`, seed {env.get('seed', '?')}"
@@ -117,7 +121,8 @@ def build_report() -> str:
                  f"Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): "
                  f"{h2.get('benign_cba_step_up')}. Real data (E4b, PhiUSIIL): benign step-up "
                  f"{(e4b.get('benign') or {}).get('stepped up')}, real phishing domains committed "
-                 f"{(e4b.get('attack') or {}).get('committed to phishing domain')} |")
+                 f"{(e4b.get('attack') or {}).get('committed to phishing domain')}; Kaggle homograph spoofs committed "
+                 f"{(e4c.get('homograph_all') or {}).get('committed to spoof')} |")
     h3 = e6.get("H3", {})
     card_ci = ""
     try:

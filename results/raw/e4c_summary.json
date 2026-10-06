@@ -1,0 +1,75 @@
+{
+  "files": [
+    {
+      "dataset": "alishan07/adversarial-homograph-detection",
+      "file": "adversarial-homograph-detection/adversarial-homograph-detection/homograph_phishing_test.csv",
+      "sha256": "d6f4d722b45cb8755de15f3f875d2e002853877d2b42d84ea147096bc4925fca"
+    },
+    {
+      "dataset": "sid321axn/malicious-urls-dataset",
+      "file": "malicious-urls-dataset/malicious_phish.csv",
+      "sha256": "d83ce942075dd63ed4d11560cfdcd9d512caa3d680e292f22cab484e8f074d01"
+    },
+    {
+      "dataset": "taruntiwarihp/phishing-site-urls",
+      "file": "phishing-site-urls/phishing_site_urls.csv",
+      "sha256": "b1a7c26b354632c80817e10af154c4e5007f9480fb43a8ac2730491500fa2780"
+    },
+    {
+      "dataset": "quangnguynv/phishtank-phishingurl-valid-dataset",
+      "file": "phishtank-phishingurl-valid-dataset/PhishTank_2026.csv",
+      "sha256": "c9ac90ae2de1a702003550eab771979b124403c6987faca719c9783353ac73d2"
+    }
+  ],
+  "homograph_all": {
+    "attack type": "ALL ATTACKS",
+    "committed to genuine": "0.680 [0.671, 0.689]",
+    "committed to spoof": "0.000 [0.000, 0.000]",
+    "flagged as rival (kappa >= theta)": "0.821 [0.814, 0.829]",
+    "n": 10070,
+    "stepped up": "0.320 [0.311, 0.329]"
+  },
+  "status": "ok",
+  "url_datasets": [
+    {
+      "committed to genuine brand": "0.644 [0.629, 0.659]",
+      "committed to phishing domain": "0.000 [0.000, 0.001]",
+      "dataset": "sid321axn/malicious-urls-dataset",
+      "n": 4000,
+      "stepped up": "0.356 [0.341, 0.371]",
+      "trial": "attack: agent surfaces a real phishing domain resembling the named brand"
+    },
+    {
+      "committed to genuine brand": "0.821 [0.804, 0.837]",
+      "committed to phishing domain": "-",
+      "dataset": "sid321axn/malicious-urls-dataset",
+      "n": 2000,
+      "stepped up": "0.178 [0.162, 0.196]",
+      "trial": "benign: registry also holds this dataset's legitimate look-alike domains"
+    },
+    {
+      "committed to genuine brand": "0.677 [0.662, 0.691]",
+      "committed to phishing domain": "0.000 [0.000, 0.001]",
+      "dataset": "taruntiwarihp/phishing-site-urls",
+      "n": 4000,
+      "stepped up": "0.323 [0.309, 0.338]",
+      "trial": "attack: agent surfaces a real phishing domain resembling the named brand"
+    },
+    {
+      "committed to genuine brand": "0.817 [0.799, 0.833]",
+      "committed to phishing domain": "-",
+      "dataset": "taruntiwarihp/phishing-site-urls",
+      "n": 2000,
+      "stepped up": "0.183 [0.167, 0.201]",
+      "trial": "benign: registry also holds this dataset's legitimate look-alike domains"
+    },
+    {
+      "committed to genuine brand": "0.782 [0.769, 0.794]",
+      "committed to phishing domain": "0.000 [0.000, 0.001]",
+      "dataset": "quangnguynv/phishtank-phishingurl-valid-dataset",
+      "n": 4000,
+      "stepped up": "0.218 [0.206, 0.231]",
+      "trial": "attack: agent surfaces a real phishing domain resembling the named brand"
+    }
+  ]
+}

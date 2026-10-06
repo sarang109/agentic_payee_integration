@@ -13,3 +13,4 @@ results/run.log
 data/phishing/
 data/upstream/*
 !data/upstream/PINS.txt
+data/kaggle/

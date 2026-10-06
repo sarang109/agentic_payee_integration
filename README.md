@@ -64,7 +64,7 @@ from. Keys are read from the environment only and are never written to
 | Variable | Effect |
 |---|---|
 | `STRIPE_SECRET_KEY=sk_test_...` | E6 measures authorization and void latency on Stripe test mode (30 manual-capture PaymentIntents, each cancelled); the rail simulations then use the measured latency. A live-mode key is refused. |
-| same key, with Connect enabled on the test account | `stripe` step reproduces X2 (separate charges and transfers to the wrong connected account, transfer reversed) and X3 (payout bank account changed) on Stripe Connect test mode. Enable Connect in the Dashboard (test mode, Connect > Get started). |
+| same key, with Connect enabled on the test account (and the platform's loss responsibilities acknowledged) | `stripe` step creates Accounts v2 recipient accounts and reproduces X2 (separate charges and transfers to the wrong connected account, transfer reversed) and X3 (payout bank account changed) on Stripe Connect test mode. Enable Connect in the Dashboard (test mode, Connect > Get started). |
 | `MERIDIAN_AGENT_MODEL` plus the provider's API key | E9 hosted-model agents (scripted worst-case agents always run) |
 
 No cloud-provider credentials are needed. Not yet wired to live
@@ -78,6 +78,7 @@ EIP-3009 signatures), issuer authorization records from a real issuer (ISO
 |---|---|---|
 | Tranco list 56WKN (top 20,000) | E4, E4b | checked in as `data/tranco/tranco_56WKN_top20k.csv` |
 | UCI PhiUSIIL Phishing URL Dataset (CC BY 4.0) | E4b | downloaded on first run and verified by SHA-256 |
+| Kaggle: Adversarial Homograph Detection (alishan07, CC BY-SA 4.0), Malicious URLs (sid321axn, CC0), Phishing Site URLs (taruntiwarihp), PhishTank 2026 (quangnguynv, Apache-2.0) | E4c | downloaded with the Kaggle CLI when a token is configured (`~/.kaggle/access_token` or `KAGGLE_API_TOKEN`); SHA-256 recorded in `results/tables/e4c_files.md` |
 | Unicode `confusables.txt` 18.0.0 | CBA | checked in |
 | AgentDojo banking suite v1 | E9 | `agentdojo==0.1.35` |
 | GLEIF LEI records, DNS, TLS certificates, storefront homepages | E10 | queried live (passive), cached under `results/cache/` |

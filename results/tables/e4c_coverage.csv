@@ -1,0 +1,4 @@
+dataset,domains,phishing,phishing resembling a top brand,legitimate resembling a top brand
+sid321axn/malicious-urls-dataset,186841,55103,9028,23059
+taruntiwarihp/phishing-site-urls,187817,57367,8755,21174
+quangnguynv/phishtank-phishingurl-valid-dataset,30977,30977,5961,0

@@ -1,3 +1,26 @@
 {
-  "status": "skipped: You can only create new accounts if you've signed up for Connect, which you can do at https://dashboard.stripe.com/connect. Alternatively, you can enable Connect using the Stripe MCP (search for 'EnableConnect' using the stripe_api_search tool) or use the Stripe CLI to run 'stripe tools sea"
+  "rows": [
+    {
+      "breach certificate verifies": true,
+      "case": "X2 seller substitution",
+      "committed destination": "...sq9LHc",
+      "deviation detected": true,
+      "observe_s": 1.381,
+      "observed destination": "...jzOwya",
+      "reversal_s": 0.899,
+      "transfer reversed": true
+    },
+    {
+      "breach certificate verifies": null,
+      "case": "X3 payout-account change",
+      "committed destination": "bank fingerprint ...mkZGG3",
+      "deviation detected": true,
+      "observe_s": null,
+      "observed destination": "bank fingerprint ...80OElh",
+      "reversal_s": null,
+      "transfer reversed": null,
+      "verifier decision": "DENY (grammar:terminal subject discontinuity)"
+    }
+  ],
+  "status": "ok"
 }

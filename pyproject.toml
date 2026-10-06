@@ -24,6 +24,7 @@ dependencies = [
 [project.optional-dependencies]
 embeddings = ["sentence-transformers>=3.0"]
 agents = ["agentdojo==0.1.35"]
+datasets = ["kaggle>=2.0"]
 dev = ["pytest>=8", "hypothesis>=6"]
 
 [tool.setuptools.packages.find]

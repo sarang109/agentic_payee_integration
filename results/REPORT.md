@@ -1,32 +1,33 @@
 # MERIDIAN results
 
-Generated 2026-10-06T18:02:25Z from commit `56cdbaee0b3191acc3873e8eea7636c2867764ae`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
+Generated 2026-10-06T18:22:18Z from commit `0a5b687ebcda6b2e9e915385306aef2b1a806cb2`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
 
 ## Run status
 
 | step | status | seconds |
 |---|---|---|
-| formal | ok | 9.6 |
-| toys | ok | 108.6 |
-| e4 | ok | 77.8 |
-| e4b | ok | 121.9 |
+| ablations | ok | 1.4 |
 | e1 | ok | 3.8 |
+| e10 | ok | 116.8 |
 | e2 | ok | 16.7 |
+| e4 | ok | 77.8 |
+| e4b | ok | 121.8 |
+| e4c | ok | 370.3 |
 | e5 | ok | 20.0 |
 | e6 | ok | 40.5 |
-| stripe | skipped: Stripe Connect not enabled on the test account | 0.5 |
 | e7 | ok | 110.2 |
 | e8 | ok | 28.8 |
 | e9 | ok | 5.1 |
-| e10 | ok | 116.8 |
-| ablations | ok | 1.4 |
+| formal | ok | 9.6 |
+| stripe | ok | 18.4 |
+| toys | ok | 108.6 |
 
 ## Hypotheses (decision rules fixed in preregistration/hypotheses.yaml)
 
 | hypothesis | verdict | evidence |
 |---|---|---|
 | H1 V1 admits no out-of-closure payee; baselines do; false blocks <= 1% | supported | M1 loss on A3/A4/A5/A7/A8: 0/300; baselines: {'B1': 281, 'B2': 273, 'B3': 300, 'B4': 290, 'B5': 300}; M1 false-block rate 0.000 [0.000, 0.004] |
-| H2 V2 lowers lookalike success; benign step-up <= 5% (E4) | partly supported: security part yes, step-up target not met | A1-A2 loss M2 0/120 vs M1 120/120 (McNemar p = 1.5e-36); E4 held-out benign step-up 0.154 [0.129, 0.184] with 30% of brands impersonated; by impersonated share: 0.05 -> 0.023; 0.2 -> 0.097; 0.5 -> 0.218; 1 -> 0.438. Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): 0.178 [0.155, 0.203]. Real data (E4b, PhiUSIIL): benign step-up 0.118 [0.105, 0.133], real phishing domains committed 0.000 [0.000, 0.001] |
+| H2 V2 lowers lookalike success; benign step-up <= 5% (E4) | partly supported: security part yes, step-up target not met | A1-A2 loss M2 0/120 vs M1 120/120 (McNemar p = 1.5e-36); E4 held-out benign step-up 0.154 [0.129, 0.184] with 30% of brands impersonated; by impersonated share: 0.05 -> 0.023; 0.2 -> 0.097; 0.5 -> 0.218; 1 -> 0.438. Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): 0.178 [0.155, 0.203]. Real data (E4b, PhiUSIIL): benign step-up 0.118 [0.105, 0.133], real phishing domains committed 0.000 [0.000, 0.001]; Kaggle homograph spoofs committed 0.000 [0.000, 0.000] |
 | H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | supported | card: POST-safe probability 1.0, first-hop swaps voided before capture 400/400 = 1.0000, 95% CI [0.990, 1.000] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2389/2400; card void latency measured on stripe-test-mode (p50 0.41 s, success 1.0). With the simulated void latency (no Stripe key) the same rule gave 395/400 and was not met |
 | H4 V4 keeps decisions; payer p95 <= 150 ms | supported | agreement 1.000 [0.985, 1.000] on 250 cases; payer-side p95 12.7 ms; prover p95 632 ms |
 | H5 no single version dominates every rail | supported | best MERIDIAN configuration per rail: {'a2a_instant': 'M3', 'bnpl': 'M1', 'card': 'M3', 'psp_token': 'M3', 'stablecoin': 'M3', 'wallet': 'M3'} |
@@ -540,10 +541,10 @@ Wilson 95% intervals. Prevalence of impersonated brands in the registry: 30%.
 
 #### E4b: anchoring against real phishing domains (PhiUSIIL; 2000 Tranco brands; theta=0.9, tau=0.075)
 
-| trial                                                                    |    n | committed to phishing domain   | committed to genuine B   | stepped up           |
-|:-------------------------------------------------------------------------|-----:|:-------------------------------|:-------------------------|:---------------------|
-| attack: user names B, agent surfaces a real phishing domain resembling B | 4000 | 0.000 [0.000, 0.001]           | 0.852 [0.840, 0.862]     | 0.148 [0.138, 0.160] |
-| benign: user names B; registry holds legitimate domains resembling B     | 2000 | -                              | 0.882 [0.867, 0.895]     | 0.118 [0.105, 0.133] |
+| trial                                                                    |    n | committed to phishing domain   | committed to genuine brand   | stepped up           |
+|:-------------------------------------------------------------------------|-----:|:-------------------------------|:-----------------------------|:---------------------|
+| attack: agent surfaces a real phishing domain resembling the named brand | 4000 | 0.000 [0.000, 0.001]           | 0.852 [0.840, 0.862]         | 0.148 [0.138, 0.160] |
+| benign: registry also holds this dataset's legitimate look-alike domains | 2000 | -                              | 0.882 [0.867, 0.895]         | 0.118 [0.105, 0.133] |
 
 Wilson 95% intervals. Visual feature off (no logos); titles as descriptions.
 
@@ -559,9 +560,82 @@ Wilson 95% intervals. Visual feature off (no logos); titles as descriptions.
 
 #### E4b: how many dataset domains resemble a Tranco top brand
 
-|   domains |   phishing |   phishing resembling a top brand |   legitimate resembling a top brand |   brands with a legitimate lookalike |
-|----------:|-----------:|----------------------------------:|------------------------------------:|-------------------------------------:|
-|    220086 |      85266 |                             11691 |                               10205 |                                 1022 |
+|   domains |   phishing |   phishing resembling a top brand |   legitimate resembling a top brand |
+|----------:|-----------:|----------------------------------:|------------------------------------:|
+|    220086 |      85266 |                             11691 |                               10205 |
+
+
+## E4c anchoring on Kaggle phishing and homograph datasets
+
+Runs with a Kaggle API token; the files used are listed with their SHA-256.
+
+#### E4c: homograph spoofs (Kaggle alishan07 test split; theta=0.9, tau=0.075)
+
+| attack type                |     n | flagged as rival (kappa >= theta)   | committed to spoof   | committed to genuine   | stepped up           |
+|:---------------------------|------:|:------------------------------------|:---------------------|:-----------------------|:---------------------|
+| benign pair                | 10017 | 0.000 [0.000, 0.000]                | -                    | -                      | -                    |
+| bidi_override              |   831 | 1.000 [0.995, 1.000]                | 0.000 [0.000, 0.005] | 0.000 [0.000, 0.005]   | 1.000 [0.995, 1.000] |
+| idn_armenian_georgian      |   867 | 1.000 [0.996, 1.000]                | 0.000 [0.000, 0.004] | 0.820 [0.793, 0.844]   | 0.180 [0.156, 0.207] |
+| idn_cyrillic               |   789 | 0.973 [0.960, 0.983]                | 0.000 [0.000, 0.005] | 0.868 [0.843, 0.890]   | 0.132 [0.110, 0.157] |
+| idn_greek                  |   853 | 0.767 [0.737, 0.794]                | 0.000 [0.000, 0.004] | 0.904 [0.882, 0.922]   | 0.096 [0.078, 0.118] |
+| idn_mixed_script           |   849 | 0.968 [0.954, 0.978]                | 0.000 [0.000, 0.005] | 0.987 [0.977, 0.993]   | 0.013 [0.007, 0.023] |
+| multi_char_ascii_homoglyph |   832 | 0.481 [0.447, 0.515]                | 0.000 [0.000, 0.005] | 0.959 [0.943, 0.971]   | 0.041 [0.029, 0.057] |
+| punycode_encoded           |   736 | 1.000 [0.995, 1.000]                | 0.000 [0.000, 0.005] | 0.872 [0.846, 0.894]   | 0.128 [0.106, 0.154] |
+| syntax_spoofing            |   848 | 0.468 [0.435, 0.502]                | 0.000 [0.000, 0.005] | 0.525 [0.491, 0.558]   | 0.475 [0.442, 0.509] |
+| unicode_confusable         |   828 | 0.975 [0.962, 0.983]                | 0.000 [0.000, 0.005] | 0.291 [0.261, 0.323]   | 0.709 [0.677, 0.739] |
+| visual_ascii_homoglyph     |   897 | 0.431 [0.399, 0.464]                | 0.000 [0.000, 0.004] | 0.959 [0.944, 0.970]   | 0.041 [0.030, 0.056] |
+| whole_script_substitution  |   867 | 0.839 [0.813, 0.862]                | 0.000 [0.000, 0.004] | 0.986 [0.976, 0.992]   | 0.014 [0.008, 0.024] |
+| zero_width                 |   873 | 1.000 [0.996, 1.000]                | 0.000 [0.000, 0.004] | 0.000 [0.000, 0.004]   | 1.000 [0.996, 1.000] |
+| ALL ATTACKS                | 10070 | 0.821 [0.814, 0.829]                | 0.000 [0.000, 0.000] | 0.680 [0.671, 0.689]   | 0.320 [0.311, 0.329] |
+
+The user names the spoofed brand; the agent surfaces the spoof. Benign pairs are two unrelated safe domains (false-rival rate). Wilson 95% intervals.
+
+
+#### E4c: anchoring against real phishing domains from Kaggle URL datasets
+
+| dataset                                         | trial                                                                    |    n | committed to phishing domain   | committed to genuine brand   | stepped up           |
+|:------------------------------------------------|:-------------------------------------------------------------------------|-----:|:-------------------------------|:-----------------------------|:---------------------|
+| sid321axn/malicious-urls-dataset                | attack: agent surfaces a real phishing domain resembling the named brand | 4000 | 0.000 [0.000, 0.001]           | 0.644 [0.629, 0.659]         | 0.356 [0.341, 0.371] |
+| sid321axn/malicious-urls-dataset                | benign: registry also holds this dataset's legitimate look-alike domains | 2000 | -                              | 0.821 [0.804, 0.837]         | 0.178 [0.162, 0.196] |
+| taruntiwarihp/phishing-site-urls                | attack: agent surfaces a real phishing domain resembling the named brand | 4000 | 0.000 [0.000, 0.001]           | 0.677 [0.662, 0.691]         | 0.323 [0.309, 0.338] |
+| taruntiwarihp/phishing-site-urls                | benign: registry also holds this dataset's legitimate look-alike domains | 2000 | -                              | 0.817 [0.799, 0.833]         | 0.183 [0.167, 0.201] |
+| quangnguynv/phishtank-phishingurl-valid-dataset | attack: agent surfaces a real phishing domain resembling the named brand | 4000 | 0.000 [0.000, 0.001]           | 0.782 [0.769, 0.794]         | 0.218 [0.206, 0.231] |
+
+Same procedure as E4b; no page titles in these datasets. Wilson 95% intervals.
+
+
+#### E4c: dataset domains resembling a Tranco top brand
+
+| dataset                                         |   domains |   phishing |   phishing resembling a top brand |   legitimate resembling a top brand |
+|:------------------------------------------------|----------:|-----------:|----------------------------------:|------------------------------------:|
+| sid321axn/malicious-urls-dataset                |    186841 |      55103 |                              9028 |                               23059 |
+| taruntiwarihp/phishing-site-urls                |    187817 |      57367 |                              8755 |                               21174 |
+| quangnguynv/phishtank-phishingurl-valid-dataset |     30977 |      30977 |                              5961 |                                   0 |
+
+
+#### E4c: attack trials by how the domain resembles the brand
+
+| dataset                                         | how      |    n |   committed_to_phish |   step_up |
+|:------------------------------------------------|:---------|-----:|---------------------:|----------:|
+| sid321axn/malicious-urls-dataset                | edit     | 1027 |                    0 |     0.203 |
+| sid321axn/malicious-urls-dataset                | embedded | 1578 |                    0 |     0     |
+| sid321axn/malicious-urls-dataset                | exact    | 1395 |                    0 |     0.871 |
+| taruntiwarihp/phishing-site-urls                | edit     |  777 |                    0 |     0.189 |
+| taruntiwarihp/phishing-site-urls                | embedded | 1546 |                    0 |     0     |
+| taruntiwarihp/phishing-site-urls                | exact    | 1677 |                    0 |     0.683 |
+| quangnguynv/phishtank-phishingurl-valid-dataset | edit     | 1133 |                    0 |     0.239 |
+| quangnguynv/phishtank-phishingurl-valid-dataset | embedded | 2192 |                    0 |     0     |
+| quangnguynv/phishtank-phishingurl-valid-dataset | exact    |  675 |                    0 |     0.892 |
+
+
+#### E4c: Kaggle files used
+
+| dataset                                         | file                                                                                        | sha256                                                           |
+|:------------------------------------------------|:--------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|
+| alishan07/adversarial-homograph-detection       | adversarial-homograph-detection/adversarial-homograph-detection/homograph_phishing_test.csv | d6f4d722b45cb8755de15f3f875d2e002853877d2b42d84ea147096bc4925fca |
+| sid321axn/malicious-urls-dataset                | malicious-urls-dataset/malicious_phish.csv                                                  | d83ce942075dd63ed4d11560cfdcd9d512caa3d680e292f22cab484e8f074d01 |
+| taruntiwarihp/phishing-site-urls                | phishing-site-urls/phishing_site_urls.csv                                                   | b1a7c26b354632c80817e10af154c4e5007f9480fb43a8ac2730491500fa2780 |
+| quangnguynv/phishtank-phishingurl-valid-dataset | phishtank-phishingurl-valid-dataset/PhishTank_2026.csv                                      | c9ac90ae2de1a702003550eab771979b124403c6987faca719c9783353ac73d2 |
 
 
 ## E5 probation sweep
@@ -692,11 +766,12 @@ Parameters: {'window': 10, 'observer_medians': [1, 4], 'void_median': 5, 'void_s
 
 Runs only with a Stripe test key on an account with Connect enabled; otherwise the table records why it was skipped.
 
-#### X2/X3 on Stripe Connect test mode
+#### X2/X3 reproduced on Stripe Connect test mode
 
-| status                                                                                                                                                                                                                                                                                                       |
-|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| skipped: You can only create new accounts if you've signed up for Connect, which you can do at https://dashboard.stripe.com/connect. Alternatively, you can enable Connect using the Stripe MCP (search for 'EnableConnect' using the stripe_api_search tool) or use the Stripe CLI to run 'stripe tools sea |
+| case                     | committed destination      | observed destination       | deviation detected   | breach certificate verifies   | transfer reversed   |   observe_s |   reversal_s | verifier decision                             |
+|:-------------------------|:---------------------------|:---------------------------|:---------------------|:------------------------------|:--------------------|------------:|-------------:|:----------------------------------------------|
+| X2 seller substitution   | ...sq9LHc                  | ...jzOwya                  | True                 | True                          | True                |       1.381 |        0.899 | nan                                           |
+| X3 payout-account change | bank fingerprint ...mkZGG3 | bank fingerprint ...80OElh | True                 |                               |                     |     nan     |      nan     | DENY (grammar:terminal subject discontinuity) |
 
 
 ## E7 privacy cost (V4) and H4
