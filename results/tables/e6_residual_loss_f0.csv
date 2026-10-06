@@ -1,8 +1,8 @@
 rail,scenario,ESCROW,POST,PRE,RWS
 a2a_instant,first-hop,0.0,1.0,0.0,0.0
-a2a_instant,late-evidence,0.0,1.0,1.0,0.052
+a2a_instant,late-evidence,0.0,1.0,1.0,0.047
 card,custodian,,1.0,1.0,1.0
-card,first-hop,,0.012,1.0,0.005
-card,late-evidence,,0.007,1.0,0.0
+card,first-hop,,0.0,1.0,0.0
+card,late-evidence,,0.002,1.0,0.0
 stablecoin,first-hop,0.0,0.0,0.0,0.0
-stablecoin,late-evidence,0.007,1.0,1.0,0.052
+stablecoin,late-evidence,0.007,1.0,1.0,0.032

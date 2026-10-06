@@ -699,7 +699,7 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/meridian_v1.spthy
+analyzed: formal/tamarin/meridian_v1.spthy
 
   processing time: 1.46s
   

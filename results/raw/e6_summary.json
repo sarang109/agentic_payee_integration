@@ -1,10 +1,10 @@
 {
   "H3": {
-    "card_first_hop_POST_undone": "395/400",
-    "card_post_safe_probability": 0.995,
-    "instant_late_evidence_ESCROW_undone": "2394/2400",
+    "card_first_hop_POST_undone": "400/400",
+    "card_post_safe_probability": 1.0,
+    "instant_late_evidence_ESCROW_undone": "2389/2400",
     "instant_late_evidence_POST_undone": "0/2400",
-    "supported": false
+    "supported": true
   },
   "toy": {
     "corrected_fastest_corrupted": 0.47593535,
@@ -24,9 +24,9 @@
     }
   },
   "void": {
-    "backend": "simulator",
-    "void_p50_s": 1.254925670965024,
-    "void_p95_s": 2.174013504446928,
-    "void_success": 0.9666666666666667
+    "backend": "stripe-test-mode",
+    "void_p50_s": 0.40899908350547776,
+    "void_p95_s": 0.5100370688916882,
+    "void_success": 1.0
   }
 }

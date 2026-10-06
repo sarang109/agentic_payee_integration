@@ -147,6 +147,10 @@ def run_e6() -> dict:
     if backend.backend != "simulator":
         profiles["card"].void = empirical(vdf.void_s.tolist())
         profiles["card"].void_success = float(vdf.void_ok.mean())
+    # the Monte Carlo runs below never call a live API: they use the simulator
+    # parameterised with the measured void latency and success
+    from meridian.rws.adapters.stripe_test import StripeSimulator
+    sim = StripeSimulator(rng, void_median_s=float(vdf.void_s.median()), void_success=float(vdf.void_ok.mean()))
 
     sr = StatusRegistry()
     bank = Bank("bnkeu1", sr)
@@ -179,7 +183,7 @@ def run_e6() -> dict:
                                 amt_guess = float(rng.integers(500, 50_000)) / 100
                                 m = schedule(prof, amt_guess, 2, SchedulerParams(f=f)).mode
                             if rail == "card":
-                                r = card_run(prof, scen, m, f, rng, backend, iic_map)
+                                r = card_run(prof, scen, m, f, rng, sim, iic_map)
                             elif rail == "a2a_instant":
                                 r = a2a_run(prof, scen, m, f, rng, vop, instant, bank, ent, mule)
                             else:

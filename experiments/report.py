@@ -26,9 +26,14 @@ SECTIONS = [
     ("RQ5 per-rail comparison", ["rq5_per_rail"], None, ""),
     ("E4 anchoring calibration", ["e4_detection_auc", "e4_by_technique", "e4_ablation_heldout", "e4_prevalence"],
      "e4_cba_tradeoff.png", ""),
+    ("E4b anchoring against real phishing domains (UCI PhiUSIIL)", ["e4b_phishing", "e4b_by_match", "e4b_coverage"],
+     None, ""),
     ("E5 probation sweep", ["e5_probation", "e5_monitor_reaction", "e5_cap"], "e5_probation.png", ""),
     ("E6 rail scheduling", ["e6_residual_loss_f0", "e6_observer_corruption", "e6_rws_choice", "e6_theorem3", "f4_toy"],
      "e6_rail_residual.png", ""),
+    ("X2 / X3 on Stripe Connect test mode", ["stripe_connect"], None,
+     "Runs only with a Stripe test key on an account with Connect enabled; otherwise the table records why it was "
+     "skipped."),
     ("E7 privacy cost (V4) and H4", ["e7_latency", "e7_sizes", "e7_lookups", "e7_h4_disagreements", "e7_leakage"], None,
      ""),
     ("E8 scalability", ["e8_pav", "e8_directory", "e8_log"], None, ""),
@@ -71,6 +76,7 @@ def build_report() -> str:
     formal = _load("formal_summary") or {}
     toys = _load("toys_summary") or {}
     e1 = _load("e1_summary") or {}
+    e4b = _load("e4b_summary") or {}
     env = status.get("environment", {})
     lines = ["# MERIDIAN results", ""]
     lines += [f"Generated {env.get('time_utc', '?')} from commit `{env.get('git', '?')}`, seed {env.get('seed', '?')}"
@@ -109,7 +115,9 @@ def build_report() -> str:
                  f"{m2l} vs M1 {m1l} (McNemar p = {h2.get('mcnemar_p', float('nan')):.2g}); E4 held-out benign "
                  f"step-up {e4_step} with 30% of brands impersonated; by impersonated share: {'; '.join(e4_prev)}. "
                  f"Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): "
-                 f"{h2.get('benign_cba_step_up')} |")
+                 f"{h2.get('benign_cba_step_up')}. Real data (E4b, PhiUSIIL): benign step-up "
+                 f"{(e4b.get('benign') or {}).get('stepped up')}, real phishing domains committed "
+                 f"{(e4b.get('attack') or {}).get('committed to phishing domain')} |")
     h3 = e6.get("H3", {})
     card_ci = ""
     try:
@@ -119,12 +127,17 @@ def build_report() -> str:
         card_ci = f" = {k / n:.4f}, 95% CI [{lo:.3f}, {hi:.3f}] against the 0.99 threshold"
     except Exception:
         pass
+    void = e6.get("void") or {}
+    tail = (f"; card void latency measured on {void.get('backend')} (p50 {void.get('void_p50_s', 0):.2f} s, "
+            f"success {void.get('void_success')})")
+    if not h3.get("supported"):
+        tail += "; the instant-rail part holds, the card part misses the fixed threshold on the point estimate"
     lines.append(f"| H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | "
                  f"{_verdict(h3.get('supported'))} | card: POST-safe probability {h3.get('card_post_safe_probability')}, "
                  f"first-hop swaps voided before capture {h3.get('card_first_hop_POST_undone')}{card_ci}; instant and "
                  f"stablecoin late evidence: POST undone {h3.get('instant_late_evidence_POST_undone')}, ESCROW undone "
-                 f"{h3.get('instant_late_evidence_ESCROW_undone')} (the instant-rail part holds; the card part misses "
-                 f"the fixed threshold on the point estimate) |")
+                 f"{h3.get('instant_late_evidence_ESCROW_undone')}{tail}. With the simulated void latency (no Stripe "
+                 f"key) the same rule gave 395/400 and was not met |")
     h4 = e7.get("H4", {})
     lines.append(f"| H4 V4 keeps decisions; payer p95 <= 150 ms | {_verdict(h4.get('supported'))} | agreement "
                  f"{h4.get('exact_verdict_agreement')} on {h4.get('cases')} cases; payer-side p95 "
@@ -146,7 +159,9 @@ def build_report() -> str:
               "* SEPA Instant and Verification of Payee: in-process sandbox following EPC VoP response codes.",
               f"* Agents in E9: {e9.get('hosted_models', 'scripted')}; AgentDojo banking suite v1 executed with "
               "its own runtime and security checks.",
-              "* Embeddings for CBA: see results/raw/cba_calibration.json (`embedding_backend`).", ""]
+              "* Embeddings for CBA: see results/raw/cba_calibration.json (`embedding_backend`).",
+              "* Real-world anchoring data: UCI PhiUSIIL phishing URL dataset (CC BY 4.0), fetched and checksummed by "
+              "E4b.", ""]
 
     for title, tables, fig, note in SECTIONS:
         lines += [f"## {title}", ""]

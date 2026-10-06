@@ -327,7 +327,7 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/checkout_ext.spthy
+analyzed: formal/tamarin/checkout_ext.spthy
 
   processing time: 0.54s
   

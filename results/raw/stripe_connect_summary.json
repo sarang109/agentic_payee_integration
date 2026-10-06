@@ -1,0 +1,3 @@
+{
+  "status": "skipped: You can only create new accounts if you've signed up for Connect, which you can do at https://dashboard.stripe.com/connect. Alternatively, you can enable Connect using the Stripe MCP (search for 'EnableConnect' using the stripe_api_search tool) or use the Stripe CLI to run 'stripe tools sea"
+}

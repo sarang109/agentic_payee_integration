@@ -846,7 +846,7 @@ end
 ==============================================================================
 summary of summaries:
 
-analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/meridian_g2.spthy
+analyzed: formal/tamarin/meridian_g2.spthy
 
   processing time: 1.84s
   

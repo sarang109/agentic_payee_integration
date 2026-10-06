@@ -50,7 +50,7 @@ def run_formal() -> Dict:
             args = [TAMARIN, "--prove"] + ([f"-D={flag}"] if flag else []) + [os.path.join(FORMAL, "tamarin", fn)]
             with Timer(f"tamarin {fn} {flag or 'default'}"):
                 t0 = time.perf_counter()
-                out = subprocess.run(args, capture_output=True, text=True, timeout=3600).stdout
+                out = subprocess.run(args, capture_output=True, text=True, timeout=3600).stdout.replace(ROOT + "/", "")
                 secs = time.perf_counter() - t0
             with open(os.path.join(logs, f"{fn}.{flag or 'default'}.txt"), "w") as fh:
                 fh.write(out)
@@ -68,7 +68,7 @@ def run_formal() -> Dict:
         for fn, exp in PV_RUNS:
             with Timer(f"proverif {fn}"):
                 out = subprocess.run([PROVERIF, os.path.join(FORMAL, "proverif", fn)], capture_output=True, text=True,
-                                     timeout=3600).stdout
+                                     timeout=3600).stdout.replace(ROOT + "/", "")
             with open(os.path.join(logs, f"{fn}.txt"), "w") as fh:
                 fh.write(out)
             m = re.search(r"RESULT Observational equivalence (is true|cannot be proved|is false)", out)

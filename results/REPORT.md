@@ -1,31 +1,33 @@
 # MERIDIAN results
 
-Generated 2026-10-06T17:31:42Z from commit `ba288649c4a38f32e646962396df2c0295fc32e0`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
+Generated 2026-10-06T18:02:25Z from commit `56cdbaee0b3191acc3873e8eea7636c2867764ae`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
 
 ## Run status
 
 | step | status | seconds |
 |---|---|---|
-| ablations | ok | 1.4 |
-| e1 | ok | 3.8 |
-| e10 | ok | 116.8 |
-| e2 | ok | 16.7 |
+| formal | ok | 9.6 |
+| toys | ok | 108.6 |
 | e4 | ok | 77.8 |
+| e4b | ok | 121.9 |
+| e1 | ok | 3.8 |
+| e2 | ok | 16.7 |
 | e5 | ok | 20.0 |
-| e6 | ok | 4.3 |
+| e6 | ok | 40.5 |
+| stripe | skipped: Stripe Connect not enabled on the test account | 0.5 |
 | e7 | ok | 110.2 |
 | e8 | ok | 28.8 |
 | e9 | ok | 5.1 |
-| formal | ok | 9.6 |
-| toys | ok | 108.6 |
+| e10 | ok | 116.8 |
+| ablations | ok | 1.4 |
 
 ## Hypotheses (decision rules fixed in preregistration/hypotheses.yaml)
 
 | hypothesis | verdict | evidence |
 |---|---|---|
 | H1 V1 admits no out-of-closure payee; baselines do; false blocks <= 1% | supported | M1 loss on A3/A4/A5/A7/A8: 0/300; baselines: {'B1': 281, 'B2': 273, 'B3': 300, 'B4': 290, 'B5': 300}; M1 false-block rate 0.000 [0.000, 0.004] |
-| H2 V2 lowers lookalike success; benign step-up <= 5% (E4) | partly supported: security part yes, step-up target not met | A1-A2 loss M2 0/120 vs M1 120/120 (McNemar p = 1.5e-36); E4 held-out benign step-up 0.154 [0.129, 0.184] with 30% of brands impersonated; by impersonated share: 0.05 -> 0.023; 0.2 -> 0.097; 0.5 -> 0.218; 1 -> 0.438. Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): 0.178 [0.155, 0.203] |
-| H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | not supported | card: POST-safe probability 0.995, first-hop swaps voided before capture 395/400 = 0.9875, 95% CI [0.971, 0.995] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2394/2400 (the instant-rail part holds; the card part misses the fixed threshold on the point estimate) |
+| H2 V2 lowers lookalike success; benign step-up <= 5% (E4) | partly supported: security part yes, step-up target not met | A1-A2 loss M2 0/120 vs M1 120/120 (McNemar p = 1.5e-36); E4 held-out benign step-up 0.154 [0.129, 0.184] with 30% of brands impersonated; by impersonated share: 0.05 -> 0.023; 0.2 -> 0.097; 0.5 -> 0.218; 1 -> 0.438. Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): 0.178 [0.155, 0.203]. Real data (E4b, PhiUSIIL): benign step-up 0.118 [0.105, 0.133], real phishing domains committed 0.000 [0.000, 0.001] |
+| H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | supported | card: POST-safe probability 1.0, first-hop swaps voided before capture 400/400 = 1.0000, 95% CI [0.990, 1.000] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2389/2400; card void latency measured on stripe-test-mode (p50 0.41 s, success 1.0). With the simulated void latency (no Stripe key) the same rule gave 395/400 and was not met |
 | H4 V4 keeps decisions; payer p95 <= 150 ms | supported | agreement 1.000 [0.985, 1.000] on 250 cases; payer-side p95 12.7 ms; prover p95 632 ms |
 | H5 no single version dominates every rail | supported | best MERIDIAN configuration per rail: {'a2a_instant': 'M3', 'bnpl': 'M1', 'card': 'M3', 'psp_token': 'M3', 'stablecoin': 'M3', 'wallet': 'M3'} |
 
@@ -33,11 +35,12 @@ Formal models: all results as expected (30 lemma results). F3 toy table: 13/14 r
 
 ## Backends used in this run
 
-* Card rail void latency: `simulator` (set STRIPE_SECRET_KEY=sk_test_... to measure on Stripe test mode).
+* Card rail void latency: `stripe-test-mode` (set STRIPE_SECRET_KEY=sk_test_... to measure on Stripe test mode).
 * Stablecoin rail: x402 `exact` payments with real EIP-3009 / EIP-712 signatures, settled on the in-process ledger (`LocalChain`) with the escrow contract; no public testnet.
 * SEPA Instant and Verification of Payee: in-process sandbox following EPC VoP response codes.
 * Agents in E9: not run: no provider key configured; AgentDojo banking suite v1 executed with its own runtime and security checks.
 * Embeddings for CBA: see results/raw/cba_calibration.json (`embedding_backend`).
+* Real-world anchoring data: UCI PhiUSIIL phishing URL dataset (CC BY 4.0), fetched and checksummed by E4b.
 
 ## Mechanized verification
 
@@ -533,6 +536,34 @@ Wilson 95% intervals. Prevalence of impersonated brands in the registry: 30%.
 |                 1    | 0.438 [0.401, 0.476] | 0.000 [0.000, 0.004]  |
 
 
+## E4b anchoring against real phishing domains (UCI PhiUSIIL)
+
+#### E4b: anchoring against real phishing domains (PhiUSIIL; 2000 Tranco brands; theta=0.9, tau=0.075)
+
+| trial                                                                    |    n | committed to phishing domain   | committed to genuine B   | stepped up           |
+|:-------------------------------------------------------------------------|-----:|:-------------------------------|:-------------------------|:---------------------|
+| attack: user names B, agent surfaces a real phishing domain resembling B | 4000 | 0.000 [0.000, 0.001]           | 0.852 [0.840, 0.862]     | 0.148 [0.138, 0.160] |
+| benign: user names B; registry holds legitimate domains resembling B     | 2000 | -                              | 0.882 [0.867, 0.895]     | 0.118 [0.105, 0.133] |
+
+Wilson 95% intervals. Visual feature off (no logos); titles as descriptions.
+
+
+#### E4b: attack trials by how the phishing domain resembles the brand
+
+| how      |    n |   committed_to_phish |   step_up |
+|:---------|-----:|---------------------:|----------:|
+| edit     | 1170 |                    0 |     0.191 |
+| embedded | 2321 |                    0 |     0     |
+| exact    |  509 |                    0 |     0.727 |
+
+
+#### E4b: how many dataset domains resemble a Tranco top brand
+
+|   domains |   phishing |   phishing resembling a top brand |   legitimate resembling a top brand |   brands with a legitimate lookalike |
+|----------:|-----------:|----------------------------------:|------------------------------------:|-------------------------------------:|
+|    220086 |      85266 |                             11691 |                               10205 |                                 1022 |
+
+
 ## E5 probation sweep
 
 ![E5 probation sweep](figures/e5_probation.png)
@@ -582,12 +613,12 @@ Monitor reaction: lognormal, median 6 h. Rush attacker uses the fake edge after 
 |                                  |   ESCROW |   POST |   PRE |   RWS |
 |:---------------------------------|---------:|-------:|------:|------:|
 | ('a2a_instant', 'first-hop')     |    0     |  1     |     0 | 0     |
-| ('a2a_instant', 'late-evidence') |    0     |  1     |     1 | 0.052 |
+| ('a2a_instant', 'late-evidence') |    0     |  1     |     1 | 0.047 |
 | ('card', 'custodian')            |  nan     |  1     |     1 | 1     |
-| ('card', 'first-hop')            |  nan     |  0.012 |     1 | 0.005 |
-| ('card', 'late-evidence')        |  nan     |  0.007 |     1 | 0     |
+| ('card', 'first-hop')            |  nan     |  0     |     1 | 0     |
+| ('card', 'late-evidence')        |  nan     |  0.002 |     1 | 0     |
 | ('stablecoin', 'first-hop')      |    0     |  0     |     0 | 0     |
-| ('stablecoin', 'late-evidence')  |    0.007 |  1     |     1 | 0.052 |
+| ('stablecoin', 'late-evidence')  |    0.007 |  1     |     1 | 0.032 |
 
 1.0 means no post-authorization diversion of this class was undone in time. 'first-hop' on stablecoin is stopped by the EIP-3009 signature binding before settlement.
 
@@ -599,31 +630,31 @@ Monitor reaction: lognormal, median 6 h. Rush attacker uses the fake edge after 
 | ('a2a_instant', 'first-hop', 'POST')     | 1     | 1     | 1     |
 | ('a2a_instant', 'first-hop', 'RWS')      | 0     | 0     | 0     |
 | ('a2a_instant', 'late-evidence', 'POST') | 1     | 1     | 1     |
-| ('a2a_instant', 'late-evidence', 'RWS')  | 0.052 | 1     | 1     |
+| ('a2a_instant', 'late-evidence', 'RWS')  | 0.047 | 1     | 1     |
 | ('card', 'custodian', 'POST')            | 1     | 1     | 1     |
 | ('card', 'custodian', 'RWS')             | 1     | 1     | 1     |
-| ('card', 'first-hop', 'POST')            | 0.012 | 0.01  | 1     |
-| ('card', 'first-hop', 'RWS')             | 0.005 | 0.002 | 1     |
-| ('card', 'late-evidence', 'POST')        | 0.007 | 0     | 0.002 |
-| ('card', 'late-evidence', 'RWS')         | 0     | 0.002 | 1     |
+| ('card', 'first-hop', 'POST')            | 0     | 0     | 1     |
+| ('card', 'first-hop', 'RWS')             | 0     | 0     | 1     |
+| ('card', 'late-evidence', 'POST')        | 0.002 | 0     | 0.002 |
+| ('card', 'late-evidence', 'RWS')         | 0     | 0     | 1     |
 | ('stablecoin', 'first-hop', 'POST')      | 0     | 0     | 0     |
 | ('stablecoin', 'first-hop', 'RWS')       | 0     | 0     | 0     |
 | ('stablecoin', 'late-evidence', 'POST')  | 1     | 1     | 1     |
-| ('stablecoin', 'late-evidence', 'RWS')   | 0.052 | 0.032 | 1     |
+| ('stablecoin', 'late-evidence', 'RWS')   | 0.032 | 0.042 | 1     |
 
 
 #### E6: modes chosen by RWS (counts)
 
 |                    |   ESCROW |   POST |   PRE |
 |:-------------------|---------:|-------:|------:|
-| ('a2a_instant', 0) |      768 |      0 |    32 |
+| ('a2a_instant', 0) |      755 |      0 |    45 |
 | ('a2a_instant', 1) |        0 |      0 |   800 |
 | ('a2a_instant', 2) |        0 |      0 |   800 |
 | ('card', 0)        |        0 |   1200 |     0 |
 | ('card', 1)        |        0 |   1200 |     0 |
 | ('card', 2)        |        0 |      0 |  1200 |
-| ('stablecoin', 0)  |      768 |      0 |    32 |
-| ('stablecoin', 1)  |      766 |      0 |    34 |
+| ('stablecoin', 0)  |      773 |      0 |    27 |
+| ('stablecoin', 1)  |      760 |      0 |    40 |
 | ('stablecoin', 2)  |        0 |      0 |   800 |
 
 
@@ -631,8 +662,8 @@ Monitor reaction: lognormal, median 6 h. Rush attacker uses the fake edge after 
 
 | rail        |   f |   POST-safe prob (G1 observers) |   FRESH-safe prob rho=60s |   FRESH-safe prob rho=300s |   ESCROW catch prob |
 |:------------|----:|--------------------------------:|--------------------------:|---------------------------:|--------------------:|
-| card        |   0 |                           0.995 |                     0.995 |                     0.9942 |             nan     |
-| card        |   1 |                           0.995 |                     0.995 |                     0.9942 |             nan     |
+| card        |   0 |                           1     |                     1     |                     0.9992 |             nan     |
+| card        |   1 |                           1     |                     1     |                     0.9992 |             nan     |
 | psp_token   |   0 |                           0.995 |                     0.995 |                     0.9942 |             nan     |
 | psp_token   |   1 |                           0.995 |                     0.995 |                     0.9942 |             nan     |
 | wallet      |   0 |                           0.99  |                     0.99  |                     0.9833 |             nan     |
@@ -655,6 +686,17 @@ Monitor reaction: lognormal, median 6 h. Rush attacker uses the fake edge after 
 | stale-authority catch, rho = 3        | 67%         | 66.5%      |
 
 Parameters: {'window': 10, 'observer_medians': [1, 4], 'void_median': 5, 'void_success': 0.97, 'decision_median': 0.25, 'lognormal_sigma': 0.6}
+
+
+## X2 / X3 on Stripe Connect test mode
+
+Runs only with a Stripe test key on an account with Connect enabled; otherwise the table records why it was skipped.
+
+#### X2/X3 on Stripe Connect test mode
+
+| status                                                                                                                                                                                                                                                                                                       |
+|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| skipped: You can only create new accounts if you've signed up for Connect, which you can do at https://dashboard.stripe.com/connect. Alternatively, you can enable Connect using the Stripe MCP (search for 'EnableConnect' using the stripe_api_search tool) or use the Stripe CLI to run 'stripe tools sea |
 
 
 ## E7 privacy cost (V4) and H4

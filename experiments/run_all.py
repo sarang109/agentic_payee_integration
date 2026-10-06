@@ -20,7 +20,7 @@ import traceback
 
 from .common import RESULTS, ROOT, Timer, environment, manifest, write_json
 
-STEPS = ["formal", "toys", "e4", "e1", "e2", "e5", "e6", "e7", "e8", "e9", "e10", "ablations"]
+STEPS = ["formal", "toys", "e4", "e4b", "e1", "e2", "e5", "e6", "stripe", "e7", "e8", "e9", "e10", "ablations"]
 PREREG_GATED = {"e2", "e5", "e6"}
 
 
@@ -48,6 +48,12 @@ def _run(step: str):
     if step == "e4":
         from .e4_anchoring import run_e4
         return run_e4()
+    if step == "e4b":
+        from .e4b_phishing import run_e4b
+        return run_e4b()
+    if step == "stripe":
+        from .stripe_connect import run_connect
+        return run_connect()
     if step == "e5":
         from .e5_probation import run_e5
         return run_e5()
@@ -80,6 +86,11 @@ def main() -> int:
     steps = [s for s in STEPS if (not args.only or s in args.only.split(",")) and s not in args.skip.split(",")]
     ok, h = prereg_ok()
     status = {"environment": environment(), "preregistration_sha256": h, "preregistration_locked": ok, "steps": {}}
+    prev_path = os.path.join(RESULTS, "run_status.json")
+    if args.only and os.path.exists(prev_path):
+        # a partial rerun keeps the record of the steps it did not touch
+        with open(prev_path) as fh:
+            status["steps"] = json.load(fh).get("steps", {})
     t_all = time.perf_counter()
     for step in steps:
         if step in PREREG_GATED and not ok:
@@ -90,7 +101,9 @@ def main() -> int:
         try:
             with Timer(f"step {step}"):
                 summary = _run(step)
-            status["steps"][step] = {"status": "ok", "seconds": round(time.perf_counter() - t0, 1)}
+            st = summary.get("status", "ok") if isinstance(summary, dict) else "ok"
+            status["steps"][step] = {"status": st if str(st).startswith("skipped") else "ok",
+                                     "seconds": round(time.perf_counter() - t0, 1)}
         except Exception as e:  # keep going; record the failure in the status file
             traceback.print_exc()
             status["steps"][step] = {"status": f"failed: {type(e).__name__}: {e}"[:500],

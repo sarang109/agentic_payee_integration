@@ -8,3 +8,8 @@ zk/build/
 data/tranco/top-1m.csv.zip
 *.egg-info/
 .DS_Store
+results/cache/
+results/run.log
+data/phishing/
+data/upstream/*
+!data/upstream/PINS.txt

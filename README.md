@@ -55,18 +55,32 @@ run if `preregistration/hypotheses.yaml` no longer matches
 
 ## Live backends (optional)
 
-The default run is fully offline except E10. These environment variables
-switch individual parts to live services; the report records which backend
-each number came from.
+The default run is offline except E10 (passive web measurement) and the
+first E4b run (downloads the dataset). These environment variables switch
+parts to live services; the report records which backend each number came
+from. Keys are read from the environment only and are never written to
+`results/`.
 
 | Variable | Effect |
 |---|---|
-| `STRIPE_SECRET_KEY=sk_test_...` | E6 measures authorization and void latency on Stripe test mode (manual capture); a live key is refused |
-| `MERIDIAN_AGENT_MODEL` plus the provider's API key | E9 hosted-model agents (scripted worst-case agents are always run) |
+| `STRIPE_SECRET_KEY=sk_test_...` | E6 measures authorization and void latency on Stripe test mode (30 manual-capture PaymentIntents, each cancelled); the rail simulations then use the measured latency. A live-mode key is refused. |
+| same key, with Connect enabled on the test account | `stripe` step reproduces X2 (separate charges and transfers to the wrong connected account, transfer reversed) and X3 (payout bank account changed) on Stripe Connect test mode. Enable Connect in the Dashboard (test mode, Connect > Get started). |
+| `MERIDIAN_AGENT_MODEL` plus the provider's API key | E9 hosted-model agents (scripted worst-case agents always run) |
 
-Not yet wired to live infrastructure: x402 on a public testnet (the local
-ledger verifies real EIP-3009 signatures), issuer authorization records from
-a real issuer (ISO 8583 fields are simulated), and real VoP endpoints.
+No cloud-provider credentials are needed. Not yet wired to live
+infrastructure: x402 on a public testnet (the local ledger verifies real
+EIP-3009 signatures), issuer authorization records from a real issuer (ISO
+8583 fields are simulated), and real VoP endpoints.
+
+## Datasets
+
+| Dataset | Used by | How it is obtained |
+|---|---|---|
+| Tranco list 56WKN (top 20,000) | E4, E4b | checked in as `data/tranco/tranco_56WKN_top20k.csv` |
+| UCI PhiUSIIL Phishing URL Dataset (CC BY 4.0) | E4b | downloaded on first run and verified by SHA-256 |
+| Unicode `confusables.txt` 18.0.0 | CBA | checked in |
+| AgentDojo banking suite v1 | E9 | `agentdojo==0.1.35` |
+| GLEIF LEI records, DNS, TLS certificates, storefront homepages | E10 | queried live (passive), cached under `results/cache/` |
 
 ## Scope and limitations
 
@@ -82,4 +96,4 @@ a real issuer (ISO 8583 fields are simulated), and real VoP endpoints.
   and GLEIF API lookups; LEI matches are name-based.
 * The Groth16 setup uses fixed test entropy and must not protect real payments.
 
-Upstream versions used are pinned in `data/upstream/PINS.txt`.
+Upstream protocol versions used are pinned in `data/upstream/PINS.txt`.
