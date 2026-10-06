@@ -1,0 +1,4 @@
+variant,third party,learns per payment,identifiers,anonymity set
+V1a,directory,"anchor brand, payee, amount, rail, time",5.0,1
+V1b stapled,none,-,0.0,-
+V1b synchronous status,status-list host,which status lists were fetched,1.9817073170731707,"list capacity (65,536 entries)"

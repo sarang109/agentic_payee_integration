@@ -1,0 +1,5 @@
+condition,blueprint,this run
+original (report only),100%,100.0%
+"corrected, honest observers",79%,78.6%
+"corrected, fastest observer corrupted",48%,47.6%
+"stale-authority catch, rho = 3",67%,66.5%

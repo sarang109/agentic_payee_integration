@@ -1,0 +1,1135 @@
+theory CheckoutExtension
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, pk/1, sign/2, snd/1, true/0, verify/3
+equations:
+    fst(<x.1, x.2>) = x.1,
+    snd(<x.1, x.2>) = x.2,
+    verify(sign(x.1, x.2), x.1, pk(x.2)) = true
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction OnceKey:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceEndpoint:
+  "∀ b #i #j.
+    ((EndpointOnce( b ) @ #i) ∧ (EndpointOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j.
+    ((EndpointOnce( b ) @ #i) ∧ (EndpointOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceBrand:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) Register_key:
+   [ Fr( ~ltk ) ]
+  --[ KeyOnce( $A ) ]->
+   [ !Ltk( $A, ~ltk ), !Pk( $A, pk(~ltk) ), Out( pk(~ltk) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_key:
+   [ !Ltk( A, ltk ) ] --[ Reveal( A ) ]-> [ Out( ltk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Brand_owned:
+   [ ] --[ BrandOnce( $b ), OwnsBrand( $E, $b ) ]-> [ !Owns( $b, $E ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Endpoint_for_brand:
+   [ !Owns( b, E ), Fr( ~kep ) ]
+  --[ Endpoint( b ), EndpointOnce( b ) ]->
+   [ !EndpointKey( b, ~kep ), !EndpointPk( b, pk(~kep) ), Out( pk(~kep) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_endpoint:
+   [ !EndpointKey( b, k ) ] --[ RevealEndpoint( b ) ]-> [ Out( k ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Open_account:
+   [ Fr( ~p ) ]
+  --[ Opens( $O, $E, ~p ) ]->
+   [ !AccountOf( $O, $E, ~p ), Out( ~p ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Entity_list_payee:
+   [ !Owns( b, E ), !AccountOf( O, E, p ), !Ltk( E, ke ) ]
+  --[ Listed( b, p ), AuthAG( E, p, O ) ]->
+   [ !ListedPayee( b, p ), Out( sign(<'AG', E, p, O>, ke) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DV_issue_ID:
+   [ !Owns( b, E ), !Ltk( 'DV', kdv ) ]
+  --[ IssuedID( b, E ) ]->
+   [ Out( sign(<'ID', b, E>, kdv) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_accept_AG:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ) ]
+  --[ AccAG( O, E, p ) ]->
+   [ Out( sign(<'ACC', 'AG', E, p, O>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_checkout:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ), In( <'CHECKOUT', cart, n> ) ]
+  --[ Beta( O, p, cart, n ) ]->
+   [ Out( sign(<'BETA', cart, p, n>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Endpoint_checkout:
+   [
+   !EndpointKey( b, kep ), !ListedPayee( b, p ), In( <'CHECKOUT', cart, n> )
+   ]
+  --[ CheckoutObject( b, cart, p ) ]->
+   [ Out( <cart, p, sign(<'CART', cart, p, n>, kep)> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Wallet_start:
+   [ Fr( ~n ), Fr( ~cart ) ]
+  --[ Intent( $W, $b ) ]->
+   [ WState( $W, $b, ~cart, ~n ), Out( <'CHECKOUT', ~cart, ~n> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Wallet_pay:
+   [
+   WState( W, b, cart, n ), !EndpointPk( b, pkep ), !Pk( 'DV', pkdv ),
+   !Pk( E, pke ), !Pk( O, pko ),
+   In( <p, s_cart, E, O, s_id, s_ag, s_acc, beta> )
+   ]
+  --[
+  Pay( W, b, p ), Eq( verify(s_cart, <'CART', cart, p, n>, pkep), true ),
+  Eq( verify(s_id, <'ID', b, E>, pkdv), true ),
+  Eq( verify(s_ag, <'AG', E, p, O>, pke), true ),
+  Eq( verify(s_acc, <'ACC', 'AG', E, p, O>, pko), true ),
+  Eq( verify(beta, <'BETA', cart, p, n>, pko), true )
+  ]->
+   [ ]
+
+  /*
+  rule (modulo AC) Wallet_pay:
+     [
+     WState( W, b, cart, n ), !EndpointPk( b, pkep ), !Pk( 'DV', pkdv ),
+     !Pk( E, pke ), !Pk( O, pko ),
+     In( <p, s_cart, E, O, s_id, s_ag, s_acc, beta> )
+     ]
+    --[
+    Pay( W, b, p ), Eq( z, true ), Eq( z.1, true ), Eq( z.2, true ),
+    Eq( z.3, true ), Eq( z.4, true )
+    ]->
+     [ ]
+    variants (modulo AC)
+     1. E     = E.24
+        O     = O.25
+        b     = b.27
+        beta  = beta.28
+        cart  = cart.29
+        n     = n.30
+        p     = p.31
+        pkdv  = pkdv.32
+        pke   = pke.33
+        pkep  = pkep.34
+        pko   = pko.35
+        s_acc = s_acc.36
+        s_ag  = s_ag.37
+        s_cart
+              = s_cart.38
+        s_id  = s_id.39
+        z     = verify(s_cart.38, <'CART', cart.29, p.31, n.30>, pkep.34)
+        z.1   = verify(s_id.39, <'ID', b.27, E.24>, pkdv.32)
+        z.2   = verify(s_ag.37, <'AG', E.24, p.31, O.25>, pke.33)
+        z.3   = verify(s_acc.36, <'ACC', 'AG', E.24, p.31, O.25>, pko.35)
+        z.4   = verify(beta.28, <'BETA', cart.29, p.31, n.30>, pko.35)
+    
+     2. E     = E.28
+        O     = O.29
+        b     = b.31
+        beta  = sign(<'BETA', cart.33, p.35, n.34>, x.53)
+        cart  = cart.33
+        n     = n.34
+        p     = p.35
+        pkdv  = pkdv.36
+        pke   = pke.37
+        pkep  = pkep.38
+        pko   = pk(x.53)
+        s_acc = s_acc.40
+        s_ag  = s_ag.41
+        s_cart
+              = s_cart.42
+        s_id  = s_id.43
+        z     = verify(s_cart.42, <'CART', cart.33, p.35, n.34>, pkep.38)
+        z.1   = verify(s_id.43, <'ID', b.31, E.28>, pkdv.36)
+        z.2   = verify(s_ag.41, <'AG', E.28, p.35, O.29>, pke.37)
+        z.3   = verify(s_acc.40, <'ACC', 'AG', E.28, p.35, O.29>, pk(x.53))
+        z.4   = true
+    
+     3. E     = E.30
+        O     = O.31
+        b     = b.33
+        beta  = beta.34
+        cart  = cart.35
+        n     = n.36
+        p     = p.37
+        pkdv  = pkdv.38
+        pke   = pke.39
+        pkep  = pk(x.57)
+        pko   = pko.41
+        s_acc = s_acc.42
+        s_ag  = s_ag.43
+        s_cart
+              = sign(<'CART', cart.35, p.37, n.36>, x.57)
+        s_id  = s_id.45
+        z     = true
+        z.1   = verify(s_id.45, <'ID', b.33, E.30>, pkdv.38)
+        z.2   = verify(s_ag.43, <'AG', E.30, p.37, O.31>, pke.39)
+        z.3   = verify(s_acc.42, <'ACC', 'AG', E.30, p.37, O.31>, pko.41)
+        z.4   = verify(beta.34, <'BETA', cart.35, p.37, n.36>, pko.41)
+    
+     4. E     = E.31
+        O     = O.32
+        b     = b.34
+        beta  = sign(<'BETA', cart.36, p.38, n.37>, x.56)
+        cart  = cart.36
+        n     = n.37
+        p     = p.38
+        pkdv  = pkdv.39
+        pke   = pke.40
+        pkep  = pk(x.59)
+        pko   = pk(x.56)
+        s_acc = s_acc.43
+        s_ag  = s_ag.44
+        s_cart
+              = sign(<'CART', cart.36, p.38, n.37>, x.59)
+        s_id  = s_id.46
+        z     = true
+        z.1   = verify(s_id.46, <'ID', b.34, E.31>, pkdv.39)
+        z.2   = verify(s_ag.44, <'AG', E.31, p.38, O.32>, pke.40)
+        z.3   = verify(s_acc.43, <'ACC', 'AG', E.31, p.38, O.32>, pk(x.56))
+        z.4   = true
+    
+     5. E     = E.32
+        O     = O.33
+        b     = b.35
+        beta  = sign(<'BETA', cart.37, p.39, n.38>, x.61)
+        cart  = cart.37
+        n     = n.38
+        p     = p.39
+        pkdv  = pkdv.40
+        pke   = pke.41
+        pkep  = pkep.42
+        pko   = pk(x.61)
+        s_acc = sign(<'ACC', 'AG', E.32, p.39, O.33>, x.61)
+        s_ag  = s_ag.45
+        s_cart
+              = s_cart.46
+        s_id  = s_id.47
+        z     = verify(s_cart.46, <'CART', cart.37, p.39, n.38>, pkep.42)
+        z.1   = verify(s_id.47, <'ID', b.35, E.32>, pkdv.40)
+        z.2   = verify(s_ag.45, <'AG', E.32, p.39, O.33>, pke.41)
+        z.3   = true
+        z.4   = true
+    
+     6. E     = E.33
+        O     = O.34
+        b     = b.36
+        beta  = beta.37
+        cart  = cart.38
+        n     = n.39
+        p     = p.40
+        pkdv  = pk(x.63)
+        pke   = pke.42
+        pkep  = pkep.43
+        pko   = pko.44
+        s_acc = s_acc.45
+        s_ag  = s_ag.46
+        s_cart
+              = s_cart.47
+        s_id  = sign(<'ID', b.36, E.33>, x.63)
+        z     = verify(s_cart.47, <'CART', cart.38, p.40, n.39>, pkep.43)
+        z.1   = true
+        z.2   = verify(s_ag.46, <'AG', E.33, p.40, O.34>, pke.42)
+        z.3   = verify(s_acc.45, <'ACC', 'AG', E.33, p.40, O.34>, pko.44)
+        z.4   = verify(beta.37, <'BETA', cart.38, p.40, n.39>, pko.44)
+    
+     7. E     = E.33
+        O     = O.34
+        b     = b.36
+        beta  = sign(<'BETA', cart.38, p.40, n.39>, x.62)
+        cart  = cart.38
+        n     = n.39
+        p     = p.40
+        pkdv  = pk(x.63)
+        pke   = pke.42
+        pkep  = pkep.43
+        pko   = pk(x.62)
+        s_acc = s_acc.45
+        s_ag  = s_ag.46
+        s_cart
+              = s_cart.47
+        s_id  = sign(<'ID', b.36, E.33>, x.63)
+        z     = verify(s_cart.47, <'CART', cart.38, p.40, n.39>, pkep.43)
+        z.1   = true
+        z.2   = verify(s_ag.46, <'AG', E.33, p.40, O.34>, pke.42)
+        z.3   = verify(s_acc.45, <'ACC', 'AG', E.33, p.40, O.34>, pk(x.62))
+        z.4   = true
+    
+     8. E     = E.33
+        O     = O.34
+        b     = b.36
+        beta  = sign(<'BETA', cart.38, p.40, n.39>, x.62)
+        cart  = cart.38
+        n     = n.39
+        p     = p.40
+        pkdv  = pk(x.63)
+        pke   = pke.42
+        pkep  = pkep.43
+        pko   = pk(x.62)
+        s_acc = sign(<'ACC', 'AG', E.33, p.40, O.34>, x.62)
+        s_ag  = s_ag.46
+        s_cart
+              = s_cart.47
+        s_id  = sign(<'ID', b.36, E.33>, x.63)
+        z     = verify(s_cart.47, <'CART', cart.38, p.40, n.39>, pkep.43)
+        z.1   = true
+        z.2   = verify(s_ag.46, <'AG', E.33, p.40, O.34>, pke.42)
+        z.3   = true
+        z.4   = true
+    
+     9. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = beta.38
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pkdv.42
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pko.45
+        s_acc = s_acc.46
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = s_id.49
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = verify(s_id.49, <'ID', b.37, E.34>, pkdv.42)
+        z.2   = true
+        z.3   = verify(s_acc.46, <'ACC', 'AG', E.34, p.41, O.35>, pko.45)
+        z.4   = verify(beta.38, <'BETA', cart.39, p.41, n.40>, pko.45)
+    
+    10. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = beta.38
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pk(x.64)
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pko.45
+        s_acc = s_acc.46
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = sign(<'ID', b.37, E.34>, x.64)
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_acc.46, <'ACC', 'AG', E.34, p.41, O.35>, pko.45)
+        z.4   = verify(beta.38, <'BETA', cart.39, p.41, n.40>, pko.45)
+    
+    11. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = sign(<'BETA', cart.39, p.41, n.40>, x.63)
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pkdv.42
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pk(x.63)
+        s_acc = s_acc.46
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = s_id.49
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = verify(s_id.49, <'ID', b.37, E.34>, pkdv.42)
+        z.2   = true
+        z.3   = verify(s_acc.46, <'ACC', 'AG', E.34, p.41, O.35>, pk(x.63))
+        z.4   = true
+    
+    12. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = sign(<'BETA', cart.39, p.41, n.40>, x.63)
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pkdv.42
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pk(x.63)
+        s_acc = sign(<'ACC', 'AG', E.34, p.41, O.35>, x.63)
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = s_id.49
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = verify(s_id.49, <'ID', b.37, E.34>, pkdv.42)
+        z.2   = true
+        z.3   = true
+        z.4   = true
+    
+    13. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = sign(<'BETA', cart.39, p.41, n.40>, x.63)
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pk(x.64)
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pk(x.63)
+        s_acc = s_acc.46
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = sign(<'ID', b.37, E.34>, x.64)
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_acc.46, <'ACC', 'AG', E.34, p.41, O.35>, pk(x.63))
+        z.4   = true
+    
+    14. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = sign(<'BETA', cart.39, p.41, n.40>, x.63)
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pk(x.64)
+        pke   = pk(x.65)
+        pkep  = pkep.44
+        pko   = pk(x.63)
+        s_acc = sign(<'ACC', 'AG', E.34, p.41, O.35>, x.63)
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = s_cart.48
+        s_id  = sign(<'ID', b.37, E.34>, x.64)
+        z     = verify(s_cart.48, <'CART', cart.39, p.41, n.40>, pkep.44)
+        z.1   = true
+        z.2   = true
+        z.3   = true
+        z.4   = true
+    
+    15. E     = E.34
+        O     = O.35
+        b     = b.37
+        beta  = sign(<'BETA', cart.39, p.41, n.40>, x.63)
+        cart  = cart.39
+        n     = n.40
+        p     = p.41
+        pkdv  = pk(x.64)
+        pke   = pk(x.65)
+        pkep  = pk(x.66)
+        pko   = pk(x.63)
+        s_acc = sign(<'ACC', 'AG', E.34, p.41, O.35>, x.63)
+        s_ag  = sign(<'AG', E.34, p.41, O.35>, x.65)
+        s_cart
+              = sign(<'CART', cart.39, p.41, n.40>, x.66)
+        s_id  = sign(<'ID', b.37, E.34>, x.64)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = true
+        z.4   = true
+    
+    16. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = beta.39
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pkdv.43
+        pke   = pk(x.66)
+        pkep  = pk(x.67)
+        pko   = pko.46
+        s_acc = s_acc.47
+        s_ag  = sign(<'AG', E.35, p.42, O.36>, x.66)
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = s_id.50
+        z     = true
+        z.1   = verify(s_id.50, <'ID', b.38, E.35>, pkdv.43)
+        z.2   = true
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pko.46)
+        z.4   = verify(beta.39, <'BETA', cart.40, p.42, n.41>, pko.46)
+    
+    17. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = beta.39
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pk(x.65)
+        pke   = pke.44
+        pkep  = pk(x.67)
+        pko   = pko.46
+        s_acc = s_acc.47
+        s_ag  = s_ag.48
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = sign(<'ID', b.38, E.35>, x.65)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.48, <'AG', E.35, p.42, O.36>, pke.44)
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pko.46)
+        z.4   = verify(beta.39, <'BETA', cart.40, p.42, n.41>, pko.46)
+    
+    18. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = beta.39
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pk(x.65)
+        pke   = pk(x.66)
+        pkep  = pk(x.67)
+        pko   = pko.46
+        s_acc = s_acc.47
+        s_ag  = sign(<'AG', E.35, p.42, O.36>, x.66)
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = sign(<'ID', b.38, E.35>, x.65)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pko.46)
+        z.4   = verify(beta.39, <'BETA', cart.40, p.42, n.41>, pko.46)
+    
+    19. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pkdv.43
+        pke   = pke.44
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = sign(<'ACC', 'AG', E.35, p.42, O.36>, x.64)
+        s_ag  = s_ag.48
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = s_id.50
+        z     = true
+        z.1   = verify(s_id.50, <'ID', b.38, E.35>, pkdv.43)
+        z.2   = verify(s_ag.48, <'AG', E.35, p.42, O.36>, pke.44)
+        z.3   = true
+        z.4   = true
+    
+    20. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pkdv.43
+        pke   = pk(x.66)
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = s_acc.47
+        s_ag  = sign(<'AG', E.35, p.42, O.36>, x.66)
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = s_id.50
+        z     = true
+        z.1   = verify(s_id.50, <'ID', b.38, E.35>, pkdv.43)
+        z.2   = true
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pk(x.64))
+        z.4   = true
+    
+    21. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pkdv.43
+        pke   = pk(x.66)
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = sign(<'ACC', 'AG', E.35, p.42, O.36>, x.64)
+        s_ag  = sign(<'AG', E.35, p.42, O.36>, x.66)
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = s_id.50
+        z     = true
+        z.1   = verify(s_id.50, <'ID', b.38, E.35>, pkdv.43)
+        z.2   = true
+        z.3   = true
+        z.4   = true
+    
+    22. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pk(x.65)
+        pke   = pke.44
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = s_acc.47
+        s_ag  = s_ag.48
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = sign(<'ID', b.38, E.35>, x.65)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.48, <'AG', E.35, p.42, O.36>, pke.44)
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pk(x.64))
+        z.4   = true
+    
+    23. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pk(x.65)
+        pke   = pke.44
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = sign(<'ACC', 'AG', E.35, p.42, O.36>, x.64)
+        s_ag  = s_ag.48
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = sign(<'ID', b.38, E.35>, x.65)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.48, <'AG', E.35, p.42, O.36>, pke.44)
+        z.3   = true
+        z.4   = true
+    
+    24. E     = E.35
+        O     = O.36
+        b     = b.38
+        beta  = sign(<'BETA', cart.40, p.42, n.41>, x.64)
+        cart  = cart.40
+        n     = n.41
+        p     = p.42
+        pkdv  = pk(x.65)
+        pke   = pk(x.66)
+        pkep  = pk(x.67)
+        pko   = pk(x.64)
+        s_acc = s_acc.47
+        s_ag  = sign(<'AG', E.35, p.42, O.36>, x.66)
+        s_cart
+              = sign(<'CART', cart.40, p.42, n.41>, x.67)
+        s_id  = sign(<'ID', b.38, E.35>, x.65)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_acc.47, <'ACC', 'AG', E.35, p.42, O.36>, pk(x.64))
+        z.4   = true
+    
+    25. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pkdv.44
+        pke   = pke.45
+        pkep  = pkep.46
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = s_ag.49
+        s_cart
+              = s_cart.50
+        s_id  = s_id.51
+        z     = verify(s_cart.50, <'CART', cart.41, p.43, n.42>, pkep.46)
+        z.1   = verify(s_id.51, <'ID', b.39, E.36>, pkdv.44)
+        z.2   = verify(s_ag.49, <'AG', E.36, p.43, O.37>, pke.45)
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    26. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pkdv.44
+        pke   = pke.45
+        pkep  = pk(x.68)
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = s_ag.49
+        s_cart
+              = sign(<'CART', cart.41, p.43, n.42>, x.68)
+        s_id  = s_id.51
+        z     = true
+        z.1   = verify(s_id.51, <'ID', b.39, E.36>, pkdv.44)
+        z.2   = verify(s_ag.49, <'AG', E.36, p.43, O.37>, pke.45)
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    27. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pkdv.44
+        pke   = pk(x.67)
+        pkep  = pkep.46
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = sign(<'AG', E.36, p.43, O.37>, x.67)
+        s_cart
+              = s_cart.50
+        s_id  = s_id.51
+        z     = verify(s_cart.50, <'CART', cart.41, p.43, n.42>, pkep.46)
+        z.1   = verify(s_id.51, <'ID', b.39, E.36>, pkdv.44)
+        z.2   = true
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    28. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pkdv.44
+        pke   = pk(x.67)
+        pkep  = pk(x.68)
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = sign(<'AG', E.36, p.43, O.37>, x.67)
+        s_cart
+              = sign(<'CART', cart.41, p.43, n.42>, x.68)
+        s_id  = s_id.51
+        z     = true
+        z.1   = verify(s_id.51, <'ID', b.39, E.36>, pkdv.44)
+        z.2   = true
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    29. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pk(x.66)
+        pke   = pke.45
+        pkep  = pkep.46
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = s_ag.49
+        s_cart
+              = s_cart.50
+        s_id  = sign(<'ID', b.39, E.36>, x.66)
+        z     = verify(s_cart.50, <'CART', cart.41, p.43, n.42>, pkep.46)
+        z.1   = true
+        z.2   = verify(s_ag.49, <'AG', E.36, p.43, O.37>, pke.45)
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    30. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pk(x.66)
+        pke   = pke.45
+        pkep  = pk(x.68)
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = s_ag.49
+        s_cart
+              = sign(<'CART', cart.41, p.43, n.42>, x.68)
+        s_id  = sign(<'ID', b.39, E.36>, x.66)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.49, <'AG', E.36, p.43, O.37>, pke.45)
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    31. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pk(x.66)
+        pke   = pk(x.67)
+        pkep  = pkep.46
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = sign(<'AG', E.36, p.43, O.37>, x.67)
+        s_cart
+              = s_cart.50
+        s_id  = sign(<'ID', b.39, E.36>, x.66)
+        z     = verify(s_cart.50, <'CART', cart.41, p.43, n.42>, pkep.46)
+        z.1   = true
+        z.2   = true
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+    
+    32. E     = E.36
+        O     = O.37
+        b     = b.39
+        beta  = beta.40
+        cart  = cart.41
+        n     = n.42
+        p     = p.43
+        pkdv  = pk(x.66)
+        pke   = pk(x.67)
+        pkep  = pk(x.68)
+        pko   = pk(x.69)
+        s_acc = sign(<'ACC', 'AG', E.36, p.43, O.37>, x.69)
+        s_ag  = sign(<'AG', E.36, p.43, O.37>, x.67)
+        s_cart
+              = sign(<'CART', cart.41, p.43, n.42>, x.68)
+        s_id  = sign(<'ID', b.39, E.36>, x.66)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = true
+        z.4   = verify(beta.40, <'BETA', cart.41, p.43, n.42>, pk(x.69))
+  */
+
+lemma executable:
+  exists-trace
+  "∃ W b p #i.
+    ((Pay( W, b, p ) @ #i) ∧ (¬(∃ A #r. Reveal( A ) @ #r))) ∧
+    (¬(∃ c #r. RevealEndpoint( c ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ A #r. (Reveal( A ) @ #r) ⇒ ⊥) ∧
+  (∀ c #r. (RevealEndpoint( c ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !Pk( 'DV', pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.3 )
+            case Endpoint_checkout
+            solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.9 )
+              case DV_issue_ID
+              solve( !KU( sign(<'AG', $A, ~p, $A.1>, ~ltk.1) ) @ #vk.11 )
+                case Entity_list_payee
+                solve( !KU( sign(<'ACC', 'AG', $A, ~p, $O>, ~ltk.2) ) @ #vk.13 )
+                  case Operator_accept_AG
+                  solve( !KU( sign(<'BETA', ~cart, ~p, ~n>, ~ltk.2) ) @ #vk.14 )
+                    case Operator_checkout
+                    solve( !KU( ~cart ) @ #vk.18 )
+                      case Wallet_start
+                      solve( !KU( ~n ) @ #vk.19 )
+                        case Wallet_start
+                        solve( !KU( ~p ) @ #vk.16 )
+                          case Endpoint_checkout
+                          SOLVED // trace found
+                        qed
+                      qed
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma payee_authenticity:
+  all-traces
+  "∀ W b p #i.
+    (Pay( W, b, p ) @ #i) ⇒
+    ((((∃ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j)) ∨
+       (∃ #r. Reveal( 'DV' ) @ #r)) ∨
+      (∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r))) ∨
+     (∃ O #r. Reveal( O ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !Pk( 'DV', pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.3 )
+            case Endpoint_checkout
+            by contradiction /* from formulas */
+          next
+            case c_sign
+            solve( !KU( ~kep ) @ #vk.17 )
+              case Reveal_endpoint
+              solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.12 )
+                case DV_issue_ID
+                solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.15 )
+                  case Entity_list_payee
+                  by contradiction /* from formulas */
+                next
+                  case c_sign
+                  solve( !KU( ~ltk.1 ) @ #vk.25 )
+                    case Reveal_key
+                    by contradiction /* from formulas */
+                  qed
+                qed
+              next
+                case c_sign
+                solve( !KU( ~ltk ) @ #vk.24 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma endpoint_compromise_only:
+  all-traces
+  "∀ W b p #i.
+    ((((Pay( W, b, p ) @ #i) ∧ (¬(∃ #r. Reveal( 'DV' ) @ #r))) ∧
+      (¬(∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r)))) ∧
+     (¬(∃ O #r. Reveal( O ) @ #r))) ⇒
+    (∃ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥) ∧
+  (∀ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !Pk( 'DV', pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.3 )
+            case Endpoint_checkout
+            by contradiction /* from formulas */
+          next
+            case c_sign
+            solve( !KU( ~kep ) @ #vk.17 )
+              case Reveal_endpoint
+              solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.12 )
+                case DV_issue_ID
+                solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.15 )
+                  case Entity_list_payee
+                  by contradiction /* from formulas */
+                next
+                  case c_sign
+                  solve( !KU( ~ltk.1 ) @ #vk.25 )
+                    case Reveal_key
+                    by contradiction /* from formulas */
+                  qed
+                qed
+              next
+                case c_sign
+                solve( !KU( ~ltk ) @ #vk.24 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma discovery_runtime_consistency:
+  all-traces
+  "∀ W b p #i.
+    (((((Pay( W, b, p ) @ #i) ∧
+        (∀ E b2 #o #o2.
+          ((OwnsBrand( E, b ) @ #o) ∧ (OwnsBrand( E, b2 ) @ #o2)) ⇒ (b = b2))) ∧
+       (¬(∃ #r. Reveal( 'DV' ) @ #r))) ∧
+      (¬(∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r)))) ∧
+     (¬(∃ O #r. Reveal( O ) @ #r))) ⇒
+    (∃ #j. Listed( b, p ) @ #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ E b2 #o #o2.
+    (OwnsBrand( E, b ) @ #o) ∧ (OwnsBrand( E, b2 ) @ #o2) ⇒ b = b2) ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥) ∧
+  (∀ #j. (Listed( b, p ) @ #j) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !Pk( 'DV', pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.3 )
+            case Endpoint_checkout
+            by contradiction /* from formulas */
+          next
+            case c_sign
+            solve( !KU( ~kep ) @ #vk.17 )
+              case Reveal_endpoint
+              solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.12 )
+                case DV_issue_ID
+                solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.15 )
+                  case Entity_list_payee
+                  by contradiction /* from formulas */
+                next
+                  case c_sign
+                  solve( !KU( ~ltk.1 ) @ #vk.25 )
+                    case Reveal_key
+                    by contradiction /* from formulas */
+                  qed
+                qed
+              next
+                case c_sign
+                solve( !KU( ~ltk ) @ #vk.24 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 09:49:47.765662 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/checkout_ext.spthy
+
+  processing time: 1.83s
+  
+  executable (exists-trace): verified (15 steps)
+  payee_authenticity (all-traces): verified (16 steps)
+  endpoint_compromise_only (all-traces): verified (16 steps)
+  discovery_runtime_consistency (all-traces): verified (16 steps)
+
+==============================================================================

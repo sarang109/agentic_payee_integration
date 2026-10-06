@@ -1,0 +1,32 @@
+{
+  "H3": {
+    "card_first_hop_POST_undone": "395/400",
+    "card_post_safe_probability": 0.995,
+    "instant_late_evidence_ESCROW_undone": "2394/2400",
+    "instant_late_evidence_POST_undone": "0/2400",
+    "supported": false
+  },
+  "toy": {
+    "corrected_fastest_corrupted": 0.47593535,
+    "corrected_honest": 0.7861461999999999,
+    "fresh_rho_3": 0.6650805,
+    "original_condition": 1.0,
+    "parameters": {
+      "decision_median": 0.25,
+      "lognormal_sigma": 0.6,
+      "observer_medians": [
+        1,
+        4
+      ],
+      "void_median": 5,
+      "void_success": 0.97,
+      "window": 10
+    }
+  },
+  "void": {
+    "backend": "simulator",
+    "void_p50_s": 1.254925670965024,
+    "void_p95_s": 2.174013504446928,
+    "void_success": 0.9666666666666667
+  }
+}

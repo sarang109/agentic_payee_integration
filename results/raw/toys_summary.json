@@ -1,0 +1,13 @@
+{
+  "f3_matches_blueprint": "13/14",
+  "f3_mismatches": [
+    {
+      "B7 combined": "ok",
+      "V1 original": "ok",
+      "blueprint (B7 / V1 / v2)": "false block / ok / ok",
+      "case": "S6",
+      "v2 core": "ok"
+    }
+  ],
+  "t4_pass": "36/36"
+}

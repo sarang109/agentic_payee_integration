@@ -1,0 +1,28 @@
+{
+  "agreement_allow_vs_block": "1.000 [0.995, 1.000]",
+  "agreement_exact_verdict": "0.957 [0.941, 0.969]",
+  "latency": [
+    {
+      "p50_ms": 0.642,
+      "p95_ms": 0.917,
+      "p95_with_modelled_wan_ms": 0.917,
+      "third_party_round_trips": 0,
+      "variant": "V1b (stapled status)"
+    },
+    {
+      "p50_ms": 1.349,
+      "p95_ms": 1.962,
+      "p95_with_modelled_wan_ms": 86.127,
+      "third_party_round_trips": 1,
+      "variant": "V1b + synchronous status fetch"
+    },
+    {
+      "p50_ms": 1.088,
+      "p95_ms": 1.413,
+      "p95_with_modelled_wan_ms": 86.176,
+      "third_party_round_trips": 1,
+      "variant": "V1a directory (signed answers)"
+    }
+  ],
+  "n": 820
+}

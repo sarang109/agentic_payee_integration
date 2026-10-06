@@ -1,0 +1,5 @@
+score,AUC lookalike vs unrelated,n_pos,n_neg
+str,0.9999,631,1308
+vis,0.9065,631,1308
+sem,0.963,631,1308
+kappa,0.9999,631,1308

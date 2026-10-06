@@ -1,0 +1,8 @@
+### E5: amount cap during probation instead of step-up
+
+|   cap (minor units) | A9 rush success   |   A9 rush loss amount | S10 new-merchant step-up   |
+|--------------------:|:------------------|----------------------:|:---------------------------|
+|                   0 | 0/60              |                     0 | 7/20                       |
+|                2000 | 2/60              |                  2603 | 5/20                       |
+|               10000 | 17/60             |                 84628 | 1/20                       |
+|               50000 | 24/60             |                190780 | 0/20                       |

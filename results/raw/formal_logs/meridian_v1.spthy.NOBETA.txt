@@ -1,0 +1,683 @@
+theory MeridianV1
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, pk/1, sign/2, snd/1, true/0, verify/3
+equations:
+    fst(<x.1, x.2>) = x.1,
+    snd(<x.1, x.2>) = x.2,
+    verify(sign(x.1, x.2), x.1, pk(x.2)) = true
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction OnceKey:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceBrand:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) Register_key:
+   [ Fr( ~ltk ) ]
+  --[ KeyOnce( $A ) ]->
+   [ !Ltk( $A, ~ltk ), !Pk( $A, pk(~ltk) ), Out( pk(~ltk) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_key:
+   [ !Ltk( A, ltk ) ] --[ Reveal( A ) ]-> [ Out( ltk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Brand_owned:
+   [ ] --[ BrandOnce( $b ), OwnsBrand( $E, $b ) ]-> [ !Owns( $b, $E ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Open_account:
+   [ Fr( ~p ) ]
+  --[ Opens( $O, $E, ~p ) ]->
+   [ !AccountOf( $O, $E, ~p ), Out( ~p ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DV_issue_ID:
+   [ !Owns( b, E ), !Ltk( 'DV', kdv ) ]
+  --[ IssuedID( b, E ) ]->
+   [ Out( sign(<'ID', b, E>, kdv) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Entity_accept_ID:
+   [ !Owns( b, E ), !Ltk( E, ke ) ]
+  --[ AccID( E, b ) ]->
+   [ Out( sign(<'ACC', 'ID', b, E>, ke) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Entity_authorize_AG:
+   [ !AccountOf( O, E, p ), !Ltk( E, ke ) ]
+  --[ AuthAG( E, p, O ) ]->
+   [ Out( sign(<'AG', E, p, O>, ke) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_accept_AG:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ) ]
+  --[ AccAG( O, E, p ) ]->
+   [ Out( sign(<'ACC', 'AG', E, p, O>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_checkout:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ), In( <'CHECKOUT', cart, n> ) ]
+  --[ Beta( O, p, cart, n ) ]->
+   [ Out( sign(<'BETA', cart, p, n>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Verifier_start:
+   [ Fr( ~n ), Fr( ~cart ) ]
+  --[ Start( $V, $b, ~cart, ~n ) ]->
+   [ VState( $V, $b, ~cart, ~n ), Out( <'CHECKOUT', ~cart, ~n> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Verifier_release:
+   [
+   VState( V, b, cart, n ), !Pk( 'DV', pkdv ), !Pk( E, pke ), !Pk( O, pko ),
+   In( <E, p, O, s_id, a_id, s_ag, a_ag, beta> )
+   ]
+  --[
+  Release( V, b, p, cart, n ),
+  Eq( verify(s_id, <'ID', b, E>, pkdv), true ),
+  Eq( verify(a_id, <'ACC', 'ID', b, E>, pke), true ),
+  Eq( verify(s_ag, <'AG', E, p, O>, pke), true ),
+  Eq( verify(a_ag, <'ACC', 'AG', E, p, O>, pko), true )
+  ]->
+   [ Out( <'CREDENTIAL', p, cart> ) ]
+
+  /*
+  rule (modulo AC) Verifier_release:
+     [
+     VState( V, b, cart, n ), !Pk( 'DV', pkdv ), !Pk( E, pke ), !Pk( O, pko ),
+     In( <E, p, O, s_id, a_id, s_ag, a_ag, beta> )
+     ]
+    --[
+    Release( V, b, p, cart, n ), Eq( z, true ), Eq( z.1, true ),
+    Eq( z.2, true ), Eq( z.3, true )
+    ]->
+     [ Out( <'CREDENTIAL', p, cart> ) ]
+    variants (modulo AC)
+     1. E     = E.37
+        O     = O.38
+        a_ag  = a_ag.40
+        a_id  = a_id.41
+        b     = b.42
+        p     = p.46
+        pkdv  = pkdv.47
+        pke   = pke.48
+        pko   = pko.49
+        s_ag  = s_ag.50
+        s_id  = s_id.51
+        z     = verify(s_id.51, <'ID', b.42, E.37>, pkdv.47)
+        z.1   = verify(a_id.41, <'ACC', 'ID', b.42, E.37>, pke.48)
+        z.2   = verify(s_ag.50, <'AG', E.37, p.46, O.38>, pke.48)
+        z.3   = verify(a_ag.40, <'ACC', 'AG', E.37, p.46, O.38>, pko.49)
+    
+     2. E     = E.48
+        O     = O.49
+        a_ag  = sign(<'ACC', 'AG', E.48, p.57, O.49>, x.94)
+        a_id  = a_id.52
+        b     = b.53
+        p     = p.57
+        pkdv  = pkdv.58
+        pke   = pke.59
+        pko   = pk(x.94)
+        s_ag  = s_ag.61
+        s_id  = s_id.62
+        z     = verify(s_id.62, <'ID', b.53, E.48>, pkdv.58)
+        z.1   = verify(a_id.52, <'ACC', 'ID', b.53, E.48>, pke.59)
+        z.2   = verify(s_ag.61, <'AG', E.48, p.57, O.49>, pke.59)
+        z.3   = true
+    
+     3. E     = E.49
+        O     = O.50
+        a_ag  = a_ag.52
+        a_id  = sign(<'ACC', 'ID', b.54, E.49>, x.96)
+        b     = b.54
+        p     = p.58
+        pkdv  = pkdv.59
+        pke   = pk(x.96)
+        pko   = pko.61
+        s_ag  = s_ag.62
+        s_id  = s_id.63
+        z     = verify(s_id.63, <'ID', b.54, E.49>, pkdv.59)
+        z.1   = true
+        z.2   = verify(s_ag.62, <'AG', E.49, p.58, O.50>, pk(x.96))
+        z.3   = verify(a_ag.52, <'ACC', 'AG', E.49, p.58, O.50>, pko.61)
+    
+     4. E     = E.49
+        O     = O.50
+        a_ag  = a_ag.52
+        a_id  = sign(<'ACC', 'ID', b.54, E.49>, x.96)
+        b     = b.54
+        p     = p.58
+        pkdv  = pkdv.59
+        pke   = pk(x.96)
+        pko   = pko.61
+        s_ag  = sign(<'AG', E.49, p.58, O.50>, x.96)
+        s_id  = s_id.63
+        z     = verify(s_id.63, <'ID', b.54, E.49>, pkdv.59)
+        z.1   = true
+        z.2   = true
+        z.3   = verify(a_ag.52, <'ACC', 'AG', E.49, p.58, O.50>, pko.61)
+    
+     5. E     = E.50
+        O     = O.51
+        a_ag  = sign(<'ACC', 'AG', E.50, p.59, O.51>, x.96)
+        a_id  = sign(<'ACC', 'ID', b.55, E.50>, x.98)
+        b     = b.55
+        p     = p.59
+        pkdv  = pkdv.60
+        pke   = pk(x.98)
+        pko   = pk(x.96)
+        s_ag  = s_ag.63
+        s_id  = s_id.64
+        z     = verify(s_id.64, <'ID', b.55, E.50>, pkdv.60)
+        z.1   = true
+        z.2   = verify(s_ag.63, <'AG', E.50, p.59, O.51>, pk(x.98))
+        z.3   = true
+    
+     6. E     = E.50
+        O     = O.51
+        a_ag  = sign(<'ACC', 'AG', E.50, p.59, O.51>, x.96)
+        a_id  = sign(<'ACC', 'ID', b.55, E.50>, x.98)
+        b     = b.55
+        p     = p.59
+        pkdv  = pkdv.60
+        pke   = pk(x.98)
+        pko   = pk(x.96)
+        s_ag  = sign(<'AG', E.50, p.59, O.51>, x.98)
+        s_id  = s_id.64
+        z     = verify(s_id.64, <'ID', b.55, E.50>, pkdv.60)
+        z.1   = true
+        z.2   = true
+        z.3   = true
+    
+     7. E     = E.54
+        O     = O.55
+        a_ag  = a_ag.57
+        a_id  = a_id.58
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pke.65
+        pko   = pko.66
+        s_ag  = s_ag.67
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = verify(a_id.58, <'ACC', 'ID', b.59, E.54>, pke.65)
+        z.2   = verify(s_ag.67, <'AG', E.54, p.63, O.55>, pke.65)
+        z.3   = verify(a_ag.57, <'ACC', 'AG', E.54, p.63, O.55>, pko.66)
+    
+     8. E     = E.54
+        O     = O.55
+        a_ag  = a_ag.57
+        a_id  = sign(<'ACC', 'ID', b.59, E.54>, x.101)
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pk(x.101)
+        pko   = pko.66
+        s_ag  = s_ag.67
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.67, <'AG', E.54, p.63, O.55>, pk(x.101))
+        z.3   = verify(a_ag.57, <'ACC', 'AG', E.54, p.63, O.55>, pko.66)
+    
+     9. E     = E.54
+        O     = O.55
+        a_ag  = a_ag.57
+        a_id  = sign(<'ACC', 'ID', b.59, E.54>, x.101)
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pk(x.101)
+        pko   = pko.66
+        s_ag  = sign(<'AG', E.54, p.63, O.55>, x.101)
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = verify(a_ag.57, <'ACC', 'AG', E.54, p.63, O.55>, pko.66)
+    
+    10. E     = E.54
+        O     = O.55
+        a_ag  = sign(<'ACC', 'AG', E.54, p.63, O.55>, x.100)
+        a_id  = a_id.58
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pke.65
+        pko   = pk(x.100)
+        s_ag  = s_ag.67
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = verify(a_id.58, <'ACC', 'ID', b.59, E.54>, pke.65)
+        z.2   = verify(s_ag.67, <'AG', E.54, p.63, O.55>, pke.65)
+        z.3   = true
+    
+    11. E     = E.54
+        O     = O.55
+        a_ag  = sign(<'ACC', 'AG', E.54, p.63, O.55>, x.100)
+        a_id  = sign(<'ACC', 'ID', b.59, E.54>, x.102)
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pk(x.102)
+        pko   = pk(x.100)
+        s_ag  = s_ag.67
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_ag.67, <'AG', E.54, p.63, O.55>, pk(x.102))
+        z.3   = true
+    
+    12. E     = E.54
+        O     = O.55
+        a_ag  = sign(<'ACC', 'AG', E.54, p.63, O.55>, x.100)
+        a_id  = sign(<'ACC', 'ID', b.59, E.54>, x.102)
+        b     = b.59
+        p     = p.63
+        pkdv  = pk(x.106)
+        pke   = pk(x.102)
+        pko   = pk(x.100)
+        s_ag  = sign(<'AG', E.54, p.63, O.55>, x.102)
+        s_id  = sign(<'ID', b.59, E.54>, x.106)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = true
+    
+    13. E     = E.55
+        O     = O.56
+        a_ag  = a_ag.58
+        a_id  = a_id.59
+        b     = b.60
+        p     = p.64
+        pkdv  = pkdv.65
+        pke   = pk(x.108)
+        pko   = pko.67
+        s_ag  = sign(<'AG', E.55, p.64, O.56>, x.108)
+        s_id  = s_id.69
+        z     = verify(s_id.69, <'ID', b.60, E.55>, pkdv.65)
+        z.1   = verify(a_id.59, <'ACC', 'ID', b.60, E.55>, pk(x.108))
+        z.2   = true
+        z.3   = verify(a_ag.58, <'ACC', 'AG', E.55, p.64, O.56>, pko.67)
+    
+    14. E     = E.55
+        O     = O.56
+        a_ag  = a_ag.58
+        a_id  = a_id.59
+        b     = b.60
+        p     = p.64
+        pkdv  = pk(x.107)
+        pke   = pk(x.108)
+        pko   = pko.67
+        s_ag  = sign(<'AG', E.55, p.64, O.56>, x.108)
+        s_id  = sign(<'ID', b.60, E.55>, x.107)
+        z     = true
+        z.1   = verify(a_id.59, <'ACC', 'ID', b.60, E.55>, pk(x.108))
+        z.2   = true
+        z.3   = verify(a_ag.58, <'ACC', 'AG', E.55, p.64, O.56>, pko.67)
+    
+    15. E     = E.55
+        O     = O.56
+        a_ag  = sign(<'ACC', 'AG', E.55, p.64, O.56>, x.101)
+        a_id  = a_id.59
+        b     = b.60
+        p     = p.64
+        pkdv  = pkdv.65
+        pke   = pk(x.108)
+        pko   = pk(x.101)
+        s_ag  = sign(<'AG', E.55, p.64, O.56>, x.108)
+        s_id  = s_id.69
+        z     = verify(s_id.69, <'ID', b.60, E.55>, pkdv.65)
+        z.1   = verify(a_id.59, <'ACC', 'ID', b.60, E.55>, pk(x.108))
+        z.2   = true
+        z.3   = true
+    
+    16. E     = E.55
+        O     = O.56
+        a_ag  = sign(<'ACC', 'AG', E.55, p.64, O.56>, x.101)
+        a_id  = a_id.59
+        b     = b.60
+        p     = p.64
+        pkdv  = pk(x.107)
+        pke   = pk(x.108)
+        pko   = pk(x.101)
+        s_ag  = sign(<'AG', E.55, p.64, O.56>, x.108)
+        s_id  = sign(<'ID', b.60, E.55>, x.107)
+        z     = true
+        z.1   = verify(a_id.59, <'ACC', 'ID', b.60, E.55>, pk(x.108))
+        z.2   = true
+        z.3   = true
+  */
+
+lemma executable:
+  exists-trace
+  "∃ V b p c n #i.
+    (Release( V, b, p, c, n ) @ #i) ∧ (¬(∃ A #r. Reveal( A ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ V b p c n #i.
+  (Release( V, b, p, c, n ) @ #i) ∧ ∀ A #r. (Reveal( A ) @ #r) ⇒ ⊥"
+*/
+simplify
+solve( VState( V, b, c, n ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( O, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.7 )
+          case DV_issue_ID
+          solve( !KU( sign(<'ACC', 'ID', $b, $A>, ~ltk.1) ) @ #vk.9 )
+            case Entity_accept_ID
+            solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.11 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'ACC', 'AG', $A, ~p, $A.1>, ~ltk.2) ) @ #vk.13 )
+                case Operator_accept_AG
+                solve( !KU( ~p ) @ #vk.11 )
+                  case Open_account
+                  SOLVED // trace found
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma df_soundness:
+  all-traces
+  "∀ V b p c n #i.
+    (Release( V, b, p, c, n ) @ #i) ⇒
+    (((∃ E O #j #k.
+        ((IssuedID( b, E ) @ #j) ∧ (AuthAG( E, p, O ) @ #k)) ∧
+        ((∃ #l. AccAG( O, E, p ) @ #l) ∨ (∃ #r. Reveal( O ) @ #r))) ∨
+      (∃ #r. Reveal( 'DV' ) @ #r)) ∨
+     (∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b p c n #i.
+  (Release( V, b, p, c, n ) @ #i)
+ ∧
+  (∀ E O #j #k.
+    (IssuedID( b, E ) @ #j) ∧ (AuthAG( E, p, O ) @ #k)
+   ⇒
+    (∀ #l. (AccAG( O, E, p ) @ #l) ⇒ ⊥) ∧ (∀ #r. (Reveal( O ) @ #r) ⇒ ⊥)) ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( VState( V, b, c, n ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( O, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.7 )
+          case DV_issue_ID
+          solve( !KU( sign(<'ACC', 'ID', $b, $A>, ~ltk.1) ) @ #vk.9 )
+            case Entity_accept_ID
+            solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.11 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'ACC', 'AG', $A, ~p, $A.1>, ~ltk.2) ) @ #vk.13 )
+                case Operator_accept_AG
+                by contradiction /* from formulas */
+              next
+                case c_sign
+                solve( !KU( ~ltk.2 ) @ #vk.18 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            next
+              case c_sign
+              solve( !KU( ~ltk.1 ) @ #vk.18 )
+                case Reveal_key
+                by contradiction /* from formulas */
+              qed
+            qed
+          next
+            case c_sign
+            solve( !KU( ~ltk.1 ) @ #vk.17 )
+              case Reveal_key
+              by contradiction /* from formulas */
+            qed
+          qed
+        next
+          case c_sign
+          solve( !KU( ~ltk ) @ #vk.17 )
+            case Reveal_key
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma unilateral_claim_resistance:
+  all-traces
+  "∀ V b p c n #i.
+    (Release( V, b, p, c, n ) @ #i) ⇒
+    ((∃ O E #l. AccAG( O, E, p ) @ #l) ∨ (∃ O #r. Reveal( O ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b p c n #i.
+  (Release( V, b, p, c, n ) @ #i)
+ ∧
+  (∀ O E #l. (AccAG( O, E, p ) @ #l) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( VState( V, b, c, n ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( O, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.7 )
+          case DV_issue_ID
+          solve( !KU( sign(<'ACC', 'ID', $b, $A>, ~ltk.1) ) @ #vk.9 )
+            case Entity_accept_ID
+            solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.11 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'ACC', 'AG', $A, ~p, $A.1>, ~ltk.2) ) @ #vk.13 )
+                case Operator_accept_AG
+                by contradiction /* from formulas */
+              next
+                case c_sign
+                solve( !KU( ~ltk.2 ) @ #vk.18 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            next
+              case c_sign
+              solve( !KU( ~ltk.1 ) @ #vk.18 )
+                case Reveal_key
+                by contradiction /* from formulas */
+              qed
+            qed
+          next
+            case c_sign
+            solve( !KU( ~ltk.1 ) @ #vk.17 )
+              case Reveal_key
+              by contradiction /* from formulas */
+            qed
+          qed
+        next
+          case c_sign
+          solve( !KU( ~ltk ) @ #vk.17 )
+            case Reveal_key
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma post_binding_swap:
+  all-traces
+  "∀ V b p c n #i.
+    (Release( V, b, p, c, n ) @ #i) ⇒
+    ((∃ O #j. Beta( O, p, c, n ) @ #j) ∨ (∃ O #r. Reveal( O ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b p c n #i.
+  (Release( V, b, p, c, n ) @ #i)
+ ∧
+  (∀ O #j. (Beta( O, p, c, n ) @ #j) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( VState( V, b, c, n ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( O, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.7 )
+          case DV_issue_ID
+          solve( !KU( sign(<'ACC', 'ID', $b, $A>, ~ltk.1) ) @ #vk.9 )
+            case Entity_accept_ID
+            solve( !KU( sign(<'AG', $A, p, $A.1>, ~ltk.1) ) @ #vk.11 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'ACC', 'AG', $A, ~p, $A.1>, ~ltk.2) ) @ #vk.13 )
+                case Operator_accept_AG
+                solve( !KU( ~p ) @ #vk.11 )
+                  case Open_account
+                  SOLVED // trace found
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma release_unique:
+  all-traces
+  "∀ V b p c n #i #j.
+    ((Release( V, b, p, c, n ) @ #i) ∧ (Release( V, b, p, c, n ) @ #j)) ⇒
+    (#i = #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b p c n #i #j.
+  (Release( V, b, p, c, n ) @ #i) ∧ (Release( V, b, p, c, n ) @ #j)
+ ∧
+  ¬(#i = #j)"
+*/
+simplify
+solve( (#i < #j)  ∥ (#j < #i) )
+  case case_1
+  solve( VState( V, b, c, n ) ▶₀ #i )
+    case Verifier_start
+    solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₂ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₃ #i )
+          case Register_key
+          solve( VState( $V, $b, ~cart, ~n ) ▶₀ #j )
+            case Verifier_start
+            by contradiction /* cyclic */
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case case_2
+  solve( VState( V, b, c, n ) ▶₀ #i )
+    case Verifier_start
+    solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₂ #i )
+        case Register_key
+        solve( !Pk( O, pk(x) ) ▶₃ #i )
+          case Register_key
+          solve( VState( $V, $b, ~cart, ~n ) ▶₀ #j )
+            case Verifier_start
+            by contradiction /* cyclic */
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 09:49:47.765662 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/meridian_v1.spthy
+
+  processing time: 1.49s
+  
+  executable (exists-trace): verified (11 steps)
+  df_soundness (all-traces): verified (18 steps)
+  unilateral_claim_resistance (all-traces): verified (18 steps)
+  post_binding_swap (all-traces): falsified - found trace (11 steps)
+  release_unique (all-traces): verified (14 steps)
+
+==============================================================================

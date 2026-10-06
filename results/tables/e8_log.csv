@@ -1,0 +1,5 @@
+leaves,root_build_s,inclusion_proof_bytes_max,inclusion_proof_bytes_mean,proof_gen_ms_p50,proof_verify_ms_p50,consistency_proof_bytes(n/2->n)
+16384,0.01,448,448.0,0.007,0.007,32.0
+131072,0.07,544,544.0,0.011,0.009,32.0
+1048576,0.52,640,640.0,0.016,0.01,32.0
+10000000,5.1,768,757.4,,,

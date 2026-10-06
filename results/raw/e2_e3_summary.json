@@ -1,0 +1,52 @@
+{
+  "H1": {
+    "baseline_losses_on_v1_classes": {
+      "B1": 281,
+      "B2": 273,
+      "B3": 300,
+      "B4": 290,
+      "B5": 300
+    },
+    "m1_false_block_rate": "0.000 [0.000, 0.004]",
+    "m1_loss_on_v1_classes": "0/300",
+    "supported": true
+  },
+  "H2": {
+    "all_benign_step_up_m2": "0.178 [0.155, 0.203]",
+    "benign_cba_step_up": "0.178 [0.155, 0.203]",
+    "m1_loss_A1_A2": "120/120",
+    "m2_loss_A1_A2": "0/120",
+    "mcnemar_p": 1.504632769052528e-36,
+    "supported": false
+  },
+  "H3_bench_part": {
+    "A12_M3_modes": {
+      "": 38,
+      "ESCROW": 20,
+      "PRE": 2
+    },
+    "A12_loss_M2_vs_M3": {
+      "M2": "42/60",
+      "M3": "2/60"
+    },
+    "M3_card_A11_detected_and_undone": "38/60",
+    "note": "full H3 decision uses E6"
+  },
+  "H5": {
+    "best_meridian_config_per_rail": {
+      "a2a_instant": "M3",
+      "bnpl": "M1",
+      "card": "M3",
+      "psp_token": "M3",
+      "stablecoin": "M3",
+      "wallet": "M3"
+    },
+    "supported": true
+  },
+  "cba_params": {
+    "tau": 0.075,
+    "theta": 0.9
+  },
+  "n_cases": 2050,
+  "n_records": 22550
+}

@@ -1,0 +1,49 @@
+Linear part: No equation.
+Convergent part:
+prefix(h(k1)) = prefix(h(k2))
+Completing equations...
+Completed equations:
+prefix(h(k1)) = prefix(h(k2))
+Biprocess 0 (that is, the initial process):
+(
+    {1}!
+    {2}in(c, q: bitstring);
+    {3}out(c, bucket(q))
+) | (
+    {4}!
+    {5}let k: bitstring = choice[k1,k2] in
+    {6}out(c, prefix(h(k)));
+    {7}in(c, resp: bitstring)
+)
+
+-- Observational equivalence in biprocess 1 (that is, biprocess 0, with let moved downwards):
+(
+    {1}!
+    {2}in(c, q: bitstring);
+    {3}out(c, bucket(q))
+) | (
+    {4}!
+    {5}let k: bitstring = choice[k1,k2] in
+    {6}out(c, prefix(h(k)));
+    {7}in(c, resp: bitstring)
+)
+
+Translating the process into Horn clauses...
+Termination warning: v ≠ v_1 && attacker2(v_2,v) && attacker2(v_2,v_1) -> bad
+Selecting 0
+Termination warning: v ≠ v_1 && attacker2(v,v_2) && attacker2(v_1,v_2) -> bad
+Selecting 0
+Completing...
+Termination warning: v ≠ v_1 && attacker2(v_2,v) && attacker2(v_2,v_1) -> bad
+Selecting 0
+Termination warning: v ≠ v_1 && attacker2(v,v_2) && attacker2(v_1,v_2) -> bad
+Selecting 0
+RESULT Observational equivalence is true.
+
+--------------------------------------------------------------
+Verification summary:
+
+Observational equivalence is true.
+
+--------------------------------------------------------------
+

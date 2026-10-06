@@ -1,0 +1,11 @@
+technique,n,median kappa,share kappa >= 0.6
+affix,62,0.882,1.0
+homoglyph,57,0.972,1.0
+hyphenation,68,0.975,1.0
+name-clone,70,0.976,1.0
+semantic-twin,66,0.877,1.0
+tld-swap,66,0.974,1.0
+typo-omission,55,0.936,1.0
+typo-repeat,63,0.943,1.0
+typo-replace,69,0.938,1.0
+typo-swap,55,0.907,1.0

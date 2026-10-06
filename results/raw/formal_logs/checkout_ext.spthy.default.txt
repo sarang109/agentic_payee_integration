@@ -1,0 +1,339 @@
+theory CheckoutExtension
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, pk/1, sign/2, snd/1, true/0, verify/3
+equations:
+    fst(<x.1, x.2>) = x.1,
+    snd(<x.1, x.2>) = x.2,
+    verify(sign(x.1, x.2), x.1, pk(x.2)) = true
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction OnceKey:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceEndpoint:
+  "∀ b #i #j.
+    ((EndpointOnce( b ) @ #i) ∧ (EndpointOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j.
+    ((EndpointOnce( b ) @ #i) ∧ (EndpointOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceBrand:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) Register_key:
+   [ Fr( ~ltk ) ]
+  --[ KeyOnce( $A ) ]->
+   [ !Ltk( $A, ~ltk ), !Pk( $A, pk(~ltk) ), Out( pk(~ltk) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_key:
+   [ !Ltk( A, ltk ) ] --[ Reveal( A ) ]-> [ Out( ltk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Brand_owned:
+   [ ] --[ BrandOnce( $b ), OwnsBrand( $E, $b ) ]-> [ !Owns( $b, $E ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Endpoint_for_brand:
+   [ !Owns( b, E ), Fr( ~kep ) ]
+  --[ Endpoint( b ), EndpointOnce( b ) ]->
+   [ !EndpointKey( b, ~kep ), !EndpointPk( b, pk(~kep) ), Out( pk(~kep) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_endpoint:
+   [ !EndpointKey( b, k ) ] --[ RevealEndpoint( b ) ]-> [ Out( k ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Open_account:
+   [ Fr( ~p ) ]
+  --[ Opens( $O, $E, ~p ) ]->
+   [ !AccountOf( $O, $E, ~p ), Out( ~p ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Entity_list_payee:
+   [ !Owns( b, E ), !AccountOf( O, E, p ), !Ltk( E, ke ) ]
+  --[ Listed( b, p ), AuthAG( E, p, O ) ]->
+   [ !ListedPayee( b, p ), Out( sign(<'AG', E, p, O>, ke) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DV_issue_ID:
+   [ !Owns( b, E ), !Ltk( 'DV', kdv ) ]
+  --[ IssuedID( b, E ) ]->
+   [ Out( sign(<'ID', b, E>, kdv) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_accept_AG:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ) ]
+  --[ AccAG( O, E, p ) ]->
+   [ Out( sign(<'ACC', 'AG', E, p, O>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Operator_checkout:
+   [ !AccountOf( O, E, p ), !Ltk( O, ko ), In( <'CHECKOUT', cart, n> ) ]
+  --[ Beta( O, p, cart, n ) ]->
+   [ Out( sign(<'BETA', cart, p, n>, ko) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Endpoint_checkout:
+   [
+   !EndpointKey( b, kep ), !ListedPayee( b, p ), In( <'CHECKOUT', cart, n> )
+   ]
+  --[ CheckoutObject( b, cart, p ) ]->
+   [ Out( <cart, p, sign(<'CART', cart, p, n>, kep)> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Wallet_start:
+   [ Fr( ~n ), Fr( ~cart ) ]
+  --[ Intent( $W, $b ) ]->
+   [ WState( $W, $b, ~cart, ~n ), Out( <'CHECKOUT', ~cart, ~n> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Wallet_pay:
+   [ WState( W, b, cart, n ), !EndpointPk( b, pkep ), In( <p, s_cart> ) ]
+  --[
+  Pay( W, b, p ), Eq( verify(s_cart, <'CART', cart, p, n>, pkep), true )
+  ]->
+   [ ]
+
+  /*
+  rule (modulo AC) Wallet_pay:
+     [ WState( W, b, cart, n ), !EndpointPk( b, pkep ), In( <p, s_cart> ) ]
+    --[ Pay( W, b, p ), Eq( z, true ) ]->
+     [ ]
+    variants (modulo AC)
+    1. cart  = cart.9
+       n     = n.9
+       p     = p.9
+       pkep  = pkep.9
+       s_cart
+             = s_cart.9
+       z     = verify(s_cart.9, <'CART', cart.9, p.9, n.9>, pkep.9)
+    
+    2. cart  = x.9
+       n     = x.10
+       p     = x.11
+       pkep  = pk(x.12)
+       s_cart
+             = sign(<'CART', x.9, x.11, x.10>, x.12)
+       z     = true
+  */
+
+lemma executable:
+  exists-trace
+  "∃ W b p #i.
+    ((Pay( W, b, p ) @ #i) ∧ (¬(∃ A #r. Reveal( A ) @ #r))) ∧
+    (¬(∃ c #r. RevealEndpoint( c ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ A #r. (Reveal( A ) @ #r) ⇒ ⊥) ∧
+  (∀ c #r. (RevealEndpoint( c ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.2 )
+      case Endpoint_checkout
+      solve( !KU( ~cart ) @ #vk.6 )
+        case Wallet_start
+        solve( !KU( ~n ) @ #vk.7 )
+          case Wallet_start
+          solve( !KU( ~p ) @ #vk.6 )
+            case Endpoint_checkout
+            SOLVED // trace found
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma payee_authenticity:
+  all-traces
+  "∀ W b p #i.
+    (Pay( W, b, p ) @ #i) ⇒
+    ((((∃ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j)) ∨
+       (∃ #r. Reveal( 'DV' ) @ #r)) ∨
+      (∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r))) ∨
+     (∃ O #r. Reveal( O ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.2 )
+      case c_sign
+      solve( !KU( ~kep ) @ #vk.5 )
+        case Reveal_endpoint
+        solve( !KU( ~cart ) @ #vk.8 )
+          case Wallet_start
+          solve( !KU( ~n ) @ #vk.9 )
+            case Wallet_start
+            SOLVED // trace found
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma endpoint_compromise_only:
+  all-traces
+  "∀ W b p #i.
+    ((((Pay( W, b, p ) @ #i) ∧ (¬(∃ #r. Reveal( 'DV' ) @ #r))) ∧
+      (¬(∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r)))) ∧
+     (¬(∃ O #r. Reveal( O ) @ #r))) ⇒
+    (∃ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥) ∧
+  (∀ E O #o #j. (OwnsBrand( E, b ) @ #o) ∧ (AuthAG( E, p, O ) @ #j) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.2 )
+      case c_sign
+      solve( !KU( ~kep ) @ #vk.5 )
+        case Reveal_endpoint
+        solve( !KU( ~cart ) @ #vk.8 )
+          case Wallet_start
+          solve( !KU( ~n ) @ #vk.9 )
+            case Wallet_start
+            SOLVED // trace found
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma discovery_runtime_consistency:
+  all-traces
+  "∀ W b p #i.
+    (((((Pay( W, b, p ) @ #i) ∧
+        (∀ E b2 #o #o2.
+          ((OwnsBrand( E, b ) @ #o) ∧ (OwnsBrand( E, b2 ) @ #o2)) ⇒ (b = b2))) ∧
+       (¬(∃ #r. Reveal( 'DV' ) @ #r))) ∧
+      (¬(∃ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r)))) ∧
+     (¬(∃ O #r. Reveal( O ) @ #r))) ⇒
+    (∃ #j. Listed( b, p ) @ #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ W b p #i.
+  (Pay( W, b, p ) @ #i)
+ ∧
+  (∀ E b2 #o #o2.
+    (OwnsBrand( E, b ) @ #o) ∧ (OwnsBrand( E, b2 ) @ #o2) ⇒ b = b2) ∧
+  (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥) ∧
+  (∀ E #o #r. (OwnsBrand( E, b ) @ #o) ∧ (Reveal( E ) @ #r) ⇒ ⊥) ∧
+  (∀ O #r. (Reveal( O ) @ #r) ⇒ ⊥) ∧
+  (∀ #j. (Listed( b, p ) @ #j) ⇒ ⊥)"
+*/
+simplify
+solve( WState( W, b, cart, n ) ▶₀ #i )
+  case Wallet_start
+  solve( !EndpointPk( $b, pk(x) ) ▶₁ #i )
+    case Endpoint_for_brand
+    solve( !KU( sign(<'CART', ~cart, p, ~n>, ~kep) ) @ #vk.2 )
+      case c_sign
+      solve( !KU( ~kep ) @ #vk.5 )
+        case Reveal_endpoint
+        solve( !KU( ~cart ) @ #vk.8 )
+          case Wallet_start
+          solve( !KU( ~n ) @ #vk.9 )
+            case Wallet_start
+            SOLVED // trace found
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 09:49:47.765662 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/checkout_ext.spthy
+
+  processing time: 0.54s
+  
+  executable (exists-trace): verified (8 steps)
+  payee_authenticity (all-traces): falsified - found trace (8 steps)
+  endpoint_compromise_only (all-traces): falsified - found trace (8 steps)
+  discovery_runtime_consistency (all-traces): falsified - found trace (8 steps)
+
+==============================================================================

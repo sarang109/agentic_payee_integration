@@ -1,0 +1,862 @@
+theory MeridianG2
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, pk/1, sign/2, snd/1, true/0, verify/3
+equations:
+    fst(<x.1, x.2>) = x.1,
+    snd(<x.1, x.2>) = x.2,
+    verify(sign(x.1, x.2), x.1, pk(x.2)) = true
+
+restriction Equality:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x y #i. (Eq( x, y ) @ #i) ⇒ (x = y)"
+  */
+
+restriction Inequality:
+  "∀ x #i. (Neq( x, x ) @ #i) ⇒ (⊥)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i. (Neq( x, x ) @ #i) ⇒ (⊥)"
+  */
+
+restriction OnceKey:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ a #i #j. ((KeyOnce( a ) @ #i) ∧ (KeyOnce( a ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceCommit:
+  "∀ H pid #i #j.
+    ((CommitOnce( H, pid ) @ #i) ∧ (CommitOnce( H, pid ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ H pid #i #j.
+    ((CommitOnce( H, pid ) @ #i) ∧ (CommitOnce( H, pid ) @ #j)) ⇒ (#i = #j)"
+  */
+
+restriction OnceBrand:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ b #i #j. ((BrandOnce( b ) @ #i) ∧ (BrandOnce( b ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) Register_key:
+   [ Fr( ~ltk ) ]
+  --[ KeyOnce( $A ) ]->
+   [ !Ltk( $A, ~ltk ), !Pk( $A, pk(~ltk) ), Out( pk(~ltk) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_key:
+   [ !Ltk( A, ltk ) ] --[ Reveal( A ) ]-> [ Out( ltk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Brand_owned:
+   [ ] --[ BrandOnce( $b ), OwnsBrand( $E, $b ) ]-> [ !Owns( $b, $E ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Open_custodian:
+   [ Fr( ~h ) ]
+  --[ OpensCustodian( $H, $E, ~h ) ]->
+   [ !Custodian( $H, $E, ~h ), Out( ~h ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Open_bank_account:
+   [ Fr( ~T ) ]
+  --[ HoldsAccount( $B, $E, ~T ) ]->
+   [ !Account( $B, $E, ~T ), Out( ~T ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DV_issue_ID:
+   [ !Owns( b, E ), !Ltk( 'DV', kdv ) ]
+  --[ IssuedID( b, E ) ]->
+   [ Out( sign(<'ID', b, E>, kdv) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Entity_authorize_AG:
+   [ !Custodian( H, E, h ), !Ltk( E, ke ) ]
+  --[ AuthAG( E, h, H ) ]->
+   [ Out( sign(<'AG', E, h, H>, ke) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Bank_terminal_binding:
+   [ !Account( B, E, T ), !Ltk( B, kb ) ]
+  --[ BankBinds( B, E, T ) ]->
+   [ Out( sign(<'TERM', E, T>, kb) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Custodian_commit:
+   [
+   !Custodian( H, E, h ), !Account( B, E, T ), !Ltk( H, kh ),
+   In( <'PAY', pid> )
+   ]
+  --[ Committed( H, pid, h, T ), CommitOnce( H, pid ) ]->
+   [ Out( sign(<'COMMIT', pid, h, T>, kh) ), Pending( H, pid, h, T ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Custodian_transfer_honest:
+   [ Pending( H, pid, h, T ), !Ltk( H, kh ) ]
+  --[ Transferred( H, pid, h, T ) ]->
+   [ Out( sign(<'XFER', pid, h, T>, kh) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Custodian_transfer_deviate:
+   [ Pending( H, pid, h, T ), !Ltk( H, kh ), In( to ) ]
+  --[ Transferred( H, pid, h, to ), Deviates( H, pid ), Neq( to, T ) ]->
+   [ Out( sign(<'XFER', pid, h, to>, kh) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Verifier_start:
+   [ Fr( ~pid ) ]
+  --[ Start( $V, $b, ~pid ) ]->
+   [ VState( $V, $b, ~pid ), Out( <'PAY', ~pid> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Verifier_accept_G2:
+   [
+   VState( V, b, pid ), !Pk( 'DV', pkdv ), !Pk( E, pke ), !Pk( H, pkh ),
+   !Pk( B, pkb ), In( <E, h, H, T, B, s_id, s_ag, s_c, s_t> )
+   ]
+  --[
+  AcceptG2( V, b, pid, E, h, T ),
+  Eq( verify(s_id, <'ID', b, E>, pkdv), true ),
+  Eq( verify(s_ag, <'AG', E, h, H>, pke), true ),
+  Eq( verify(s_c, <'COMMIT', pid, h, T>, pkh), true ),
+  Eq( verify(s_t, <'TERM', E, T>, pkb), true ), UsesBank( B )
+  ]->
+   [ ]
+
+  /*
+  rule (modulo AC) Verifier_accept_G2:
+     [
+     VState( V, b, pid ), !Pk( 'DV', pkdv ), !Pk( E, pke ), !Pk( H, pkh ),
+     !Pk( B, pkb ), In( <E, h, H, T, B, s_id, s_ag, s_c, s_t> )
+     ]
+    --[
+    AcceptG2( V, b, pid, E, h, T ), Eq( z, true ), Eq( z.1, true ),
+    Eq( z.2, true ), Eq( z.3, true ), UsesBank( B )
+    ]->
+     [ ]
+    variants (modulo AC)
+     1. E     = E.23
+        H     = H.24
+        T     = T.25
+        b     = b.27
+        h     = h.28
+        pid   = pid.29
+        pkb   = pkb.30
+        pkdv  = pkdv.31
+        pke   = pke.32
+        pkh   = pkh.33
+        s_ag  = s_ag.34
+        s_c   = s_c.35
+        s_id  = s_id.36
+        s_t   = s_t.37
+        z     = verify(s_id.36, <'ID', b.27, E.23>, pkdv.31)
+        z.1   = verify(s_ag.34, <'AG', E.23, h.28, H.24>, pke.32)
+        z.2   = verify(s_c.35, <'COMMIT', pid.29, h.28, T.25>, pkh.33)
+        z.3   = verify(s_t.37, <'TERM', E.23, T.25>, pkb.30)
+    
+     2. E     = E.31
+        H     = H.32
+        T     = T.33
+        b     = b.35
+        h     = h.36
+        pid   = pid.37
+        pkb   = pk(x.58)
+        pkdv  = pkdv.39
+        pke   = pke.40
+        pkh   = pkh.41
+        s_ag  = s_ag.42
+        s_c   = s_c.43
+        s_id  = s_id.44
+        s_t   = sign(<'TERM', E.31, T.33>, x.58)
+        z     = verify(s_id.44, <'ID', b.35, E.31>, pkdv.39)
+        z.1   = verify(s_ag.42, <'AG', E.31, h.36, H.32>, pke.40)
+        z.2   = verify(s_c.43, <'COMMIT', pid.37, h.36, T.33>, pkh.41)
+        z.3   = true
+    
+     3. E     = E.32
+        H     = H.33
+        T     = T.34
+        b     = b.36
+        h     = h.37
+        pid   = pid.38
+        pkb   = pkb.39
+        pkdv  = pkdv.40
+        pke   = pke.41
+        pkh   = pk(x.60)
+        s_ag  = s_ag.43
+        s_c   = sign(<'COMMIT', pid.38, h.37, T.34>, x.60)
+        s_id  = s_id.45
+        s_t   = s_t.46
+        z     = verify(s_id.45, <'ID', b.36, E.32>, pkdv.40)
+        z.1   = verify(s_ag.43, <'AG', E.32, h.37, H.33>, pke.41)
+        z.2   = true
+        z.3   = verify(s_t.46, <'TERM', E.32, T.34>, pkb.39)
+    
+     4. E     = E.32
+        H     = H.33
+        T     = T.34
+        b     = b.36
+        h     = h.37
+        pid   = pid.38
+        pkb   = pkb.39
+        pkdv  = pk(x.60)
+        pke   = pke.41
+        pkh   = pkh.42
+        s_ag  = s_ag.43
+        s_c   = s_c.44
+        s_id  = sign(<'ID', b.36, E.32>, x.60)
+        s_t   = s_t.46
+        z     = true
+        z.1   = verify(s_ag.43, <'AG', E.32, h.37, H.33>, pke.41)
+        z.2   = verify(s_c.44, <'COMMIT', pid.38, h.37, T.34>, pkh.42)
+        z.3   = verify(s_t.46, <'TERM', E.32, T.34>, pkb.39)
+    
+     5. E     = E.32
+        H     = H.33
+        T     = T.34
+        b     = b.36
+        h     = h.37
+        pid   = pid.38
+        pkb   = pk(x.59)
+        pkdv  = pk(x.60)
+        pke   = pke.41
+        pkh   = pkh.42
+        s_ag  = s_ag.43
+        s_c   = s_c.44
+        s_id  = sign(<'ID', b.36, E.32>, x.60)
+        s_t   = sign(<'TERM', E.32, T.34>, x.59)
+        z     = true
+        z.1   = verify(s_ag.43, <'AG', E.32, h.37, H.33>, pke.41)
+        z.2   = verify(s_c.44, <'COMMIT', pid.38, h.37, T.34>, pkh.42)
+        z.3   = true
+    
+     6. E     = E.33
+        H     = H.34
+        T     = T.35
+        b     = b.37
+        h     = h.38
+        pid   = pid.39
+        pkb   = pkb.40
+        pkdv  = pkdv.41
+        pke   = pk(x.62)
+        pkh   = pkh.43
+        s_ag  = sign(<'AG', E.33, h.38, H.34>, x.62)
+        s_c   = s_c.45
+        s_id  = s_id.46
+        s_t   = s_t.47
+        z     = verify(s_id.46, <'ID', b.37, E.33>, pkdv.41)
+        z.1   = true
+        z.2   = verify(s_c.45, <'COMMIT', pid.39, h.38, T.35>, pkh.43)
+        z.3   = verify(s_t.47, <'TERM', E.33, T.35>, pkb.40)
+    
+     7. E     = E.33
+        H     = H.34
+        T     = T.35
+        b     = b.37
+        h     = h.38
+        pid   = pid.39
+        pkb   = pkb.40
+        pkdv  = pk(x.61)
+        pke   = pk(x.62)
+        pkh   = pkh.43
+        s_ag  = sign(<'AG', E.33, h.38, H.34>, x.62)
+        s_c   = s_c.45
+        s_id  = sign(<'ID', b.37, E.33>, x.61)
+        s_t   = s_t.47
+        z     = true
+        z.1   = true
+        z.2   = verify(s_c.45, <'COMMIT', pid.39, h.38, T.35>, pkh.43)
+        z.3   = verify(s_t.47, <'TERM', E.33, T.35>, pkb.40)
+    
+     8. E     = E.33
+        H     = H.34
+        T     = T.35
+        b     = b.37
+        h     = h.38
+        pid   = pid.39
+        pkb   = pk(x.60)
+        pkdv  = pkdv.41
+        pke   = pk(x.62)
+        pkh   = pkh.43
+        s_ag  = sign(<'AG', E.33, h.38, H.34>, x.62)
+        s_c   = s_c.45
+        s_id  = s_id.46
+        s_t   = sign(<'TERM', E.33, T.35>, x.60)
+        z     = verify(s_id.46, <'ID', b.37, E.33>, pkdv.41)
+        z.1   = true
+        z.2   = verify(s_c.45, <'COMMIT', pid.39, h.38, T.35>, pkh.43)
+        z.3   = true
+    
+     9. E     = E.33
+        H     = H.34
+        T     = T.35
+        b     = b.37
+        h     = h.38
+        pid   = pid.39
+        pkb   = pk(x.60)
+        pkdv  = pk(x.61)
+        pke   = pk(x.62)
+        pkh   = pkh.43
+        s_ag  = sign(<'AG', E.33, h.38, H.34>, x.62)
+        s_c   = s_c.45
+        s_id  = sign(<'ID', b.37, E.33>, x.61)
+        s_t   = sign(<'TERM', E.33, T.35>, x.60)
+        z     = true
+        z.1   = true
+        z.2   = verify(s_c.45, <'COMMIT', pid.39, h.38, T.35>, pkh.43)
+        z.3   = true
+    
+    10. E     = E.33
+        H     = H.34
+        T     = T.35
+        b     = b.37
+        h     = h.38
+        pid   = pid.39
+        pkb   = pk(x.60)
+        pkdv  = pk(x.61)
+        pke   = pk(x.62)
+        pkh   = pk(x.63)
+        s_ag  = sign(<'AG', E.33, h.38, H.34>, x.62)
+        s_c   = sign(<'COMMIT', pid.39, h.38, T.35>, x.63)
+        s_id  = sign(<'ID', b.37, E.33>, x.61)
+        s_t   = sign(<'TERM', E.33, T.35>, x.60)
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = true
+    
+    11. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pkb.41
+        pkdv  = pkdv.42
+        pke   = pk(x.63)
+        pkh   = pk(x.64)
+        s_ag  = sign(<'AG', E.34, h.39, H.35>, x.63)
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = s_id.47
+        s_t   = s_t.48
+        z     = verify(s_id.47, <'ID', b.38, E.34>, pkdv.42)
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_t.48, <'TERM', E.34, T.36>, pkb.41)
+    
+    12. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pkb.41
+        pkdv  = pk(x.62)
+        pke   = pke.43
+        pkh   = pk(x.64)
+        s_ag  = s_ag.45
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = sign(<'ID', b.38, E.34>, x.62)
+        s_t   = s_t.48
+        z     = true
+        z.1   = verify(s_ag.45, <'AG', E.34, h.39, H.35>, pke.43)
+        z.2   = true
+        z.3   = verify(s_t.48, <'TERM', E.34, T.36>, pkb.41)
+    
+    13. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pkb.41
+        pkdv  = pk(x.62)
+        pke   = pk(x.63)
+        pkh   = pk(x.64)
+        s_ag  = sign(<'AG', E.34, h.39, H.35>, x.63)
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = sign(<'ID', b.38, E.34>, x.62)
+        s_t   = s_t.48
+        z     = true
+        z.1   = true
+        z.2   = true
+        z.3   = verify(s_t.48, <'TERM', E.34, T.36>, pkb.41)
+    
+    14. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pk(x.61)
+        pkdv  = pkdv.42
+        pke   = pke.43
+        pkh   = pk(x.64)
+        s_ag  = s_ag.45
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = s_id.47
+        s_t   = sign(<'TERM', E.34, T.36>, x.61)
+        z     = verify(s_id.47, <'ID', b.38, E.34>, pkdv.42)
+        z.1   = verify(s_ag.45, <'AG', E.34, h.39, H.35>, pke.43)
+        z.2   = true
+        z.3   = true
+    
+    15. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pk(x.61)
+        pkdv  = pkdv.42
+        pke   = pk(x.63)
+        pkh   = pk(x.64)
+        s_ag  = sign(<'AG', E.34, h.39, H.35>, x.63)
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = s_id.47
+        s_t   = sign(<'TERM', E.34, T.36>, x.61)
+        z     = verify(s_id.47, <'ID', b.38, E.34>, pkdv.42)
+        z.1   = true
+        z.2   = true
+        z.3   = true
+    
+    16. E     = E.34
+        H     = H.35
+        T     = T.36
+        b     = b.38
+        h     = h.39
+        pid   = pid.40
+        pkb   = pk(x.61)
+        pkdv  = pk(x.62)
+        pke   = pke.43
+        pkh   = pk(x.64)
+        s_ag  = s_ag.45
+        s_c   = sign(<'COMMIT', pid.40, h.39, T.36>, x.64)
+        s_id  = sign(<'ID', b.38, E.34>, x.62)
+        s_t   = sign(<'TERM', E.34, T.36>, x.61)
+        z     = true
+        z.1   = verify(s_ag.45, <'AG', E.34, h.39, H.35>, pke.43)
+        z.2   = true
+        z.3   = true
+  */
+
+rule (modulo E) Judge:
+   [ !Pk( H, pkh ), In( <H, pid, h, next, to, s_c, s_x> ) ]
+  --[
+  Blame( H, pid ), Eq( verify(s_c, <'COMMIT', pid, h, next>, pkh), true ),
+  Eq( verify(s_x, <'XFER', pid, h, to>, pkh), true ), Neq( next, to )
+  ]->
+   [ ]
+
+  /*
+  rule (modulo AC) Judge:
+     [ !Pk( H, pkh ), In( <H, pid, h, next, to, s_c, s_x> ) ]
+    --[ Blame( H, pid ), Eq( z, true ), Eq( z.1, true ), Neq( next, to ) ]->
+     [ ]
+    variants (modulo AC)
+    1. h     = h.11
+       next  = next.11
+       pid   = pid.11
+       pkh   = pkh.11
+       s_c   = s_c.11
+       s_x   = s_x.11
+       to    = to.11
+       z     = verify(s_c.11, <'COMMIT', pid.11, h.11, next.11>, pkh.11)
+       z.1   = verify(s_x.11, <'XFER', pid.11, h.11, to.11>, pkh.11)
+    
+    2. h     = x.11
+       next  = x.12
+       pid   = x.13
+       pkh   = pk(x.14)
+       s_c   = sign(<'COMMIT', x.13, x.11, x.12>, x.14)
+       s_x   = s_x.15
+       to    = to.15
+       z     = true
+       z.1   = verify(s_x.15, <'XFER', x.13, x.11, to.15>, pk(x.14))
+    
+    3. h     = x.11
+       next  = x.12
+       pid   = x.13
+       pkh   = pk(x.14)
+       s_c   = sign(<'COMMIT', x.13, x.11, x.12>, x.14)
+       s_x   = sign(<'XFER', x.13, x.11, x.15>, x.14)
+       to    = x.15
+       z     = true
+       z.1   = true
+    
+    4. h     = x.11
+       next  = next.17
+       pid   = x.13
+       pkh   = pk(x.14)
+       s_c   = s_c.17
+       s_x   = sign(<'XFER', x.13, x.11, x.16>, x.14)
+       to    = x.16
+       z     = verify(s_c.17, <'COMMIT', x.13, x.11, next.17>, pk(x.14))
+       z.1   = true
+  */
+
+lemma executable_g2:
+  exists-trace
+  "∃ V b pid E h T #i.
+    (AcceptG2( V, b, pid, E, h, T ) @ #i) ∧ (¬(∃ A #r. Reveal( A ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ V b pid E h T #i.
+  (AcceptG2( V, b, pid, E, h, T ) @ #i) ∧ ∀ A #r. (Reveal( A ) @ #r) ⇒ ⊥"
+*/
+simplify
+solve( VState( V, b, pid ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( H, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( B, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.11 )
+            case DV_issue_ID
+            solve( !KU( sign(<'AG', $A, h, $A.1>, ~ltk.1) ) @ #vk.13 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'COMMIT', ~pid, ~h, T>, ~ltk.2) ) @ #vk.15 )
+                case Custodian_commit
+                solve( !KU( sign(<'TERM', $A, ~T>, ~ltk.3) ) @ #vk.16 )
+                  case Bank_terminal_binding
+                  solve( !KU( ~h ) @ #vk.12 )
+                    case Open_custodian
+                    solve( !KU( ~pid ) @ #vk.19 )
+                      case Verifier_start
+                      solve( !KU( ~T ) @ #vk.16 )
+                        case Open_bank_account
+                        SOLVED // trace found
+                      qed
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma executable_blame:
+  exists-trace
+  "∃ H pid #i. (Blame( H, pid ) @ #i) ∧ (¬(∃ A #r. Reveal( A ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ H pid #i. (Blame( H, pid ) @ #i) ∧ ∀ A #r. (Reveal( A ) @ #r) ⇒ ⊥"
+*/
+simplify
+solve( !Pk( H, pk(x) ) ▶₀ #i )
+  case Register_key
+  solve( !KU( sign(<'COMMIT', pid, h, next>, ~ltk) ) @ #vk.11 )
+    case Custodian_commit
+    solve( !KU( sign(<'XFER', pid, ~h, to>, ~ltk) ) @ #vk.13 )
+      case Custodian_transfer_deviate
+      solve( !KU( ~h ) @ #vk.9 )
+        case Open_custodian
+        solve( !KU( ~T ) @ #vk.12 )
+          case Open_bank_account
+          SOLVED // trace found
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma committed_route_soundness:
+  all-traces
+  "∀ V b pid E h T #i.
+    (AcceptG2( V, b, pid, E, h, T ) @ #i) ⇒
+    (((∃ #o. OwnsBrand( E, b ) @ #o) ∨ (∃ #r. Reveal( 'DV' ) @ #r)) ∧
+     ((∃ B #j. BankBinds( B, E, T ) @ #j) ∨ (∃ B #r. Reveal( B ) @ #r)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b pid E h T #i.
+  (AcceptG2( V, b, pid, E, h, T ) @ #i)
+ ∧
+  (((∀ #o. (OwnsBrand( E, b ) @ #o) ⇒ ⊥) ∧
+    (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥)) ∨
+   ((∀ B #j. (BankBinds( B, E, T ) @ #j) ⇒ ⊥) ∧
+    (∀ B #r. (Reveal( B ) @ #r) ⇒ ⊥)))"
+*/
+simplify
+solve( ((∀ #o. (OwnsBrand( E, b ) @ #o) ⇒ ⊥) ∧
+        (∀ #r. (Reveal( 'DV' ) @ #r) ⇒ ⊥))  ∥
+       ((∀ B #j. (BankBinds( B, E, T ) @ #j) ⇒ ⊥) ∧
+        (∀ B #r. (Reveal( B ) @ #r) ⇒ ⊥)) )
+  case case_1
+  solve( VState( V, b, pid ) ▶₀ #i )
+    case Verifier_start
+    solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₂ #i )
+        case Register_key
+        solve( !Pk( H, pk(x) ) ▶₃ #i )
+          case Register_key
+          solve( !Pk( B, pk(x) ) ▶₄ #i )
+            case Register_key
+            solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.11 )
+              case DV_issue_ID
+              by contradiction /* from formulas */
+            next
+              case c_sign
+              solve( !KU( ~ltk ) @ #vk.19 )
+                case Reveal_key
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case case_2
+  solve( VState( V, b, pid ) ▶₀ #i )
+    case Verifier_start
+    solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+      case Register_key
+      solve( !Pk( E, pk(x) ) ▶₂ #i )
+        case Register_key
+        solve( !Pk( H, pk(x) ) ▶₃ #i )
+          case Register_key
+          solve( !Pk( B, pk(x) ) ▶₄ #i )
+            case Register_key
+            solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.11 )
+              case DV_issue_ID
+              solve( !KU( sign(<'AG', $A, h, $A.1>, ~ltk.1) ) @ #vk.13 )
+                case Entity_authorize_AG
+                solve( !KU( sign(<'COMMIT', ~pid, ~h, T>, ~ltk.2) ) @ #vk.15 )
+                  case Custodian_commit
+                  solve( !KU( sign(<'TERM', $A, ~T>, ~ltk.3) ) @ #vk.16 )
+                    case Bank_terminal_binding
+                    by contradiction /* from formulas */
+                  next
+                    case c_sign
+                    solve( !KU( ~ltk.3 ) @ #vk.22 )
+                      case Reveal_key
+                      by contradiction /* from formulas */
+                    qed
+                  qed
+                next
+                  case c_sign
+                  solve( !KU( ~ltk.2 ) @ #vk.19 )
+                    case Reveal_key
+                    by contradiction /* from formulas */
+                  qed
+                qed
+              next
+                case c_sign
+                solve( !KU( ~ltk.1 ) @ #vk.20 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            next
+              case c_sign
+              solve( !KU( ~ltk ) @ #vk.19 )
+                case Reveal_key
+                by contradiction /* from formulas */
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma commitment_authentic:
+  all-traces
+  "∀ V b pid E h T #i.
+    (AcceptG2( V, b, pid, E, h, T ) @ #i) ⇒
+    ((∃ H #j. Committed( H, pid, h, T ) @ #j) ∨ (∃ H #r. Reveal( H ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ V b pid E h T #i.
+  (AcceptG2( V, b, pid, E, h, T ) @ #i)
+ ∧
+  (∀ H #j. (Committed( H, pid, h, T ) @ #j) ⇒ ⊥) ∧
+  (∀ H #r. (Reveal( H ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( VState( V, b, pid ) ▶₀ #i )
+  case Verifier_start
+  solve( !Pk( 'DV', pk(x) ) ▶₁ #i )
+    case Register_key
+    solve( !Pk( E, pk(x) ) ▶₂ #i )
+      case Register_key
+      solve( !Pk( H, pk(x) ) ▶₃ #i )
+        case Register_key
+        solve( !Pk( B, pk(x) ) ▶₄ #i )
+          case Register_key
+          solve( !KU( sign(<'ID', $b, $A>, ~ltk) ) @ #vk.11 )
+            case DV_issue_ID
+            solve( !KU( sign(<'AG', $A, h, $A.1>, ~ltk.1) ) @ #vk.13 )
+              case Entity_authorize_AG
+              solve( !KU( sign(<'COMMIT', ~pid, ~h, T>, ~ltk.2) ) @ #vk.15 )
+                case Custodian_commit
+                by contradiction /* from formulas */
+              next
+                case c_sign
+                solve( !KU( ~ltk.2 ) @ #vk.19 )
+                  case Reveal_key
+                  by contradiction /* from formulas */
+                qed
+              qed
+            next
+              case c_sign
+              solve( !KU( ~ltk.1 ) @ #vk.20 )
+                case Reveal_key
+                by contradiction /* from formulas */
+              qed
+            qed
+          next
+            case c_sign
+            solve( !KU( ~ltk ) @ #vk.19 )
+              case Reveal_key
+              by contradiction /* from formulas */
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma no_false_blame:
+  all-traces
+  "∀ H pid #i.
+    (Blame( H, pid ) @ #i) ⇒
+    ((∃ #d. Deviates( H, pid ) @ #d) ∨ (∃ #r. Reveal( H ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ H pid #i.
+  (Blame( H, pid ) @ #i)
+ ∧
+  (∀ #d. (Deviates( H, pid ) @ #d) ⇒ ⊥) ∧ (∀ #r. (Reveal( H ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( !Pk( H, pk(x) ) ▶₀ #i )
+  case Register_key
+  solve( !KU( sign(<'COMMIT', pid, h, next>, ~ltk) ) @ #vk.11 )
+    case Custodian_commit
+    solve( !KU( sign(<'XFER', pid, ~h, to>, ~ltk) ) @ #vk.13 )
+      case Custodian_transfer_deviate
+      by contradiction /* from formulas */
+    next
+      case Custodian_transfer_honest
+      by contradiction /* from formulas */
+    next
+      case c_sign
+      solve( !KU( ~ltk ) @ #vk.18 )
+        case Reveal_key
+        by contradiction /* from formulas */
+      qed
+    qed
+  next
+    case c_sign
+    solve( !KU( ~ltk ) @ #vk.16 )
+      case Reveal_key
+      by contradiction /* from formulas */
+    qed
+  qed
+qed
+
+/*
+WARNING: the following wellformedness checks failed!
+
+Variable with mismatching sorts or capitalization
+=================================================
+
+Possible reasons:
+1. Identifiers are case sensitive, i.e.,'x' and 'X' are considered to be different.
+2. The same holds for sorts:, i.e., '$x', 'x', and '~x' are considered to be different.
+
+  rule `Open_custodian': 
+    1. $H, ~h
+  
+  rule `Entity_authorize_AG': 
+    1. H, h
+  
+  rule `Custodian_commit': 
+    1. H, h
+  
+  rule `Custodian_transfer_honest': 
+    1. H, h
+  
+  rule `Custodian_transfer_deviate': 
+    1. H, h
+  
+  rule `Verifier_accept_G2': 
+    1. B, b
+    
+    2. H, h
+  
+  rule `Judge': 
+    1. H, h
+*/
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 09:49:47.765662 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: /Users/sarang/agentic_payee_integration/formal/tamarin/meridian_g2.spthy
+
+  processing time: 1.84s
+  
+  WARNING: 7 wellformedness check failed!
+           The analysis results might be wrong!
+  
+  executable_g2 (exists-trace): verified (14 steps)
+  executable_blame (exists-trace): verified (7 steps)
+  committed_route_soundness (all-traces): verified (29 steps)
+  commitment_authentic (all-traces): verified (16 steps)
+  no_false_blame (all-traces): verified (10 steps)
+
+==============================================================================

@@ -1,0 +1,10 @@
+### E10: receiving-authority edges buildable from public / KYB data
+
+| market   |   retailers | L0->L1 domain to entity   | verified mark (VMC)   | LEI issued           | platform/PSP identifiable   | bank terminal binding (VoP/CoP)   | full path buildable today   |
+|:---------|------------:|:--------------------------|:----------------------|:---------------------|:----------------------------|:----------------------------------|:----------------------------|
+| EU       |          20 | 0.800 [0.584, 0.919]      | 0.550 [0.342, 0.742]  | 0.350 [0.181, 0.567] | 0.000 [0.000, 0.161]        | yes                               | 0.000 [0.000, 0.161]        |
+| IN       |          20 | 0.950 [0.764, 0.991]      | 0.100 [0.028, 0.301]  | 0.850 [0.640, 0.948] | 0.050 [0.009, 0.236]        | yes                               | 0.050 [0.009, 0.236]        |
+| UK       |          20 | 0.900 [0.699, 0.972]      | 0.250 [0.112, 0.469]  | 0.650 [0.433, 0.819] | 0.150 [0.052, 0.360]        | yes                               | 0.050 [0.009, 0.236]        |
+| US       |          20 | 1.000 [0.839, 1.000]      | 0.500 [0.299, 0.701]  | 0.600 [0.387, 0.781] | 0.100 [0.028, 0.301]        | no                                | 0.000 [0.000, 0.161]        |
+
+Wilson 95% intervals. 'Identifiable' means the storefront exposes the PSP or commerce platform that already runs KYB; LEI matches are name-based and need manual confirmation before use. US: no national payee-verification scheme for account-to-account transfers. UK: Confirmation of Payee (Pay.UK), name-based. EU: Verification of Payee mandatory since 9 Oct 2025 (Instant Payments Regulation); LEI/VAT for legal persons. IN: beneficiary name validation on UPI/IMPS before payment.

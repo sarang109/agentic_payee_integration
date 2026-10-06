@@ -1,0 +1,70 @@
+{
+  "environment": {
+    "agentdojo": "?",
+    "cryptography": "50.0.2",
+    "git": "ba288649c4a38f32e646962396df2c0295fc32e0",
+    "machine": "arm64",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "python": "3.12.0",
+    "quick": false,
+    "scipy": "1.18.1",
+    "seed": 7,
+    "sentence_transformers": "6.1.0",
+    "time_utc": "2026-10-06T17:31:42Z"
+  },
+  "preregistration_locked": true,
+  "preregistration_sha256": "278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99",
+  "steps": {
+    "ablations": {
+      "seconds": 1.4,
+      "status": "ok"
+    },
+    "e1": {
+      "seconds": 3.8,
+      "status": "ok"
+    },
+    "e10": {
+      "seconds": 116.8,
+      "status": "ok"
+    },
+    "e2": {
+      "seconds": 16.7,
+      "status": "ok"
+    },
+    "e4": {
+      "seconds": 77.8,
+      "status": "ok"
+    },
+    "e5": {
+      "seconds": 20.0,
+      "status": "ok"
+    },
+    "e6": {
+      "seconds": 4.3,
+      "status": "ok"
+    },
+    "e7": {
+      "seconds": 110.2,
+      "status": "ok"
+    },
+    "e8": {
+      "seconds": 28.8,
+      "status": "ok"
+    },
+    "e9": {
+      "seconds": 5.1,
+      "status": "ok"
+    },
+    "formal": {
+      "seconds": 9.6,
+      "status": "ok"
+    },
+    "toys": {
+      "seconds": 108.6,
+      "status": "ok"
+    }
+  },
+  "total_seconds": 503.8
+}

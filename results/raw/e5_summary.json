@@ -1,0 +1,74 @@
+{
+  "sweep": [
+    {
+      "A9 patient loss amount": 412904,
+      "A9 patient success": "51/60",
+      "A9 rush loss amount": 197567,
+      "A9 rush success": "25/60",
+      "Delta": "0",
+      "Delta_s": 0,
+      "S10 new-merchant step-up": "0/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 371757,
+      "A9 patient success": "45/60",
+      "A9 rush loss amount": 197567,
+      "A9 rush success": "25/60",
+      "Delta": "1h",
+      "Delta_s": 3600,
+      "S10 new-merchant step-up": "0/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 176766,
+      "A9 patient success": "19/60",
+      "A9 rush loss amount": 73214,
+      "A9 rush success": "11/60",
+      "Delta": "6h",
+      "Delta_s": 21600,
+      "S10 new-merchant step-up": "4/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 58544,
+      "A9 patient success": "4/60",
+      "A9 rush loss amount": 0,
+      "A9 rush success": "0/60",
+      "Delta": "1d",
+      "Delta_s": 86400,
+      "S10 new-merchant step-up": "7/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 0,
+      "A9 patient success": "0/60",
+      "A9 rush loss amount": 0,
+      "A9 rush success": "0/60",
+      "Delta": "3d",
+      "Delta_s": 259200,
+      "S10 new-merchant step-up": "26/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 0,
+      "A9 patient success": "0/60",
+      "A9 rush loss amount": 0,
+      "A9 rush success": "0/60",
+      "Delta": "7d",
+      "Delta_s": 604800,
+      "S10 new-merchant step-up": "51/60",
+      "established step-up (probation)": "0/180"
+    },
+    {
+      "A9 patient loss amount": 0,
+      "A9 patient success": "0/60",
+      "A9 rush loss amount": 0,
+      "A9 rush success": "0/60",
+      "Delta": "14d",
+      "Delta_s": 1209600,
+      "S10 new-merchant step-up": "60/60",
+      "established step-up (probation)": "0/180"
+    }
+  ]
+}

@@ -181,7 +181,8 @@ def hypotheses_from(df: pd.DataFrame, rt: pd.DataFrame) -> dict:
         "m2_loss_A1_A2": f"{int(lk['M2'].sum())}/{len(lk)}", "m1_loss_A1_A2": f"{int(lk['M1'].sum())}/{len(lk)}",
         "mcnemar_p": r["p_value"], "benign_cba_step_up": fmt_rate(cba_su, len(b2)),
         "all_benign_step_up_m2": fmt_rate(int(b2.step_up.sum()), len(b2)),
-        "supported": bool(lk["M2"].sum() < lk["M1"].sum() and r["p_value"] < 0.05 and cba_su / max(1, len(b2)) <= 0.05),
+        "security_part_supported": bool(lk["M2"].sum() < lk["M1"].sum() and r["p_value"] < 0.05),
+        "note": "the step-up target is measured in E4 (held-out brands); the bench value above is context",
     }
     a11 = att[(att.kind == "A11") & (att.config == "M3") & (att.rail.isin(["card", "psp_token"]))]
     a12 = att[(att.kind == "A12")]

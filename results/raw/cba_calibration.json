@@ -1,0 +1,21 @@
+{
+  "calibration_point": {
+    "attack_false_commit": 0.0,
+    "attack_fc_k": 0.0,
+    "attack_n": 282.0,
+    "attack_step_up": 0.5425531914893617,
+    "benign_n": 654.0,
+    "benign_step_k": 89.0,
+    "benign_step_up": 0.13608562691131498,
+    "benign_wrong_commit": 0.0,
+    "tau": 0.075,
+    "theta": 0.9
+  },
+  "embedding_backend": "sentence-transformers/all-MiniLM-L6-v2",
+  "s_min": 0.75,
+  "tau": 0.075,
+  "theta": 0.9,
+  "w_sem": 0.5,
+  "w_str": 0.9,
+  "w_vis": 0.6
+}

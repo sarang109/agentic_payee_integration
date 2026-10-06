@@ -1,0 +1,77 @@
+Biprocess 0 (that is, the initial process):
+(
+    {1}!
+    {2}in(c, q: bitstring);
+    {3}out(c, bucket(q))
+) | (
+    {4}!
+    {5}let k: bitstring = choice[k1,k2] in
+    {6}out(c, h(k));
+    {7}in(c, resp: bitstring)
+)
+
+-- Observational equivalence in biprocess 1 (that is, biprocess 0, with let moved downwards):
+(
+    {1}!
+    {2}in(c, q: bitstring);
+    {3}out(c, bucket(q))
+) | (
+    {4}!
+    {5}let k: bitstring = choice[k1,k2] in
+    {6}out(c, h(k));
+    {7}in(c, resp: bitstring)
+)
+
+Translating the process into Horn clauses...
+Termination warning: v ≠ v_1 && attacker2(v_2,v) && attacker2(v_2,v_1) -> bad
+Selecting 0
+Termination warning: v ≠ v_1 && attacker2(v,v_2) && attacker2(v_1,v_2) -> bad
+Selecting 0
+Completing...
+Termination warning: v ≠ v_1 && attacker2(v_2,v) && attacker2(v_2,v_1) -> bad
+Selecting 0
+Termination warning: v ≠ v_1 && attacker2(v,v_2) && attacker2(v_1,v_2) -> bad
+Selecting 0
+goal reachable: bad
+
+Derivation:
+
+1. Using the function k2 the attacker may obtain k2 (resp. k2).
+attacker2(k2,k2).
+
+2. By 1, the attacker may know k2 (resp. k2).
+Using the function h the attacker may obtain h(k2) (resp. h(k2)).
+attacker2(h(k2),h(k2)).
+
+3. The message h(k1) (resp. h(k2)) may be sent to the attacker at output {6}.
+attacker2(h(k1),h(k2)).
+
+4. By 3, the attacker may know h(k1) (resp. h(k2)).
+By 2, the attacker may know h(k2) (resp. h(k2)).
+We have h(k1) ≠ h(k2).
+The attacker tests equality between the two terms he knows, which may allow it to distinguish cases.
+bad.
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+out(c, ~M) with ~M = h(choice[k1,k2]) at {6} in copy a
+
+The attacker tests whether
+~M = h(choice[k1,k2])
+is equal to
+h(k2).
+The result in the left-hand side is different from the result in the right-hand side.
+A trace has been found.
+RESULT Observational equivalence cannot be proved.
+Looking for simplified processes ...
+No simplified process found.
+
+--------------------------------------------------------------
+Verification summary:
+
+Observational equivalence cannot be proved.
+
+--------------------------------------------------------------
+

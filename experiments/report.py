@@ -88,15 +88,43 @@ def build_report() -> str:
     lines.append(f"| H1 V1 admits no out-of-closure payee; baselines do; false blocks <= 1% | "
                  f"{_verdict(h1.get('supported'))} | M1 loss on A3/A4/A5/A7/A8: {h1.get('m1_loss_on_v1_classes')}; "
                  f"baselines: {h1.get('baseline_losses_on_v1_classes')}; M1 false-block rate {h1.get('m1_false_block_rate')} |")
-    lines.append(f"| H2 V2 lowers lookalike success; benign step-up <= 5% | {_verdict(h2.get('supported'))} | "
-                 f"A1-A2 loss M2 {h2.get('m2_loss_A1_A2')} vs M1 {h2.get('m1_loss_A1_A2')} (McNemar p = "
-                 f"{h2.get('mcnemar_p')}); benign CBA step-up {h2.get('benign_cba_step_up')} (bench: 35% of brands "
-                 f"impersonated; E4 reports the prevalence curve) |")
+    e4_step, e4_prev = None, []
+    try:
+        import pandas as pd
+        ab = pd.read_csv(os.path.join(TABLES, "e4_ablation_heldout.csv"))
+        e4_step = ab[ab.components == "all (str+vis+sem)"]["benign step-up"].iloc[0]
+        pv = pd.read_csv(os.path.join(TABLES, "e4_prevalence.csv"))
+        e4_prev = [f"{r['impersonated share']:g} -> {str(r['benign step-up']).split()[0]}" for _, r in pv.iterrows()]
+    except Exception:
+        pass
+    m2l, m1l = h2.get("m2_loss_A1_A2", "?/?"), h2.get("m1_loss_A1_A2", "?/?")
+    try:
+        sec_ok = int(m2l.split("/")[0]) < int(m1l.split("/")[0]) and h2.get("mcnemar_p", 1) < 0.05
+    except ValueError:
+        sec_ok = False
+    step_ok = e4_step is not None and float(str(e4_step).split()[0]) <= 0.05
+    h2_verdict = "supported" if sec_ok and step_ok else (
+        "partly supported: security part yes, step-up target not met" if sec_ok else "not supported")
+    lines.append(f"| H2 V2 lowers lookalike success; benign step-up <= 5% (E4) | {h2_verdict} | A1-A2 loss M2 "
+                 f"{m2l} vs M1 {m1l} (McNemar p = {h2.get('mcnemar_p', float('nan')):.2g}); E4 held-out benign "
+                 f"step-up {e4_step} with 30% of brands impersonated; by impersonated share: {'; '.join(e4_prev)}. "
+                 f"Attack-dense bench (35% of brands impersonated, ~1.6 exact-name clones each): "
+                 f"{h2.get('benign_cba_step_up')} |")
     h3 = e6.get("H3", {})
+    card_ci = ""
+    try:
+        from .stats import wilson
+        k, n = (int(x) for x in h3.get("card_first_hop_POST_undone", "0/0").split("/"))
+        lo, hi = wilson(k, n)
+        card_ci = f" = {k / n:.4f}, 95% CI [{lo:.3f}, {hi:.3f}] against the 0.99 threshold"
+    except Exception:
+        pass
     lines.append(f"| H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | "
-                 f"{_verdict(h3.get('supported'))} | card POST-safe probability {h3.get('card_post_safe_probability')}, "
-                 f"first-hop voided {h3.get('card_first_hop_POST_undone')}; instant late evidence: POST undone "
-                 f"{h3.get('instant_late_evidence_POST_undone')}, ESCROW undone {h3.get('instant_late_evidence_ESCROW_undone')} |")
+                 f"{_verdict(h3.get('supported'))} | card: POST-safe probability {h3.get('card_post_safe_probability')}, "
+                 f"first-hop swaps voided before capture {h3.get('card_first_hop_POST_undone')}{card_ci}; instant and "
+                 f"stablecoin late evidence: POST undone {h3.get('instant_late_evidence_POST_undone')}, ESCROW undone "
+                 f"{h3.get('instant_late_evidence_ESCROW_undone')} (the instant-rail part holds; the card part misses "
+                 f"the fixed threshold on the point estimate) |")
     h4 = e7.get("H4", {})
     lines.append(f"| H4 V4 keeps decisions; payer p95 <= 150 ms | {_verdict(h4.get('supported'))} | agreement "
                  f"{h4.get('exact_verdict_agreement')} on {h4.get('cases')} cases; payer-side p95 "

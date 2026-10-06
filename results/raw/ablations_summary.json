@@ -1,0 +1,59 @@
+{
+  "ablation1": [
+    {
+      "attempts": 40,
+      "diverted under V1 original": 0,
+      "diverted under v2 core": 0,
+      "edges": "bilateral"
+    },
+    {
+      "attempts": 40,
+      "diverted under V1 original": 40,
+      "diverted under v2 core": 0,
+      "edges": "one-sided"
+    }
+  ],
+  "ablation3": [
+    {
+      "accepted share": 0.0,
+      "reuse accepted": "0/160",
+      "rho": 0,
+      "share of revocations younger than rho": 0.0
+    },
+    {
+      "accepted share": 0.256,
+      "reuse accepted": "41/160",
+      "rho": 60,
+      "share of revocations younger than rho": 0.263
+    },
+    {
+      "accepted share": 0.356,
+      "reuse accepted": "57/160",
+      "rho": 300,
+      "share of revocations younger than rho": 0.356
+    },
+    {
+      "accepted share": 0.5,
+      "reuse accepted": "80/160",
+      "rho": 3600,
+      "share of revocations younger than rho": 0.5
+    },
+    {
+      "accepted share": 0.75,
+      "reuse accepted": "120/160",
+      "rho": 86400,
+      "share of revocations younger than rho": 0.75
+    },
+    {
+      "accepted share": 0.887,
+      "reuse accepted": "142/160",
+      "rho": 604800,
+      "share of revocations younger than rho": 0.887
+    }
+  ],
+  "see_also": {
+    "4": "E5 probation sweep",
+    "5": "E6 observers and collusion",
+    "6": "E1 outage and lying directory"
+  }
+}

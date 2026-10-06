@@ -1,0 +1,8 @@
+variant,verifier learns,identifiers
+V1b / M1,"full path: brand, entity, platform, PSP account, payout account (hashed), all issuers","k + 1 nodes, 2k signers"
+V1a,"as V1b; directory also learns brand, payee, amount, time",as V1b + 5 to directory
+V2 log lookup (plain),-,log operator learns every edge id queried
+V2 log lookup (k-anon 16 bits),-,log learns a prefix; anonymity set ~4
+V3 observers,"first hop, transfer records, terminal credit",observers learn the payment id
+V4 SNARK,"brand, payee p, hiding commitment to terminal, ALLOW bit",2 + 1 commitment (linkable per merchant)
+V4 BBS,"brand, payee p, edge types, scopes, salted link tags, issuer keys",2 + k link tags (linkable) + k issuer keys

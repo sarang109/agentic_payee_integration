@@ -1,0 +1,16 @@
+{
+  "H4": {
+    "added_payer_p95_ms": 12.703666507150047,
+    "allow_block_agreement": "1.000 [0.985, 1.000]",
+    "cases": 250,
+    "exact_verdict_agreement": "1.000 [0.985, 1.000]",
+    "prover_p95_ms": 632.4466957999999,
+    "supported": true
+  },
+  "bbs_all_verified": true,
+  "snark": {
+    "all_verified": true,
+    "prove_p50_ms": 580.2466039999999,
+    "verify_p50_ms": 9.67614599999979
+  }
+}

@@ -1,0 +1,25 @@
+gate,attacker payee,agent compromise rate,unauthorized-payee payment rate
+MERIDIAN,known,0.1,0.0062
+MERIDIAN,known,0.25,0.0156
+MERIDIAN,known,0.5,0.0312
+MERIDIAN,known,1.0,0.0625
+MERIDIAN,novel,0.1,0.0
+MERIDIAN,novel,0.25,0.0
+MERIDIAN,novel,0.5,0.0
+MERIDIAN,novel,1.0,0.0
+blocklist,known,0.1,0.0
+blocklist,known,0.25,0.0
+blocklist,known,0.5,0.0
+blocklist,known,1.0,0.0
+blocklist,novel,0.1,0.1
+blocklist,novel,0.25,0.25
+blocklist,novel,0.5,0.5
+blocklist,novel,1.0,1.0
+none,known,0.1,0.1
+none,known,0.25,0.25
+none,known,0.5,0.5
+none,known,1.0,1.0
+none,novel,0.1,0.1
+none,novel,0.25,0.25
+none,novel,0.5,0.5
+none,novel,1.0,1.0

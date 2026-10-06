@@ -1,0 +1,15 @@
+### E1: V1a under outage and a lying directory (all payees targeted)
+
+| directory           | client            | benign allowed   | attack losses   |
+|:--------------------|:------------------|:-----------------|:----------------|
+| outage              | checks signatures | 0/520            | 0/300           |
+| outage              | trusting          | 0/520            | 0/300           |
+| omit                | checks signatures | 0/520            | 0/300           |
+| omit                | trusting          | 0/520            | 0/300           |
+| stale               | checks signatures | 0/520            | 0/300           |
+| stale               | trusting          | 480/520          | 130/300         |
+| forge               | checks signatures | 0/520            | 0/300           |
+| forge               | trusting          | 480/520          | 130/300         |
+| assert              | checks signatures | 0/520            | 0/300           |
+| assert              | trusting          | 520/520          | 300/300         |
+| (V1b, no directory) | -                 | 480/520          | see E2 (M1-G1)  |

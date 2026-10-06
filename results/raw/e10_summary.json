@@ -1,0 +1,79 @@
+{
+  "coverage": [
+    {
+      "L0->L1 domain to entity": "0.800 [0.584, 0.919]",
+      "LEI issued": "0.350 [0.181, 0.567]",
+      "bank terminal binding (VoP/CoP)": "yes",
+      "full path buildable today": "0.000 [0.000, 0.161]",
+      "market": "EU",
+      "platform/PSP identifiable": "0.000 [0.000, 0.161]",
+      "retailers": 20,
+      "verified mark (VMC)": "0.550 [0.342, 0.742]"
+    },
+    {
+      "L0->L1 domain to entity": "0.950 [0.764, 0.991]",
+      "LEI issued": "0.850 [0.640, 0.948]",
+      "bank terminal binding (VoP/CoP)": "yes",
+      "full path buildable today": "0.050 [0.009, 0.236]",
+      "market": "IN",
+      "platform/PSP identifiable": "0.050 [0.009, 0.236]",
+      "retailers": 20,
+      "verified mark (VMC)": "0.100 [0.028, 0.301]"
+    },
+    {
+      "L0->L1 domain to entity": "0.900 [0.699, 0.972]",
+      "LEI issued": "0.650 [0.433, 0.819]",
+      "bank terminal binding (VoP/CoP)": "yes",
+      "full path buildable today": "0.050 [0.009, 0.236]",
+      "market": "UK",
+      "platform/PSP identifiable": "0.150 [0.052, 0.360]",
+      "retailers": 20,
+      "verified mark (VMC)": "0.250 [0.112, 0.469]"
+    },
+    {
+      "L0->L1 domain to entity": "1.000 [0.839, 1.000]",
+      "LEI issued": "0.600 [0.387, 0.781]",
+      "bank terminal binding (VoP/CoP)": "no",
+      "full path buildable today": "0.000 [0.000, 0.161]",
+      "market": "US",
+      "platform/PSP identifiable": "0.100 [0.028, 0.301]",
+      "retailers": 20,
+      "verified mark (VMC)": "0.500 [0.299, 0.701]"
+    }
+  ],
+  "lookalikes": [
+    {
+      "generated": 499,
+      "market": "EU",
+      "registered": 276,
+      "registered share": 0.553,
+      "retailers": 20,
+      "retailers with >=1 registered lookalike": "20/20"
+    },
+    {
+      "generated": 500,
+      "market": "IN",
+      "registered": 183,
+      "registered share": 0.366,
+      "retailers": 20,
+      "retailers with >=1 registered lookalike": "19/20"
+    },
+    {
+      "generated": 498,
+      "market": "UK",
+      "registered": 252,
+      "registered share": 0.506,
+      "retailers": 20,
+      "retailers with >=1 registered lookalike": "20/20"
+    },
+    {
+      "generated": 497,
+      "market": "US",
+      "registered": 393,
+      "registered share": 0.791,
+      "retailers": 20,
+      "retailers with >=1 registered lookalike": "20/20"
+    }
+  ],
+  "n": 80
+}
