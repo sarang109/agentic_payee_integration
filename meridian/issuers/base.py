@@ -11,7 +11,7 @@ from __future__ import annotations
 import itertools
 import secrets
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 from ..core.canon import b64u, sha256
 from ..core.discharge import CreditConfirmation, TransferRecord
@@ -130,6 +130,7 @@ class Operator(Issuer):
     def __init__(self, name: str, cls: str, namespaces: Set[str], status_registry: StatusRegistry):
         super().__init__(name, cls, namespaces, status_registry)
         self._accounts = itertools.count(1)
+        self._commitments: Dict[Tuple[str, str], str] = {}
 
     def new_account(self, prefix: str = "acct", ns: Optional[str] = None) -> str:
         if ns is None:
@@ -142,10 +143,18 @@ class Operator(Issuer):
 
     def commit(self, payment: Payment, custodian: str, next_hop: str, beta_digest: str,
                kind: str = REMIT, amount: Optional[int] = None) -> Commitment:
+        # one commitment per custodian and payment: an operator that could be
+        # asked twice for different destinations could be framed (Tamarin,
+        # meridian_g2.spthy, no_false_blame)
+        key = (payment.payment_id, custodian)
+        prev = self._commitments.get(key)
+        if prev is not None and prev != next_hop:
+            raise ValueError(f"already committed {custodian} for {payment.payment_id} to {prev}")
+        self._commitments[key] = next_hop
         return Commitment.issue(self.key, kind, payment, custodian, next_hop, beta_digest, amount)
 
     def payout_attestation(self, payment: Payment, custodian: str, payout_acct: str, beta_digest: str) -> Commitment:
-        return Commitment.issue(self.key, PAYOUT, payment, custodian, payout_acct, beta_digest)
+        return self.commit(payment, custodian, payout_acct, beta_digest, kind=PAYOUT)
 
     def transfer_record(self, payment_id: str, custodian: str, to: str, amount: int, t: int) -> TransferRecord:
         return TransferRecord.issue(self.key, payment_id, custodian, to, amount, t)

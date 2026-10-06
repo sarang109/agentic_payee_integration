@@ -1,0 +1,132 @@
+theory MeridianG2
+begin
+
+/*
+ * v2 core: committed routes, terminal subject continuity and attributable
+ * discharge (Theorem 2).
+ *
+ *   brand b --ID--> entity E --AG--> custodian h --commit--> terminal T
+ *
+ * The custodian's operator H signs a remittance commitment (pid, h, next)
+ * bound to the checkout; the account's bank B signs the terminal binding
+ * (E, T) only for an account E really holds. After authorization the
+ * custodian transfers and signs a transfer record; an insider custodian may
+ * deviate. A public judge turns a commitment plus a contradicting transfer
+ * record into a breach certificate naming H.
+ *
+ * T10 committed-route soundness, T11 attributability (no false blame and
+ * blame of deviators is reachable).
+ */
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x, y) @i ==> x = y"
+
+restriction Inequality:
+  "All x #i. Neq(x, x) @i ==> F"
+
+restriction OnceKey:
+  "All a #i #j. KeyOnce(a) @i & KeyOnce(a) @j ==> #i = #j"
+
+// A custodian commits at most once per payment id (it keeps state); without
+// this, an honest custodian asked twice could be framed (found by Tamarin).
+restriction OnceCommit:
+  "All H pid #i #j. CommitOnce(H, pid) @i & CommitOnce(H, pid) @j ==> #i = #j"
+
+restriction OnceBrand:
+  "All b #i #j. BrandOnce(b) @i & BrandOnce(b) @j ==> #i = #j"
+
+rule Register_key:
+  [ Fr(~ltk) ] --[ KeyOnce($A) ]-> [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Reveal_key:
+  [ !Ltk(A, ltk) ] --[ Reveal(A) ]-> [ Out(ltk) ]
+
+rule Brand_owned:
+  [ ] --[ BrandOnce($b), OwnsBrand($E, $b) ]-> [ !Owns($b, $E) ]
+
+rule Open_custodian:
+  [ Fr(~h) ] --[ OpensCustodian($H, $E, ~h) ]-> [ !Custodian($H, $E, ~h), Out(~h) ]
+
+rule Open_bank_account:
+  [ Fr(~T) ] --[ HoldsAccount($B, $E, ~T) ]-> [ !Account($B, $E, ~T), Out(~T) ]
+
+rule DV_issue_ID:
+  [ !Owns(b, E), !Ltk('DV', kdv) ] --[ IssuedID(b, E) ]-> [ Out(sign(<'ID', b, E>, kdv)) ]
+
+rule Entity_authorize_AG:
+  [ !Custodian(H, E, h), !Ltk(E, ke) ] --[ AuthAG(E, h, H) ]-> [ Out(sign(<'AG', E, h, H>, ke)) ]
+
+rule Bank_terminal_binding:
+  [ !Account(B, E, T), !Ltk(B, kb) ] --[ BankBinds(B, E, T) ]-> [ Out(sign(<'TERM', E, T>, kb)) ]
+
+// The custodian commits to remit this payment to an account of the
+// principal it collects for (its configured payout account).
+rule Custodian_commit:
+  [ !Custodian(H, E, h), !Account(B, E, T), !Ltk(H, kh), In(<'PAY', pid>) ]
+  --[ Committed(H, pid, h, T), CommitOnce(H, pid) ]->
+  [ Out(sign(<'COMMIT', pid, h, T>, kh)), Pending(H, pid, h, T) ]
+
+rule Custodian_transfer_honest:
+  [ Pending(H, pid, h, T), !Ltk(H, kh) ]
+  --[ Transferred(H, pid, h, T) ]->
+  [ Out(sign(<'XFER', pid, h, T>, kh)) ]
+
+// An insider custodian sends the funds elsewhere and records it.
+rule Custodian_transfer_deviate:
+  [ Pending(H, pid, h, T), !Ltk(H, kh), In(to) ]
+  --[ Transferred(H, pid, h, to), Deviates(H, pid), Neq(to, T) ]->
+  [ Out(sign(<'XFER', pid, h, to>, kh)) ]
+
+rule Verifier_start:
+  [ Fr(~pid) ] --[ Start($V, $b, ~pid) ]-> [ VState($V, $b, ~pid), Out(<'PAY', ~pid>) ]
+
+rule Verifier_accept_G2:
+  let ok_id = verify(s_id, <'ID', b, E>, pkdv)
+      ok_ag = verify(s_ag, <'AG', E, h, H>, pke)
+      ok_c  = verify(s_c, <'COMMIT', pid, h, T>, pkh)
+      ok_t  = verify(s_t, <'TERM', E, T>, pkb)
+  in
+  [ VState(V, b, pid), !Pk('DV', pkdv), !Pk(E, pke), !Pk(H, pkh), !Pk(B, pkb),
+    In(<E, h, H, T, B, s_id, s_ag, s_c, s_t>) ]
+  --[ AcceptG2(V, b, pid, E, h, T), Eq(ok_id, true), Eq(ok_ag, true), Eq(ok_c, true), Eq(ok_t, true),
+      UsesBank(B) ]->
+  [ ]
+
+// Anyone can check a breach certificate against H's public key.
+rule Judge:
+  let ok_c = verify(s_c, <'COMMIT', pid, h, next>, pkh)
+      ok_x = verify(s_x, <'XFER', pid, h, to>, pkh)
+  in
+  [ !Pk(H, pkh), In(<H, pid, h, next, to, s_c, s_x>) ]
+  --[ Blame(H, pid), Eq(ok_c, true), Eq(ok_x, true), Neq(next, to) ]->
+  [ ]
+
+lemma executable_g2:
+  exists-trace
+  "Ex V b pid E h T #i. AcceptG2(V, b, pid, E, h, T) @i & not (Ex A #r. Reveal(A) @r)"
+
+lemma executable_blame:
+  exists-trace
+  "Ex H pid #i. Blame(H, pid) @i & not (Ex A #r. Reveal(A) @r)"
+
+// T10: an accepted route ends at an account its bank bound to the entity
+// the brand's identity edge names, and that entity owns the brand.
+lemma committed_route_soundness:
+  "All V b pid E h T #i. AcceptG2(V, b, pid, E, h, T) @i ==>
+     ( (Ex #o. OwnsBrand(E, b) @o) | (Ex #r. Reveal('DV') @r) )
+   & ( (Ex B #j. BankBinds(B, E, T) @j) | (Ex B #r. Reveal(B) @r) )"
+
+// The custodian in an accepted route really committed to pay T.
+lemma commitment_authentic:
+  "All V b pid E h T #i. AcceptG2(V, b, pid, E, h, T) @i ==>
+     (Ex H #j. Committed(H, pid, h, T) @j) | (Ex H #r. Reveal(H) @r)"
+
+// T11 (no false blame): a custodian is blamed only if it deviated from its
+// own commitment, or its key was compromised.
+lemma no_false_blame:
+  "All H pid #i. Blame(H, pid) @i ==>
+     (Ex #d. Deviates(H, pid) @d) | (Ex #r. Reveal(H) @r)"
+
+end

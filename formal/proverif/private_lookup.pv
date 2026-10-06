@@ -1,0 +1,35 @@
+(* V4 private log lookup: k-anonymous hash-prefix query.
+
+   The wallet looks up the transparency-log entries for a brand identifier
+   without revealing which brand. Brand identifiers are public (the log
+   operator knows k1 and k2); the property is that the log cannot tell
+   which of two brands that share a bucket is being looked up.
+
+   Observational equivalence between querying k1 and querying k2. *)
+
+free c: channel.
+
+fun h(bitstring): bitstring.
+fun prefix(bitstring): bitstring.
+fun bucket(bitstring): bitstring.     (* the log's bucket contents for a prefix *)
+
+const k1: bitstring.
+const k2: bitstring.
+
+(* k1 and k2 fall into the same bucket *)
+equation prefix(h(k1)) = prefix(h(k2)).
+
+let LogServer =
+  in(c, q: bitstring);
+  out(c, bucket(q)).
+
+let Wallet(k: bitstring) =
+  out(c, prefix(h(k)));
+  in(c, resp: bitstring);
+  (* the wallet checks membership locally; nothing it does next depends on k
+     in a way visible to the log (the subsequent payment goes to the merchant,
+     not to the log) *)
+  0.
+
+process
+  (!LogServer) | (!Wallet(choice[k1, k2]))

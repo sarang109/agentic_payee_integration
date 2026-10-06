@@ -1,0 +1,32 @@
+x-meridian: &meridian
+  build: .
+  image: meridian-artifact:0.2.0
+  platform: linux/amd64
+  volumes:
+    - ./results:/app/results
+  environment:
+    MERIDIAN_SEED: "7"
+    # optional live backends; leave unset for the fully offline run
+    STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY:-}"       # sk_test_... only
+    MERIDIAN_AGENT_MODEL: "${MERIDIAN_AGENT_MODEL:-}"
+
+services:
+  meridian:
+    <<: *meridian
+    command: ["python", "-m", "experiments.run_all"]
+
+  meridian-quick:
+    <<: *meridian
+    environment:
+      MERIDIAN_SEED: "7"
+      MERIDIAN_QUICK: "1"
+    command: ["python", "-m", "experiments.run_all"]
+
+  meridian-offline:
+    <<: *meridian
+    # E10 is the only step that touches the network (passive measurement)
+    command: ["python", "-m", "experiments.run_all", "--skip", "e10"]
+
+  tests:
+    <<: *meridian
+    command: ["python", "-m", "pytest", "-q", "tests"]

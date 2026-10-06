@@ -1,0 +1,89 @@
+# Top online retailers per market used by E10 (hand-curated from public
+# e-commerce rankings; only the public storefront domain is measured).
+# `token` is the distinctive part of the legal name used to match GLEIF
+# records; `legal_name` is set where the trading name differs.
+markets:
+  US:
+    - {domain: amazon.com, token: amazon, legal_name: "Amazon.com, Inc."}
+    - {domain: walmart.com, token: walmart, legal_name: "Walmart Inc."}
+    - {domain: target.com, token: target, legal_name: "Target Corporation"}
+    - {domain: bestbuy.com, token: bestbuy, legal_name: "Best Buy Co., Inc."}
+    - {domain: homedepot.com, token: homedepot, legal_name: "The Home Depot, Inc."}
+    - {domain: costco.com, token: costco, legal_name: "Costco Wholesale Corporation"}
+    - {domain: ebay.com, token: ebay, legal_name: "eBay Inc."}
+    - {domain: lowes.com, token: lowes, legal_name: "Lowe's Companies, Inc."}
+    - {domain: macys.com, token: macys, legal_name: "Macy's, Inc."}
+    - {domain: kohls.com, token: kohls, legal_name: "Kohl's Corporation"}
+    - {domain: wayfair.com, token: wayfair, legal_name: "Wayfair Inc."}
+    - {domain: chewy.com, token: chewy, legal_name: "Chewy, Inc."}
+    - {domain: nordstrom.com, token: nordstrom, legal_name: "Nordstrom, Inc."}
+    - {domain: etsy.com, token: etsy, legal_name: "Etsy, Inc."}
+    - {domain: apple.com, token: apple, legal_name: "Apple Inc."}
+    - {domain: nike.com, token: nike, legal_name: "Nike, Inc."}
+    - {domain: gap.com, token: gap, legal_name: "The Gap, Inc."}
+    - {domain: kroger.com, token: kroger, legal_name: "The Kroger Co."}
+    - {domain: cvs.com, token: cvs, legal_name: "CVS Health Corporation"}
+    - {domain: walgreens.com, token: walgreens, legal_name: "Walgreens Boots Alliance, Inc."}
+  UK:
+    - {domain: tesco.com, token: tesco, legal_name: "Tesco Stores Limited"}
+    - {domain: argos.co.uk, token: argos, legal_name: "Argos Limited"}
+    - {domain: johnlewis.com, token: johnlewis, legal_name: "John Lewis plc"}
+    - {domain: marksandspencer.com, token: marksandspencer, legal_name: "Marks and Spencer plc"}
+    - {domain: next.co.uk, token: next, legal_name: "Next Retail Limited"}
+    - {domain: asos.com, token: asos, legal_name: "ASOS.com Limited"}
+    - {domain: currys.co.uk, token: currys, legal_name: "Currys Group Limited"}
+    - {domain: sainsburys.co.uk, token: sainsbury, legal_name: "Sainsbury's Supermarkets Ltd"}
+    - {domain: boots.com, token: boots, legal_name: "Boots UK Limited"}
+    - {domain: very.co.uk, token: shopdirect, legal_name: "Shop Direct Finance Company Limited"}
+    - {domain: ao.com, token: ao, legal_name: "AO Retail Limited"}
+    - {domain: screwfix.com, token: screwfix, legal_name: "Screwfix Direct Limited"}
+    - {domain: dunelm.com, token: dunelm, legal_name: "Dunelm (Soft Furnishings) Limited"}
+    - {domain: russellandbromley.co.uk, token: russell, legal_name: "Russell & Bromley Limited"}
+    - {domain: sportsdirect.com, token: sportsdirect, legal_name: "Sportsdirect.com Retail Limited"}
+    - {domain: asda.com, token: asda, legal_name: "Asda Stores Limited"}
+    - {domain: waitrose.com, token: waitrose, legal_name: "Waitrose Limited"}
+    - {domain: superdrug.com, token: superdrug, legal_name: "Superdrug Stores plc"}
+    - {domain: halfords.com, token: halfords, legal_name: "Halfords Limited"}
+    - {domain: wickes.co.uk, token: wickes, legal_name: "Wickes Building Supplies Limited"}
+  EU:
+    - {domain: zalando.de, token: zalando, legal_name: "Zalando SE"}
+    - {domain: otto.de, token: otto, legal_name: "Otto (GmbH & Co KG)"}
+    - {domain: mediamarkt.de, token: mediamarkt, legal_name: "MediaMarkt E-Business GmbH"}
+    - {domain: lidl.de, token: lidl, legal_name: "Lidl Digital International GmbH & Co. KG"}
+    - {domain: dm.de, token: dm-drogerie, legal_name: "dm-drogerie markt GmbH + Co. KG"}
+    - {domain: douglas.de, token: douglas, legal_name: "Parfümerie Douglas GmbH"}
+    - {domain: fnac.com, token: fnac, legal_name: "Fnac Darty"}
+    - {domain: cdiscount.com, token: cdiscount, legal_name: "Cdiscount"}
+    - {domain: carrefour.fr, token: carrefour, legal_name: "Carrefour"}
+    - {domain: decathlon.fr, token: decathlon, legal_name: "Decathlon"}
+    - {domain: leroymerlin.fr, token: leroymerlin, legal_name: "Leroy Merlin France"}
+    - {domain: bol.com, token: bol, legal_name: "bol.com B.V."}
+    - {domain: coolblue.nl, token: coolblue, legal_name: "Coolblue B.V."}
+    - {domain: elcorteingles.es, token: corteingles, legal_name: "El Corte Inglés"}
+    - {domain: mediamarkt.es, token: mediamarkt, legal_name: "Media Markt Saturn Administracion España"}
+    - {domain: zara.com, token: inditex, legal_name: "Industria de Diseño Textil"}
+    - {domain: ikea.com, token: ikea, legal_name: "IKEA"}
+    - {domain: hm.com, token: hennes, legal_name: "H & M Hennes & Mauritz AB"}
+    - {domain: aboutyou.de, token: aboutyou, legal_name: "ABOUT YOU SE & Co. KG"}
+    - {domain: thalia.de, token: thalia, legal_name: "Thalia Bücher GmbH"}
+  IN:
+    - {domain: flipkart.com, token: flipkart, legal_name: "Flipkart Internet Private Limited"}
+    - {domain: amazon.in, token: amazon, legal_name: "Amazon Seller Services Private Limited"}
+    - {domain: myntra.com, token: myntra, legal_name: "Myntra Designs Private Limited"}
+    - {domain: nykaa.com, token: nykaa, legal_name: "FSN E-Commerce Ventures Limited"}
+    - {domain: ajio.com, token: reliance, legal_name: "Reliance Retail Limited"}
+    - {domain: meesho.com, token: meesho, legal_name: "Fashnear Technologies Private Limited"}
+    - {domain: tatacliq.com, token: tata, legal_name: "Tata UniStore Limited"}
+    - {domain: croma.com, token: infiniti, legal_name: "Infiniti Retail Limited"}
+    - {domain: reliancedigital.in, token: reliance, legal_name: "Reliance Retail Limited"}
+    - {domain: bigbasket.com, token: supermarket, legal_name: "Supermarket Grocery Supplies Private Limited"}
+    - {domain: jiomart.com, token: reliance, legal_name: "Reliance Retail Limited"}
+    - {domain: snapdeal.com, token: ace, legal_name: "AceVector Limited"}
+    - {domain: firstcry.com, token: brainbees, legal_name: "Brainbees Solutions Limited"}
+    - {domain: lenskart.com, token: lenskart, legal_name: "Lenskart Solutions Limited"}
+    - {domain: pepperfry.com, token: trendsutra, legal_name: "Trendsutra Platform Services Private Limited"}
+    - {domain: decathlon.in, token: decathlon, legal_name: "Decathlon Sports India Private Limited"}
+    - {domain: shoppersstop.com, token: shoppers, legal_name: "Shoppers Stop Limited"}
+    - {domain: swiggy.com, token: swiggy, legal_name: "Swiggy Limited"}
+    - {domain: blinkit.com, token: blink, legal_name: "Blink Commerce Private Limited"}
+    - {domain: zeptonow.com, token: kiranakart, legal_name: "Kiranakart Technologies Private Limited"}

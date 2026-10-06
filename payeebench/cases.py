@@ -487,7 +487,7 @@ def _fake_binding(world, kit, rng, br, t_fake, log: bool = True):
     return tpl, fake, ent
 
 
-def gen_A9(world, kit, rng, n, pv: bool = False):
+def gen_A9(world, kit, rng, n, pv: bool = False, strategy: str = "rush"):
     out = []
     targets = [b for b in world.brands.values() if b.genuine and b.structure in ("S1", "S3", "S4", "S9", "S2")]
     for i in range(n):
@@ -499,6 +499,8 @@ def gen_A9(world, kit, rng, n, pv: bool = False):
             # and the attacker waits it out
             d = world.delta + rng.randrange(HOUR, 3 * DAY)
             world.monitors[br.entity.lei].ignore_refs.add(fake.eid)
+        elif strategy == "patient":
+            d = world.delta + rng.randrange(HOUR, 3 * HOUR)  # waits out probation
         else:
             d = int(rng.lognormvariate(10.3, 1.2))  # attacker cashes out fast (median ~8h)
         t = t_fake + max(600, d)
@@ -507,7 +509,8 @@ def gen_A9(world, kit, rng, n, pv: bool = False):
         bundle = world.bundle_for(tpl, pay)
         lst = Listing(br.brand_id, br.name, br.domain, ent.name, ent.lei, manifest_valid=rng.random() < 0.5,
                       curated=True, known_bad=rng.random() < 0.05, looks_off=False)
-        out.append(Case(f"{'PV1' if pv else 'A9'}-{i:03d}", "PV1" if pv else "A9", "careless-domain-verifier",
+        out.append(Case(f"{'PV1' if pv else 'A9'}-{i:03d}", "PV1" if pv else "A9",
+                        "careless-domain-verifier" if not pv else "monitor-misses-claim",
                         br.structure, "card", br.brand_id, user_words(br, rng), lst, pay, bundle,
                         *honest_exec(tpl), template=tpl, premise_violation=pv, vop_name=ent.name,
                         notes=f"use after {d}s"))

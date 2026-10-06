@@ -98,14 +98,14 @@ class MembershipLog:
     def __init__(self, worker: Optional[ZKWorker] = None) -> None:
         self.worker = worker or shared()
         self.sets: Dict[str, List[RouteSummary]] = {}
-        self._leaf_cache: Dict[int, str] = {}
+        self._leaf_cache: Dict[tuple, str] = {}
         self._trees: Dict[str, Tuple[str, List[dict], List[str]]] = {}
 
     def term_commit(self, s: RouteSummary) -> str:
         return self.worker.call("poseidon", inputs=[str(to_field(s.terminal)), str(s.blinding)])["hash"]
 
     def leaf(self, s: RouteSummary) -> str:
-        key = id(s)
+        key = (s.brand, s.payee, s.terminal, repr(s.scope.to_json()), s.not_before, s.not_after, s.blinding)
         if key in self._leaf_cache:
             return self._leaf_cache[key]
         f = scope_fields(s.scope)

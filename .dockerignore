@@ -1,0 +1,11 @@
+.venv
+**/__pycache__
+.pytest_cache
+.hypothesis
+zk/js/node_modules
+zk/build
+results/raw
+results/tables
+results/figures
+results/cache
+data/tranco/top-1m.csv.zip

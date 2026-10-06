@@ -191,6 +191,13 @@ def _acceptor_ok(e: Edge, ts: TrustStore) -> bool:
     k = e.acceptor_kid
     if lv == L1:
         return ts.is_rep(k, e.dst)
+    if (lu, lv) == (L2, L3):
+        # two parties, one per endpoint: whoever authorised, the operator of
+        # the other endpoint must accept (a platform running both namespaces
+        # legitimately controls both ends)
+        if ts.is_operator(e.issuer_kid, e.src):
+            return ts.is_operator(k, e.dst)
+        return ts.is_operator(k, e.src)
     if lv in (L2, L3):
         return ts.is_operator(k, e.dst)
     if lv == L4:

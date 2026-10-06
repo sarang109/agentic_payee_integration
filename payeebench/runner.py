@@ -67,7 +67,9 @@ def judge(world: World, case: Case, verdict: str, undone: bool) -> Dict:
 def run(world: World, cases: List[Case], configs: Iterable[str] = ALL_CONFIGS, delta: Optional[int] = None,
         rho: int = 300, gossip: bool = True, probation_cap: int = 0, sched: Optional[SchedulerParams] = None,
         cba_params: Optional[CBAParams] = None, seed: int = 0, require_acceptance: bool = True,
-        use_scope_meet: bool = True, progress: bool = False) -> List[Dict]:
+        use_scope_meet: bool = True, progress: bool = False, hook=None) -> List[Dict]:
+    """``hook(case, ctx, outcomes)`` runs after the configurations for each
+    payment, in time order, and may return extra fields for the records."""
     configs = list(configs)
     delta = world.delta if delta is None else delta
     policy = Policy(rho=rho, require_acceptance=require_acceptance, use_scope_meet=use_scope_meet)
@@ -108,8 +110,10 @@ def run(world: World, cases: List[Case], configs: Iterable[str] = ALL_CONFIGS, d
             c = obj
             world.flush_monitors(t)
             world.gossip.publish(world.log.sth(t, "main"))
+            outs = {}
             for cfg in configs:
                 out = evaluate(c, ctx, cfg)
+                outs[cfg] = out
                 j = judge(world, c, out.verdict, out.undone)
                 rec = {
                     "case_id": c.case_id, "kind": c.kind, "variant": c.variant, "structure": c.structure,
@@ -122,6 +126,10 @@ def run(world: World, cases: List[Case], configs: Iterable[str] = ALL_CONFIGS, d
                     "amount": c.payment.amount, "t": c.payment.t, **j,
                 }
                 records.append(rec)
+            if hook is not None:
+                extra = hook(c, ctx, outs) or {}
+                for r in records[-len(configs):]:
+                    r.update(extra)
             done += 1
             if progress and done % 250 == 0:
                 print(f"  {done}/{n_pay} payments")

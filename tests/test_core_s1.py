@@ -59,9 +59,12 @@ def test_route_g2_and_payout_change_is_denied():
     d = verify_route(good, pay, "brand:brandx.com", Policy(), w["trust"])
     assert d.verdict == ALLOW and d.level == G2, d.reasons
     # X3: payout account switched to an account held by someone else
-    bad = RouteBundle(rap, [], [w["psp"].payout_attestation(pay, w["p"], w["evil_acct"], beta.digest)],
-                      w["evil_term"], snaps(w, [w["evil_term"]], pay.t))
-    d = verify_route(bad, pay, "brand:brandx.com", Policy(), w["trust"])
+    pay2 = Payment("pay2", w["p"], "card", "USD", 12_000, "5661", "US", pay.t, "cart-digest", "n2")
+    beta2 = w["psp"].binding_token(pay2)
+    rap2 = RAP([w["e0"], w["e1"]], snaps(w, [w["e0"], w["e1"]], pay2.t), beta2)
+    bad = RouteBundle(rap2, [], [w["psp"].payout_attestation(pay2, w["p"], w["evil_acct"], beta2.digest)],
+                      w["evil_term"], snaps(w, [w["evil_term"]], pay2.t))
+    d = verify_route(bad, pay2, "brand:brandx.com", Policy(), w["trust"])
     assert d.verdict == DENY, d.reasons
     # X6: no onward commitment -> step-up at G1
     none = RouteBundle(rap, [], [], w["term"], snaps(w, [w["term"]], pay.t))
@@ -85,3 +88,13 @@ def test_revoked_edge_steps_up():
     rap = RAP([w["e0"], w["e1"]], snaps(w, [w["e0"], w["e1"]], pay.t), w["psp"].binding_token(pay))
     d = pav(rap, pay, "brand:brandx.com", Policy(), w["trust"])
     assert d.verdict == STEP_UP and "revoked" in d.reasons
+
+
+def test_operator_refuses_second_commitment():
+    import pytest
+    w = build()
+    pay = payment(w)
+    beta = w["psp"].binding_token(pay)
+    w["psp"].payout_attestation(pay, w["p"], w["acct"], beta.digest)
+    with pytest.raises(ValueError):
+        w["psp"].payout_attestation(pay, w["p"], w["evil_acct"], beta.digest)

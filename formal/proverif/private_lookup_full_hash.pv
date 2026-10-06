@@ -1,0 +1,22 @@
+(* Sanity check: sending the full hash instead of a prefix must break the
+   equivalence (ProVerif should find the attack). *)
+
+free c: channel.
+
+fun h(bitstring): bitstring.
+fun bucket(bitstring): bitstring.
+
+const k1: bitstring.
+const k2: bitstring.
+
+let LogServer =
+  in(c, q: bitstring);
+  out(c, bucket(q)).
+
+let Wallet(k: bitstring) =
+  out(c, h(k));
+  in(c, resp: bitstring);
+  0.
+
+process
+  (!LogServer) | (!Wallet(choice[k1, k2]))

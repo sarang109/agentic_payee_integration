@@ -1,0 +1,143 @@
+theory CheckoutExtension
+begin
+
+/*
+ * AP2 / ACP style checkout with and without the MERIDIAN extension.
+ *
+ * The merchant's checkout endpoint signs the checkout object <cart, payee>
+ * with a web-facing key; the brand's legal entity holds a separate
+ * representative key used only to authorise receiving edges. The agent and
+ * the network are the adversary, and the endpoint key may be compromised
+ * (payee swap in the checkout object, A3/A4).
+ *
+ *   default         the wallet pays the payee named in a checkout object
+ *                   signed by the brand's endpoint (mandate payee binding)
+ *   -D=MERIDIAN     the wallet also requires a RAP (DV identity edge, entity-
+ *                   authorised and operator-accepted receiving edge) and the
+ *                   operator's binding token for this cart and nonce
+ *
+ * payee_authenticity captures actor/endpoint authenticity (P18) and
+ * discovery-runtime consistency (P10): every paid payee is one the brand's
+ * entity listed, unless an identity root, the brand owner or the payee's
+ * operator is compromised. It is expected to fail by default and to hold
+ * with MERIDIAN.
+ */
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x, y) @i ==> x = y"
+
+restriction OnceKey:
+  "All a #i #j. KeyOnce(a) @i & KeyOnce(a) @j ==> #i = #j"
+
+restriction OnceEndpoint:
+  "All b #i #j. EndpointOnce(b) @i & EndpointOnce(b) @j ==> #i = #j"
+
+restriction OnceBrand:
+  "All b #i #j. BrandOnce(b) @i & BrandOnce(b) @j ==> #i = #j"
+
+rule Register_key:
+  [ Fr(~ltk) ] --[ KeyOnce($A) ]-> [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Reveal_key:
+  [ !Ltk(A, ltk) ] --[ Reveal(A) ]-> [ Out(ltk) ]
+
+rule Brand_owned:
+  [ ] --[ BrandOnce($b), OwnsBrand($E, $b) ]-> [ !Owns($b, $E) ]
+
+// The brand's web endpoint key, bound to the brand by the merchant identity
+// layer. Compromising it is a separate event from compromising the entity.
+rule Endpoint_for_brand:
+  [ !Owns(b, E), Fr(~kep) ]
+  --[ Endpoint(b), EndpointOnce(b) ]->
+  [ !EndpointKey(b, ~kep), !EndpointPk(b, pk(~kep)), Out(pk(~kep)) ]
+
+rule Reveal_endpoint:
+  [ !EndpointKey(b, k) ] --[ RevealEndpoint(b) ]-> [ Out(k) ]
+
+rule Open_account:
+  [ Fr(~p) ] --[ Opens($O, $E, ~p) ]-> [ !AccountOf($O, $E, ~p), Out(~p) ]
+
+rule Entity_list_payee:
+  [ !Owns(b, E), !AccountOf(O, E, p), !Ltk(E, ke) ]
+  --[ Listed(b, p), AuthAG(E, p, O) ]->
+  [ !ListedPayee(b, p), Out(sign(<'AG', E, p, O>, ke)) ]
+
+rule DV_issue_ID:
+  [ !Owns(b, E), !Ltk('DV', kdv) ] --[ IssuedID(b, E) ]-> [ Out(sign(<'ID', b, E>, kdv)) ]
+
+rule Operator_accept_AG:
+  [ !AccountOf(O, E, p), !Ltk(O, ko) ] --[ AccAG(O, E, p) ]-> [ Out(sign(<'ACC', 'AG', E, p, O>, ko)) ]
+
+rule Operator_checkout:
+  [ !AccountOf(O, E, p), !Ltk(O, ko), In(<'CHECKOUT', cart, n>) ]
+  --[ Beta(O, p, cart, n) ]->
+  [ Out(sign(<'BETA', cart, p, n>, ko)) ]
+
+// Honest endpoint: names a payee the brand listed.
+rule Endpoint_checkout:
+  [ !EndpointKey(b, kep), !ListedPayee(b, p), In(<'CHECKOUT', cart, n>) ]
+  --[ CheckoutObject(b, cart, p) ]->
+  [ Out(<cart, p, sign(<'CART', cart, p, n>, kep)>) ]
+
+rule Wallet_start:
+  [ Fr(~n), Fr(~cart) ] --[ Intent($W, $b) ]-> [ WState($W, $b, ~cart, ~n), Out(<'CHECKOUT', ~cart, ~n>) ]
+
+#ifdef MERIDIAN
+rule Wallet_pay:
+  let ok_cart = verify(s_cart, <'CART', cart, p, n>, pkep)
+      ok_id   = verify(s_id, <'ID', b, E>, pkdv)
+      ok_ag   = verify(s_ag, <'AG', E, p, O>, pke)
+      ok_acc  = verify(s_acc, <'ACC', 'AG', E, p, O>, pko)
+      ok_beta = verify(beta, <'BETA', cart, p, n>, pko)
+  in
+  [ WState(W, b, cart, n), !EndpointPk(b, pkep), !Pk('DV', pkdv), !Pk(E, pke), !Pk(O, pko),
+    In(<p, s_cart, E, O, s_id, s_ag, s_acc, beta>) ]
+  --[ Pay(W, b, p), Eq(ok_cart, true), Eq(ok_id, true), Eq(ok_ag, true), Eq(ok_acc, true), Eq(ok_beta, true) ]->
+  [ ]
+#endif
+
+#ifdef not MERIDIAN
+rule Wallet_pay:
+  let ok_cart = verify(s_cart, <'CART', cart, p, n>, pkep)
+  in
+  [ WState(W, b, cart, n), !EndpointPk(b, pkep), In(<p, s_cart>) ]
+  --[ Pay(W, b, p), Eq(ok_cart, true) ]->
+  [ ]
+#endif
+
+lemma executable:
+  exists-trace
+  "Ex W b p #i. Pay(W, b, p) @i & not (Ex A #r. Reveal(A) @r) & not (Ex c #r. RevealEndpoint(c) @r)"
+
+// Receiving edges bind an entity to a payee, so a payee authorised by the
+// owner of the intended brand is acceptable for every brand that entity
+// owns (multi-brand groups, S9).
+lemma payee_authenticity:
+  "All W b p #i. Pay(W, b, p) @i ==>
+     (Ex E O #o #j. OwnsBrand(E, b) @o & AuthAG(E, p, O) @j)
+   | (Ex #r. Reveal('DV') @r)
+   | (Ex E #o #r. OwnsBrand(E, b) @o & Reveal(E) @r)
+   | (Ex O #r. Reveal(O) @r)"
+
+// Same property when the merchant's web endpoint is the only compromised
+// party: the case the extension is meant to cover.
+lemma endpoint_compromise_only:
+  "All W b p #i. Pay(W, b, p) @i &
+     not (Ex #r. Reveal('DV') @r) &
+     not (Ex E #o #r. OwnsBrand(E, b) @o & Reveal(E) @r) &
+     not (Ex O #r. Reveal(O) @r)
+   ==> (Ex E O #o #j. OwnsBrand(E, b) @o & AuthAG(E, p, O) @j)"
+
+// Discovery-runtime consistency (P10) for single-brand entities: the paid
+// payee was listed for exactly this brand.
+lemma discovery_runtime_consistency:
+  "All W b p #i. Pay(W, b, p) @i &
+     (All E b2 #o #o2. OwnsBrand(E, b) @o & OwnsBrand(E, b2) @o2 ==> b = b2) &
+     not (Ex #r. Reveal('DV') @r) &
+     not (Ex E #o #r. OwnsBrand(E, b) @o & Reveal(E) @r) &
+     not (Ex O #r. Reveal(O) @r)
+   ==> (Ex #j. Listed(b, p) @j)"
+
+end

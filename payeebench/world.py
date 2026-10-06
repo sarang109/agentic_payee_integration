@@ -122,7 +122,7 @@ class BrandRecord:
 
 
 class World:
-    def __init__(self, seed: int = 7, n_brands: int = 130, delta: int = 3 * DAY,
+    def __init__(self, seed: int = 7, n_brands: int = 131, delta: int = 3 * DAY,
                  monitor_median_s: float = 6 * HOUR, monitor_sigma: float = 1.0) -> None:
         self.seed = seed
         self.rng = random.Random(seed)
@@ -410,10 +410,13 @@ class World:
 
     # ------------------------------------------------------------ build
     def build(self) -> "World":
-        names = unique_brands(self.rng, self.n_brands + 40)
-        plan = (["S1"] * 22 + ["S2"] * 10 + ["S3"] * 16 + ["S4"] * 12 + ["S5"] * 8 + ["S6"] * 8 + ["S7"] * 8 +
+        base = (["S1"] * 22 + ["S2"] * 10 + ["S3"] * 16 + ["S4"] * 12 + ["S5"] * 8 + ["S6"] * 8 + ["S7"] * 8 +
                 ["S8"] * 5 + ["S10"] * 6 + ["S11"] * 6 + ["S12"] * 8 + ["S13"] * 6)
+        # scale the structure mix to n_brands (12 brands come from S9 groups)
+        k = max(1, self.n_brands - 12)
+        plan = [base[int(i * len(base) / k)] for i in range(k)] if k < len(base) else base
         self.rng.shuffle(plan)
+        names = unique_brands(self.rng, len(plan) + 16 + 8)
         ni = 0
         for s in plan:
             t0 = self.rng.randrange(1 * DAY, 200 * DAY)

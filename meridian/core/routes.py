@@ -157,7 +157,10 @@ def verify_route(bundle: Optional[RouteBundle], payment: Payment, anchor: Option
     # Commitments from every custodian
     by_h: Dict[str, Commitment] = {}
     for c in bundle.commitments:
-        by_h.setdefault(c.custodian, c)
+        prev = by_h.setdefault(c.custodian, c)
+        if prev is not c and prev.payment_id == c.payment_id and prev.next_hop != c.next_hop:
+            return Decision(DENY, G1, ["conflicting-commitments"], d.root,
+                            sig_checks=SIG_CHECKS.value - start, stage="route")
     missing = [h for h in custodians if h not in by_h]
     if missing:
         verdict = ALLOW if allow_g1 else STEP_UP

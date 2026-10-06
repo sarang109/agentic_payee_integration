@@ -1,0 +1,176 @@
+theory MeridianV1
+begin
+
+/*
+ * MERIDIAN V1: receiving-authority proof (RAP), payee binding token and
+ * scoped credential release, in the Dolev-Yao model. The shopping agent and
+ * the network are the adversary.
+ *
+ *   brand b --ID--> entity E --AG--> payee p (operated by O)
+ *
+ * The ID edge is signed by the trusted domain verifier 'DV' and accepted by
+ * E; the AG edge is authorised by E and accepted by p's operator O. At
+ * checkout O signs the binding token beta over (cart, amount, p, nonce).
+ * The payer-side verifier releases a credential scoped to p.
+ *
+ * Variants (tamarin-prover -D=FLAG):
+ *   NOBETA     the verifier does not check the binding token
+ *   ONESIDED   the verifier does not check the operator's acceptance
+ */
+
+builtins: signing
+
+restriction Equality:
+  "All x y #i. Eq(x, y) @i ==> x = y"
+
+restriction OnceKey:
+  "All a #i #j. KeyOnce(a) @i & KeyOnce(a) @j ==> #i = #j"
+
+restriction OnceBrand:
+  "All b #i #j. BrandOnce(b) @i & BrandOnce(b) @j ==> #i = #j"
+
+// ------------------------------------------------------------ keys / PKI
+
+rule Register_key:
+  [ Fr(~ltk) ]
+  --[ KeyOnce($A) ]->
+  [ !Ltk($A, ~ltk), !Pk($A, pk(~ltk)), Out(pk(~ltk)) ]
+
+rule Reveal_key:
+  [ !Ltk(A, ltk) ] --[ Reveal(A) ]-> [ Out(ltk) ]
+
+// ------------------------------------------------------------ ground truth
+
+// Each brand has exactly one owning entity.
+rule Brand_owned:
+  [ ] --[ BrandOnce($b), OwnsBrand($E, $b) ]-> [ !Owns($b, $E) ]
+
+// An operator opens a processing account for an entity it has onboarded.
+rule Open_account:
+  [ Fr(~p) ]
+  --[ Opens($O, $E, ~p) ]->
+  [ !AccountOf($O, $E, ~p), Out(~p) ]
+
+// ------------------------------------------------------------ issuers
+
+rule DV_issue_ID:
+  [ !Owns(b, E), !Ltk('DV', kdv) ]
+  --[ IssuedID(b, E) ]->
+  [ Out(sign(<'ID', b, E>, kdv)) ]
+
+rule Entity_accept_ID:
+  [ !Owns(b, E), !Ltk(E, ke) ]
+  --[ AccID(E, b) ]->
+  [ Out(sign(<'ACC', 'ID', b, E>, ke)) ]
+
+rule Entity_authorize_AG:
+  [ !AccountOf(O, E, p), !Ltk(E, ke) ]
+  --[ AuthAG(E, p, O) ]->
+  [ Out(sign(<'AG', E, p, O>, ke)) ]
+
+rule Operator_accept_AG:
+  [ !AccountOf(O, E, p), !Ltk(O, ko) ]
+  --[ AccAG(O, E, p) ]->
+  [ Out(sign(<'ACC', 'AG', E, p, O>, ko)) ]
+
+rule Operator_checkout:
+  [ !AccountOf(O, E, p), !Ltk(O, ko), In(<'CHECKOUT', cart, n>) ]
+  --[ Beta(O, p, cart, n) ]->
+  [ Out(sign(<'BETA', cart, p, n>, ko)) ]
+
+// ------------------------------------------------------------ verifier
+
+rule Verifier_start:
+  [ Fr(~n), Fr(~cart) ]
+  --[ Start($V, $b, ~cart, ~n) ]->
+  [ VState($V, $b, ~cart, ~n), Out(<'CHECKOUT', ~cart, ~n>) ]
+
+#ifdef ONESIDED
+rule Verifier_release:
+  let ok_id  = verify(s_id, <'ID', b, E>, pkdv)
+      ok_aid = verify(a_id, <'ACC', 'ID', b, E>, pke)
+      ok_ag  = verify(s_ag, <'AG', E, p, O>, pke)
+      ok_aag = verify(a_ag, <'ACC', 'AG', E, p, O>, pko)
+      ok_b   = verify(beta, <'BETA', cart, p, n>, pko)
+  in
+  [ VState(V, b, cart, n), !Pk('DV', pkdv), !Pk(E, pke), !Pk(O, pko),
+    In(<E, p, O, s_id, a_id, s_ag, a_ag, beta>) ]
+  --[ Release(V, b, p, cart, n),
+      Eq(ok_id, true),
+      Eq(ok_aid, true),
+      Eq(ok_ag, true),
+      Eq(ok_b, true) ]->
+  [ Out(<'CREDENTIAL', p, cart>) ]
+#endif
+
+#ifdef NOBETA
+rule Verifier_release:
+  let ok_id  = verify(s_id, <'ID', b, E>, pkdv)
+      ok_aid = verify(a_id, <'ACC', 'ID', b, E>, pke)
+      ok_ag  = verify(s_ag, <'AG', E, p, O>, pke)
+      ok_aag = verify(a_ag, <'ACC', 'AG', E, p, O>, pko)
+      ok_b   = verify(beta, <'BETA', cart, p, n>, pko)
+  in
+  [ VState(V, b, cart, n), !Pk('DV', pkdv), !Pk(E, pke), !Pk(O, pko),
+    In(<E, p, O, s_id, a_id, s_ag, a_ag, beta>) ]
+  --[ Release(V, b, p, cart, n),
+      Eq(ok_id, true),
+      Eq(ok_aid, true),
+      Eq(ok_ag, true),
+      Eq(ok_aag, true) ]->
+  [ Out(<'CREDENTIAL', p, cart>) ]
+#endif
+
+#ifdef not ONESIDED & not NOBETA
+rule Verifier_release:
+  let ok_id  = verify(s_id, <'ID', b, E>, pkdv)
+      ok_aid = verify(a_id, <'ACC', 'ID', b, E>, pke)
+      ok_ag  = verify(s_ag, <'AG', E, p, O>, pke)
+      ok_aag = verify(a_ag, <'ACC', 'AG', E, p, O>, pko)
+      ok_b   = verify(beta, <'BETA', cart, p, n>, pko)
+  in
+  [ VState(V, b, cart, n), !Pk('DV', pkdv), !Pk(E, pke), !Pk(O, pko),
+    In(<E, p, O, s_id, a_id, s_ag, a_ag, beta>) ]
+  --[ Release(V, b, p, cart, n),
+      Eq(ok_id, true),
+      Eq(ok_aid, true),
+      Eq(ok_ag, true),
+      Eq(ok_aag, true),
+      Eq(ok_b, true) ]->
+  [ Out(<'CREDENTIAL', p, cart>) ]
+#endif
+
+// ------------------------------------------------------------ lemmas
+
+lemma executable:
+  exists-trace
+  "Ex V b p c n #i. Release(V, b, p, c, n) @i & not (Ex A #r. Reveal(A) @r)"
+
+// T1: if the verifier releases, an honest authorisation chain from b to p
+// exists, unless the domain verifier, the brand owner or p's operator was
+// compromised.
+lemma df_soundness:
+  "All V b p c n #i. Release(V, b, p, c, n) @i ==>
+     (Ex E O #j #k. IssuedID(b, E) @j & AuthAG(E, p, O) @k &
+        ((Ex #l. AccAG(O, E, p) @l) | (Ex #r. Reveal(O) @r)))
+   | (Ex #r. Reveal('DV') @r)
+   | (Ex E #o #r. OwnsBrand(E, b) @o & Reveal(E) @r)"
+
+// T2: controlling only the authorising endpoint does not create an
+// accepted edge: every released payee was accepted by its operator, or that
+// operator's key is compromised.
+lemma unilateral_claim_resistance:
+  "All V b p c n #i. Release(V, b, p, c, n) @i ==>
+     (Ex O E #l. AccAG(O, E, p) @l) | (Ex O #r. Reveal(O) @r)"
+
+// T4: changing p after the binding token is issued causes rejection: every
+// release is backed by a binding token for exactly this p, cart and nonce.
+lemma post_binding_swap:
+  "All V b p c n #i. Release(V, b, p, c, n) @i ==>
+     (Ex O #j. Beta(O, p, c, n) @j) | (Ex O #r. Reveal(O) @r)"
+
+// Each checkout nonce authorises at most one release.
+lemma release_unique:
+  "All V b p c n #i #j. Release(V, b, p, c, n) @i & Release(V, b, p, c, n) @j ==> #i = #j"
+
+end
