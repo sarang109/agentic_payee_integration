@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: Kulkarni
     given-names: Sarang
+    orcid: "https://orcid.org/0000-0002-3122-8353"
 license: Apache-2.0
 repository-code: "https://github.com/sarang109/agentic_payee_integration"
 keywords:

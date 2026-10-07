@@ -31,6 +31,12 @@ from .common import FIGURES, QUICK, RAW, ROOT, SEED, Timer, write_csv, write_jso
 from .stats import fmt_rate
 
 TRANCO = os.path.join(ROOT, "data", "tranco", "tranco_56WKN_top20k.csv")  # Tranco list 56WKN, top 20k
+# Components used by the calibrated anchoring. The visual and semantic
+# signals made no measurable difference in the ablation or in the string-weak
+# stress set, so the calibrated configuration uses the string signal (UTS #39
+# skeleton and edit distance) with the LEI distinction; the others remain
+# available through CBAParams.use and are still reported in the ablation.
+DEFAULT_USE = ("str",)
 OK_TLDS = {"com", "net", "org", "co.uk", "de", "fr", "in", "co.in", "nl", "es", "it", "shop", "store", "io"}
 
 
@@ -180,7 +186,7 @@ def run_e4() -> dict:
     with Timer("E4 sweep theta x tau on the calibration split"):
         for th in thetas:
             for tau in taus:
-                cba = CBA(reg, CBAParams(theta=th, tau=float(tau)), emb)
+                cba = CBA(reg, CBAParams(theta=th, tau=float(tau), use=DEFAULT_USE), emb)
                 r = evaluate(cba, genuine, looks, calib, SEED)
                 curve.append({"theta": th, "tau": float(tau), **r})
     cv = pd.DataFrame(curve)
@@ -195,7 +201,7 @@ def run_e4() -> dict:
     else:  # no safe point: minimise mis-anchoring first, never trade it for fewer step-ups
         cv["_err"] = cv.attack_false_commit + cv.benign_wrong_commit
         pick = cv.sort_values(["_err", "benign_step_up", "tau"], ascending=[True, True, False]).iloc[0]
-    params = CBAParams(theta=float(pick.theta), tau=float(pick.tau))
+    params = CBAParams(theta=float(pick.theta), tau=float(pick.tau), use=DEFAULT_USE)
 
     # held-out evaluation and ablations
     rows = []
@@ -222,6 +228,15 @@ def run_e4() -> dict:
                 f"E4: held-out operating point (theta={params.theta}, tau={params.tau}) and component ablation",
                 "Wilson 95% intervals. Prevalence of impersonated brands in the registry: 30%.", index=False)
 
+    # targeted stress set (exploratory): rivals that share nothing lexical
+    # with the brand, which the main bench does not contain
+    write_table("e4_string_weak", string_weak(reg, params, emb, [c for c in genuine if c.brand_id in test]),
+                "E4 (exploratory): lookalikes with no name overlap, by component set",
+                "Not part of the pre-registered calibration. Each held-out brand gets one rival with a random name and "
+                "domain that copies its logo (re-encoded), its site description, or both; the agent surfaces the rival "
+                "as a candidate. 'name' intents use the brand name, 'description' intents the brand's site "
+                "description. Wrong commit means anchoring committed to the rival.", index=False)
+
     # prevalence sensitivity at the chosen point
     prev_rows = []
     for prev in [0.05, 0.2, 0.5, 1.0]:
@@ -234,10 +249,48 @@ def run_e4() -> dict:
                 index=False)
 
     cal = {"theta": params.theta, "tau": params.tau, "w_str": params.w_str, "w_vis": params.w_vis,
-           "w_sem": params.w_sem, "s_min": params.s_min, "embedding_backend": emb.backend,
+           "w_sem": params.w_sem, "s_min": params.s_min, "use": list(params.use), "embedding_backend": emb.backend,
            "calibration_point": pick.to_dict()}
     write_json("cba_calibration", cal)
     return cal
+
+
+def string_weak(reg, params, emb, brands: List[Candidate]) -> pd.DataFrame:
+    from payeebench.names import brand_name
+
+    rng = random.Random(SEED + 77)
+    rows = []
+    rivals = []
+    for c in brands:
+        nm = brand_name(rng)
+        flip = sum(1 << rng.randrange(64) for _ in range(3))
+        logo = (c.logo_hash ^ flip) if c.logo_hash is not None else None
+        for kind in ("logo clone", "description twin", "logo + description"):
+            rv = Candidate(f"rival:{kind}:{c.brand_id}", nm, f"{nm.lower()}{rng.randrange(99)}.shop",
+                           make_lei(f"rival|{kind}|{c.brand_id}"),
+                           logo_hash=logo if "logo" in kind else None,
+                           description=c.description if "description" in kind else f"{nm} online store")
+            rivals.append((c, kind, rv))
+    for name, use in [("string only", ("str",)), ("string+visual", ("str", "vis")),
+                      ("string+semantic", ("str", "sem")), ("all (str+vis+sem)", ("str", "vis", "sem"))]:
+        cba = CBA(reg, replace(params, use=use), emb)
+        for intent in ("name", "description"):
+            for kind in ("logo clone", "description twin", "logo + description"):
+                xs = [(c, rv) for c, k, rv in rivals if k == kind]
+                wrong = step = right = 0
+                for c, rv in xs:
+                    words = c.name if intent == "name" else (c.description or c.name)
+                    a = cba.anchor(words, extra=[rv])
+                    if not a.committed:
+                        step += 1
+                    elif a.brand == rv.brand_id:
+                        wrong += 1
+                    elif a.brand == c.brand_id:
+                        right += 1
+                rows.append({"components": name, "intent": intent, "rival": kind, "n": len(xs),
+                             "wrong commit": fmt_rate(wrong, len(xs)), "step-up": fmt_rate(step, len(xs)),
+                             "correct commit": fmt_rate(right, len(xs))})
+    return pd.DataFrame(rows)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+{
+  "attack": "important_instructions",
+  "errors": 0,
+  "est_cost_usd": 1.12,
+  "in_tokens": 6506967,
+  "llm_calls": 5867,
+  "model": "gpt-4o-mini-2024-07-18",
+  "note": "AgentDojo passes temperature 0.0 as unset, so the provider default temperature applies",
+  "out_tokens": 246970,
+  "price_basis_usd_per_mtok": [
+    0.15,
+    0.6
+  ],
+  "provider": "openai",
+  "run_date_utc": "2026-10-07",
+  "runs": 1516,
+  "suite": "AgentDojo banking v1",
+  "wall_clock_s": 492.3,
+  "workers": 12
+}

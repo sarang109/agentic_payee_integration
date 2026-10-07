@@ -30,7 +30,7 @@ def calibrated_cba() -> CBAParams:
     with open(path) as fh:
         c = json.load(fh)
     return CBAParams(theta=c["theta"], tau=c["tau"], w_str=c["w_str"], w_vis=c["w_vis"], w_sem=c["w_sem"],
-                     s_min=c["s_min"])
+                     s_min=c["s_min"], use=tuple(c.get("use", ("str", "vis", "sem"))))
 
 
 ORDER = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "M1-G1", "M1", "M2", "M3"]
@@ -151,6 +151,19 @@ def run_e2_e3() -> dict:
     write_table("rq5_per_rail", rt.round(4), "RQ5: per-rail security / utility by configuration", index=False)
 
     summary = hypotheses_from(df, rt)
+    write_table("rq5_pareto", pareto_table(rt), "RQ5 (exploratory): security versus friction per rail",
+                "Not a pre-registered analysis. A configuration is on the frontier when no other configuration has "
+                "both lower or equal loss and lower or equal benign step-up, with one strictly lower. Rails with no "
+                "attack cases are omitted.", index=False)
+    with Timer("E2 AIP-Bench external scenarios (exploratory)"):
+        summary["aip_external_loss"] = aip_external(8 if QUICK else 30)
+    with Timer("RQ5 BNPL supplement (exploratory)"):
+        bn = bnpl_supplement(15 if QUICK else 60, 20 if QUICK else 90)
+    rt_bn = pd.concat([rt[rt.rail != "bnpl"], pd.DataFrame(bn["rows"])], ignore_index=True)
+    summary["H5_exploratory_with_bnpl_supplement"] = {k: v for k, v in h5_verdict(rt_bn).items()
+                                                      if not k.startswith("legacy")}
+    write_table("rq5_pareto_with_bnpl", pareto_table(rt_bn[rt_bn.rail == "bnpl"]),
+                "RQ5 (exploratory): BNPL frontier from the supplement", index=False)
     summary["cba_params"] = {"theta": cba_params.theta, "tau": cba_params.tau}
     summary["n_cases"] = int(df.case_id.nunique())
     summary["n_records"] = len(df)
@@ -192,12 +205,123 @@ def hypotheses_from(df: pd.DataFrame, rt: pd.DataFrame) -> dict:
         "A12_M3_modes": a12[a12.config == "M3"].groupby("mode").size().to_dict(),
         "note": "full H3 decision uses E6",
     }
-    best = {}
-    for rail, g in rt[rt.config.isin(["M1", "M2", "M3"])].groupby("rail"):
-        g = g.sort_values(["loss_rate", "benign_step_up", "p95_decision_ms"])
-        best[rail] = g.iloc[0]["config"]
-    out["H5"] = {"best_meridian_config_per_rail": best, "supported": len(set(best.values())) > 1}
+    out["H5"] = h5_verdict(rt)
     return out
+
+
+def best_sets(rt: pd.DataFrame, configs=("M1", "M2", "M3")) -> dict:
+    """Per rail with attack data: the configurations with the lowest loss
+    rate and, among those, the lowest benign step-up rate. Exact ties are
+    kept as ties; decision latency is not used to break them."""
+    out = {}
+    for rail, g in rt[rt.config.isin(configs)].groupby("rail"):
+        if g.loss_rate.isna().all():
+            continue
+        g = g[g.loss_rate == g.loss_rate.min()]
+        g = g[g.benign_step_up == g.benign_step_up.min()]
+        out[rail] = sorted(g.config)
+    return out
+
+
+def h5_verdict(rt: pd.DataFrame) -> dict:
+    """Pre-registered rule: supported if the configuration with the lowest
+    (loss, step-up) on one rail differs from the one on another. With ties
+    this means: no configuration is among the best on every rail that has
+    attack data. Rails with no attack cases cannot rank configurations on
+    loss and are left out."""
+    best = best_sets(rt)
+    common = set.intersection(*(set(v) for v in best.values())) if best else set()
+    no_attacks = sorted(set(rt.rail) - set(best))
+    # the earlier computation, kept for the record: sorted by loss, step-up
+    # and decision latency, with NaN loss sorting last
+    legacy = {}
+    for rail, g in rt[rt.config.isin(["M1", "M2", "M3"])].groupby("rail"):
+        legacy[rail] = g.sort_values(["loss_rate", "benign_step_up", "p95_decision_ms"]).iloc[0]["config"]
+    return {"best_meridian_configs_per_rail": best, "rails_without_attack_cases": no_attacks,
+            "best_on_every_rail": sorted(common), "supported": bool(best) and not common,
+            "legacy_latency_tiebreak": legacy, "legacy_supported": len(set(legacy.values())) > 1}
+
+
+def pareto_table(rt: pd.DataFrame, configs=("B7", "M1", "M2", "M3")) -> pd.DataFrame:
+    """Exploratory (not pre-registered): per rail, configurations not
+    dominated on (loss rate, benign step-up rate)."""
+    rows = []
+    for rail, g in rt[rt.config.isin(configs)].groupby("rail"):
+        g = g.dropna(subset=["loss_rate"])
+        for _, r in g.iterrows():
+            dominated = any((o.loss_rate <= r.loss_rate and o.benign_step_up <= r.benign_step_up and
+                             (o.loss_rate < r.loss_rate or o.benign_step_up < r.benign_step_up))
+                            for _, o in g.iterrows())
+            rows.append({"rail": rail, "config": r.config, "attack loss": r.attack_loss,
+                         "loss rate": round(r.loss_rate, 4), "benign step-up": round(r.benign_step_up, 4),
+                         "on the frontier": "yes" if not dominated else ""})
+    return pd.DataFrame(rows)
+
+
+def aip_external(n_per: int = 30) -> dict:
+    """AIP-Bench payee-diversion scenarios replayed on a separate world
+    (exploratory; the attack specification is external, the instance is
+    generated)."""
+    import random
+
+    from payeebench.cases import AIP_SCENARIOS, AttackerKit, gen_aip_external
+    from payeebench.world import World
+
+    world = World(seed=SEED).build()
+    rng = random.Random(SEED * 1000 + 41)
+    cases = gen_aip_external(world, AttackerKit(world, rng), rng, n_per)
+    df = pd.DataFrame(run(world, cases, ALL_CONFIGS, seed=SEED, cba_params=calibrated_cba()))
+    write_csv("e2_aip_external_records", df)
+    df["scenario"] = df.variant.str.rsplit(":", n=1).str[0]
+    g = df.groupby(["scenario", "config"]).loss.agg(["sum", "count"]).reset_index()
+    g["cell"] = g.apply(lambda r: f"{int(r['sum'])}/{int(r['count'])}", axis=1)
+    t = g.pivot(index="scenario", columns="config", values="cell")
+    t = t[[c for c in ORDER if c in t.columns]]
+    t.index = [f"{k}: {AIP_SCENARIOS[k]}" for k in t.index]
+    write_table("e2_aip_external", t, "E2 (exploratory): payee-diversion scenarios specified by AIP-Bench",
+                "Scenarios from AIP-Bench (arXiv 2607.21824; Hugging Face anonymos-2321135/aip-bench, CC BY 4.0, "
+                "revision eaa6015). The scenario fixes what the attacker controls; brands, rails and attacker "
+                "infrastructure come from the PayeeBench generator, so this reduces but does not remove the "
+                "circularity of a self-built bench. AIP-Bench scenarios that steal the payer's credentials "
+                "(A-AP2-5, A-AP2-15) or forge mandates (A-AP2-4) are outside MERIDIAN's object and not replayed.")
+    return {c: int(df[df.config == c].loss.sum()) for c in ALL_CONFIGS}
+
+
+def bnpl_supplement(n_attack: int = 60, n_benign: int = 90) -> dict:
+    """BNPL attack set on its own world (the pre-registered bench has no
+    attacks on the BNPL rail). Exploratory: added after the pre-registered
+    run, reported separately and not used for the H5 verdict."""
+    import random
+
+    from payeebench.cases import AttackerKit, gen_benign, gen_bnpl
+    from payeebench.world import World
+
+    world = World(seed=SEED).build()
+    rng = random.Random(SEED * 1000 + 29)
+    kit = AttackerKit(world, rng)
+    ben = [c for c in gen_benign(world, rng, n_benign) if c.variant == "S6"]
+    att = gen_bnpl(world, kit, rng, n_attack)
+    df = pd.DataFrame(run(world, ben + att, ALL_CONFIGS, seed=SEED, cba_params=calibrated_cba()))
+    write_csv("rq5_bnpl_records", df)
+    a = df[df.kind != "benign"]
+    t = _sort_kinds(_counts(a, "loss"))
+    t.index = [f"{k} {ATTACKS.get(k, '')}" for k in t.index]
+    b = df[df.kind == "benign"]
+    su = b.groupby("config").step_up.agg(["sum", "count"])
+    t.loc["benign step-ups (S6)"] = [f"{int(su.loc[c, 'sum'])}/{int(su.loc[c, 'count'])}" for c in t.columns]
+    write_table("rq5_bnpl_supplement", t, "RQ5 supplement: attacks on the BNPL route (exploratory, separate world)",
+                "Not part of the pre-registered bench. A3/A4 swap the payee, A11 is a first-hop mismatch after "
+                "authorization, A13 the lender's PSP pays out to an insider. M3 does not undo A11 or A13 here: the "
+                "modelled BNPL void success (0.98, config/rails.yaml) is below 1 - eps = 0.99, so POST is not "
+                "POST-safe under Theorem 3 and RWS falls back to PRE, which detects but cannot undo.")
+    rows = []
+    for cfg, g in df.groupby("config"):
+        aa, bb = g[g.kind != "benign"], g[g.kind == "benign"]
+        rows.append({"rail": "bnpl", "config": cfg, "attack_loss": f"{int(aa.loss.sum())}/{len(aa)}",
+                     "loss_rate": aa.loss.mean(), "benign_step_up": bb.step_up.mean(),
+                     "benign_false_block": bb.false_block.mean(), "p95_decision_ms": g.decision_ms.quantile(0.95)})
+    return {"rows": rows, "loss": {c: int(df[(df.kind != "benign") & (df.config == c)].loss.sum())
+                                   for c in ALL_CONFIGS}}
 
 
 if __name__ == "__main__":

@@ -276,28 +276,45 @@ def run_e7() -> dict:
     ])
     write_table("e7_sizes", sizes, "E7: proof size", index=False)
 
+    a16 = next(r["median anonymity set"] for r in lrows if r["scheme"] == "k-anon prefix 16 bits")
+    a12 = next(r["median anonymity set"] for r in lrows if r["scheme"] == "k-anon prefix 12 bits")
     leak = pd.DataFrame([
-        {"variant": "V1b / M1", "verifier learns": "full path: brand, entity, platform, PSP account, payout account (hashed), "
-         "all issuers", "identifiers": "k + 1 nodes, 2k signers"},
-        {"variant": "V1a", "verifier learns": "as V1b; directory also learns brand, payee, amount, time",
-         "identifiers": "as V1b + 5 to directory"},
-        {"variant": "V2 log lookup (plain)", "verifier learns": "-", "identifiers": "log operator learns every edge id queried"},
-        {"variant": "V2 log lookup (k-anon 16 bits)", "verifier learns": "-",
-         "identifiers": f"log learns a prefix; anonymity set ~{lrows[2]['median anonymity set']}"},
-        {"variant": "V3 observers", "verifier learns": "first hop, transfer records, terminal credit",
-         "identifiers": "observers learn the payment id"},
-        {"variant": "V4 SNARK", "verifier learns": "brand, payee p, hiding commitment to terminal, ALLOW bit",
-         "identifiers": "2 + 1 commitment (linkable per merchant)"},
-        {"variant": "V4 BBS", "verifier learns": "brand, payee p, edge types, scopes, salted link tags, issuer keys",
-         "identifiers": "2 + k link tags (linkable) + k issuer keys"},
+        {"variant": "V1b / M1", "payer learns": "full path: brand, entity, platform, PSP account, payout account "
+         "(hashed), every issuer", "hidden from payer": "nothing", "third parties learn": "-",
+         "linkable across payments": "yes (path identifiers)"},
+        {"variant": "V1a", "payer learns": "as V1b", "hidden from payer": "nothing",
+         "third parties learn": "directory: brand, payee, amount, time", "linkable across payments": "yes"},
+        {"variant": "V2 log lookup (plain)", "payer learns": "-", "hidden from payer": "-",
+         "third parties learn": "log operator: every edge id queried", "linkable across payments": "yes (by the log)"},
+        {"variant": "V2 log lookup (k-anon, 16-bit prefix)", "payer learns": "-", "hidden from payer": "-",
+         "third parties learn": f"log operator: a prefix shared by ~{a16} records (~{a12} at 12 bits)",
+         "linkable across payments": "partly (prefix repeats)"},
+        {"variant": "V2 log lookup (2-server PIR)", "payer learns": "-", "hidden from payer": "-",
+         "third parties learn": "nothing, unless the two servers collude", "linkable across payments": "no"},
+        {"variant": "V3 observers", "payer learns": "first hop, transfer records, terminal credit",
+         "hidden from payer": "-", "third parties learn": "observers: the payment id",
+         "linkable across payments": "yes (by observers)"},
+        {"variant": "V4 SNARK", "payer learns": "brand, payee p, hiding commitment to terminal, ALLOW bit",
+         "hidden from payer": "intermediate entities, platform, PSP and payout accounts, issuers, scopes, terminal "
+         "account", "third parties learn": "-", "linkable across payments": "yes, per merchant (same p and commitment)"},
+        {"variant": "V4 BBS", "payer learns": "brand, payee p, edge types, scopes, salted link tags, issuer keys",
+         "hidden from payer": "intermediate entity identities and accounts", "third parties learn": "-",
+         "linkable across payments": "yes, per merchant (link tags, issuer keys)"},
     ])
-    write_table("e7_leakage", leak, "E7: what each variant reveals per payment", index=False)
+    write_table("e7_leakage", leak, "E7: what each variant reveals per payment",
+                "T9 is scoped to the 'hidden from payer' column: V4 hides the acquiring relationships and the "
+                "terminal account. It does not hide the brand or the payee identifier the payment is addressed to, "
+                "and proofs for the same merchant are linkable. Anonymity sets are for a log of "
+                f"{lrows[0]['records']:,} records and shrink as the log grows.", index=False)
 
     out["H4"] = {
         "cases": len(df), "exact_verdict_agreement": fmt_rate(int(agree.sum()), len(df)),
         "allow_block_agreement": fmt_rate(int(blockagree.sum()), len(df)),
         "added_payer_p95_ms": float(allowed.m4_verify_ms.quantile(0.95)) if len(allowed) else None,
         "prover_p95_ms": float(sn.prove_ms.quantile(0.95)),
+        "variant": "SNARK (Groth16); decision agreement and latency are measured for this variant",
+        "bbs_verify_p95_ms": float(bdf[bdf.k_edges == 3].verify_ms.quantile(0.95)),
+        "bbs_meets_latency_target": bool(bdf[bdf.k_edges == 3].verify_ms.quantile(0.95) <= 150),
         "supported": bool(agree.all() and len(allowed) and allowed.m4_verify_ms.quantile(0.95) <= 150),
     }
     out["snark"] = {"prove_p50_ms": float(sn.prove_ms.median()), "verify_p50_ms": float(sn.verify_ms.median()),

@@ -20,6 +20,12 @@ data/tranco/tranco_56WKN_top20k.csv
   W. Joosen, "Tranco: A Research-Oriented Top Sites Ranking Hardened Against
   Manipulation," NDSS 2019.
 
+AIP-Bench scenario specifications
+  payeebench/cases.py summarises four scenarios from AIP-Bench (Y. Louck,
+  "Protocol-Level Attacks on Agentic Commerce Platforms", arXiv 2607.21824;
+  dataset anonymos-2321135/aip-bench, CC BY 4.0). The dataset itself is not
+  redistributed.
+
 Third-party data that is NOT redistributed
 ------------------------------------------
 

@@ -274,8 +274,8 @@ def gen_A2(world, kit, rng, n) -> List[Case]:
 
 # ------------------------------------------------------------------ A3 / A4
 
-def _swap_case(world, kit, rng, cid, kind, variant) -> Case:
-    br, tpl = rng.choice(_templates_for(world, {"S1", "S2", "S3", "S4", "S9", "S12", "S13"}))
+def _swap_case(world, kit, rng, cid, kind, variant, targets=None) -> Case:
+    br, tpl = rng.choice(targets or _templates_for(world, {"S1", "S2", "S3", "S4", "S9", "S12", "S13"}))
     rail = pick_rail(tpl, rng)
     t = in_window(rng)
     att = kit.merchant(f"Px{rng.randrange(10**6)}", f"px{rng.randrange(10**8)}.com", t - rng.randrange(DAY, 30 * DAY),
@@ -539,9 +539,9 @@ def gen_A10(world, kit, rng, n, pv: bool = False):
 
 # ------------------------------------------------------------------ A11 / A13
 
-def gen_A11(world, kit, rng, n, pv: bool = False):
+def gen_A11(world, kit, rng, n, pv: bool = False, targets=None, prefix: str = ""):
     out = []
-    targets = [(b, t) for b, t in _templates_for(world, {"S1", "S3", "S4", "S9", "S7"}) if "card" in t.rails]
+    targets = targets or [(b, t) for b, t in _templates_for(world, {"S1", "S3", "S4", "S9", "S7"}) if "card" in t.rails]
     for i in range(n):
         br, tpl = rng.choice(targets)
         t = in_window(rng)
@@ -552,16 +552,16 @@ def gen_A11(world, kit, rng, n, pv: bool = False):
         bundle = world.bundle_for(tpl, pay)
         variant = ["transaction-laundering", "acquirer-level-swap"][i % 2]
         kind = "PV2" if pv else "A11"
-        out.append(Case(f"{kind}-{i:03d}", kind, variant, br.structure, rail, br.brand_id, user_words(br, rng),
+        out.append(Case(f"{prefix}{kind}-{i:03d}", kind, variant, br.structure, rail, br.brand_id, user_words(br, rng),
                         genuine_listing(br, rng), pay, bundle, p2, [(p2, acct2, psp2.key)], acct2, template=tpl,
                         receipt_visible=(variant == "transaction-laundering"),
                         corrupt_observers=99 if pv else 0, premise_violation=pv, vop_name=tpl.merchant_name))
     return out
 
 
-def gen_A13(world, kit, rng, n):
+def gen_A13(world, kit, rng, n, targets=None, prefix: str = ""):
     out = []
-    targets = _templates_for(world, {"S3", "S7"})
+    targets = targets or _templates_for(world, {"S3", "S7"})
     for i in range(n):
         br, tpl = rng.choice(targets)
         t = in_window(rng)
@@ -572,9 +572,69 @@ def gen_A13(world, kit, rng, n):
         bundle = world.bundle_for(tpl, pay)
         main, key = tpl.custodians[0]
         hops = [(main, acct, key)]
-        out.append(Case(f"A13-{i:03d}", "A13", "custodian-deviates", br.structure, rail, br.brand_id,
+        out.append(Case(f"{prefix}A13-{i:03d}", "A13", "custodian-deviates", br.structure, rail, br.brand_id,
                         user_words(br, rng), genuine_listing(br, rng), pay, bundle, tpl.payee, hops, acct,
                         template=tpl, vop_name=tpl.merchant_name))
+    return out
+
+
+# ------------------------------------------------------------------ BNPL supplement
+
+def gen_bnpl(world, kit, rng, n) -> List[Case]:
+    """Attacks on the BNPL route (S6: brand -> lender by assignment -> lender's
+    PSP account). The pre-registered bench has none, so the BNPL row of the
+    per-rail comparison has no attack data; this set fills it. It is built on
+    its own world so the pre-registered bench is unchanged. The lender payout
+    account is shared by every S6 brand, so a lender payout change (A6) would
+    also redirect the benign payments and is left out."""
+    targets = [(b, t) for b, t in _templates_for(world, {"S6"}) if "bnpl" in t.rails]
+    out: List[Case] = []
+    k = n // 4
+    for i in range(k):
+        c = _swap_case(world, kit, rng, f"BNPL-A3-{i:03d}", "A3", ["swap-keep-rap", "swap-own-rap", "swap-no-rap"][i % 3],
+                       targets=targets)
+        out.append(c)
+    for i in range(k):
+        c = _swap_case(world, kit, rng, f"BNPL-A4-{i:03d}", "A4", "swap-own-rap" if i % 2 == 0 else "swap-no-rap",
+                       targets=targets)
+        c.variant = ["feed-own-rap", "feed-no-rap"][i % 2]
+        out.append(c)
+    out += gen_A11(world, kit, rng, k, targets=targets, prefix="BNPL-")
+    out += gen_A13(world, kit, rng, n - 3 * k, targets=targets, prefix="BNPL-")
+    for c in out:
+        c.variant = f"bnpl:{c.variant}"
+    return out
+
+
+# ------------------------------------------------------------------ external specifications
+
+AIP_SCENARIOS = {
+    "AIP:V9": "rogue federation server returns the attacker's wallet as payee (CoralOS V9)",
+    "AIP:F-1": "agent-address resolver hijacked; checkout served by the attacker's endpoint (Fetch.ai F-1)",
+    "AIP:V5": "rogue marketplace listing injects a payee redirect into the agent (CoralOS V5)",
+    "AIP:A-AP2-11": "unauthenticated merchant MCP server lets the attacker rewrite checkout after the mandate "
+                    "(AP2 A-AP2-11)",
+}
+
+
+def gen_aip_external(world, kit, rng, n_per: int) -> List[Case]:
+    """Payee-diversion scenarios specified by AIP-Bench (Louck, arXiv
+    2607.21824; dataset anonymos-2321135/aip-bench, CC BY 4.0), replayed as
+    payments. The scenario fixes what the attacker controls; the instance
+    (brand, rail, attacker infrastructure) comes from the generator. Each
+    scenario is run with and without an attacker-held RAP for its own entity."""
+    coin = _templates_for(world, {"S12"})
+    other = _templates_for(world, {"S1", "S2", "S3", "S4", "S9", "S13"})
+    out: List[Case] = []
+    for sid in AIP_SCENARIOS:
+        for i in range(n_per):
+            variant = "swap-own-rap" if i % 2 == 0 else "swap-no-rap"
+            kind = "A4" if sid == "AIP:F-1" else "A3"
+            c = _swap_case(world, kit, rng, f"{sid}-{i:03d}", kind, variant,
+                           targets=coin if sid == "AIP:V9" else other)
+            c.swap_after_mandate = sid == "AIP:A-AP2-11"
+            c.variant = f"{sid}:{variant}"
+            out.append(c)
     return out
 
 

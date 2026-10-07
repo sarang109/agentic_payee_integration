@@ -20,7 +20,7 @@ import traceback
 
 from .common import RESULTS, ROOT, Timer, environment, manifest, write_json
 
-STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "e7", "e8", "e9", "e10", "ablations"]
+STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "x402", "e7", "e8", "e9", "e10", "ablations"]
 PREREG_GATED = {"e2", "e5", "e6"}
 
 
@@ -57,6 +57,9 @@ def _run(step: str):
     if step == "stripe":
         from .stripe_connect import run_connect
         return run_connect()
+    if step == "x402":
+        from .x402_testnet import run_x402_testnet
+        return run_x402_testnet()
     if step == "e5":
         from .e5_probation import run_e5
         return run_e5()

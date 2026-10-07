@@ -175,7 +175,12 @@ def f3_toy() -> pd.DataFrame:
     df = pd.DataFrame(rows)
     write_table("f3_toy", df, "F3 toy check: B7 combined vs V1 original vs v2 core (hand-built structures)",
                 "V1 original and the v2 core are given the correct brand; anchoring is V2's job. These are logic "
-                "checks of the verifiers on constructed structures, not evidence about real systems.", index=False)
+                "checks of the verifiers on constructed structures, not evidence about real systems. Correction to "
+                "the blueprint's S6 row: B7 false-blocks the BNPL lender only when the lender is paid "
+                "account-to-account, where B7's Verification of Payee against the brand's LEI fails because the "
+                "lender owns the account (row 'S6 (a2a)'). On the card path B7 has no account-name check and allows "
+                "the payment, so the blueprint's 'false block' for S6 holds only for account-to-account.",
+                index=False)
     return df
 
 

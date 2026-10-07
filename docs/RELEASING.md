@@ -24,9 +24,8 @@ mistake is fixed by a new version, never by editing or moving a tag.
 
 - [ ] Section 7 fixes of the publication plan that belong to this paper are
       closed or written up as limitations.
-- [ ] Every experiment the paper reports exists in the code. As of
-      2026-10-06, ablations 4, 5 and 6 from the plan are not implemented
-      (`experiments/ablations.py` has 1-3).
+- [ ] Every experiment the paper reports exists in the code (ablations 1-3
+      are in `experiments/ablations.py`; ablation 4 is E5, 5 is E6, 6 is E1).
 - [ ] `.zenodo.json`: if the paper is on arXiv, add
       ```json
       "related_identifiers": [

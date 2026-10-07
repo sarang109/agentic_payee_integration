@@ -38,7 +38,8 @@ reported. See `docs/RELEASING.md` for the release procedure.
 | Release | v1.x | v2.x |
 | Hypotheses | H1, H2 | H3, H4, H5 |
 | Theory | Hierarchy G0-G4 and Theorem 1, typed edges and Theorem 2, committed routes (F3), Proposition 4 (F5), Lemma 1 | Theorem 3 window condition (F4), T7, T8, T9 |
-| Experiments | E1, E2/E3, E4/E4b/E4c, E5, E8, E10; F3 toy check, T4 mutations, F5 split; ablations 1-3 and the E4 CBA ablation; Stripe Connect X2/X3 (`stripe_connect`) | E6, E7, E9; F4 toy; per-rail comparison (H5); Stripe test-mode void latency |
+| Supplement | `docs/supplement/proofs.md` Sections 1-6, `prior_art.md`, `baselines.md` | `docs/supplement/proofs.md` Sections 7-8, `prior_art.md` |
+| Experiments | E1, E2/E3 (with the AIP-Bench external scenarios), E4/E4b/E4c (with the string-weak stress set), E5, E8, E10/E10b; F3 toy check, T4 mutations, F5 split; ablations 1-4 and 6 (4 is E5, 6 is E1); Stripe Connect X2/X3 (`stripe_connect`) | E6 (with timing sources), E7, E9 (hosted-model agents, allowlist gate, synthetic benign tasks); x402 on Base Sepolia; F4 toy; per-rail comparison (H5, RQ5 Pareto, BNPL supplement); ablation 5 (E6); Stripe test-mode void latency |
 | Formal models | `formal/tamarin/` (meridian_v1, meridian_g2, checkout_ext) | `formal/proverif/` (private_lookup) |
 | Code | `meridian/core`, `meridian/issuers`, `meridian/log`, `meridian/cba`, `meridian/protocols`, `payeebench/` | `meridian/rws`, `meridian/zk`, `zk/` |
 
@@ -83,12 +84,14 @@ from. Keys are read from the environment only and are never written to
 |---|---|
 | `STRIPE_SECRET_KEY=sk_test_...` | E6 measures authorization and void latency on Stripe test mode (30 manual-capture PaymentIntents, each cancelled); the rail simulations then use the measured latency. A live-mode key is refused. |
 | same key, with Connect enabled on the test account (and the platform's loss responsibilities acknowledged) | `stripe` step creates Accounts v2 recipient accounts and reproduces X2 (separate charges and transfers to the wrong connected account, transfer reversed) and X3 (payout bank account changed) on Stripe Connect test mode. Enable Connect in the Dashboard (test mode, Connect > Get started). |
-| `MERIDIAN_AGENT_MODEL` plus the provider's API key | E9 hosted-model agents (scripted worst-case agents always run) |
+| `MERIDIAN_AGENT_MODEL` (e.g. `gpt-4o-mini-2024-07-18`) plus `OPENAI_API_KEY` | E9 hosted-model agents in the AgentDojo banking suite (scripted worst-case agents always run). The archived run in `results/raw/e9_hosted_runs.csv` is reused unless `MERIDIAN_E9_RERUN=1`; a full run makes about 5,900 model calls (about 6.5 M input tokens). Only outcomes, token counts and timings are stored, never transcripts. |
+| `MERIDIAN_X402_KEY_FILE` (path to a Base Sepolia test key holding test USDC) | x402 `exact` payments through the public facilitator on Base Sepolia, a tampered-recipient and a mismatched-recipient case; transaction hashes are archived. Reused unless `MERIDIAN_X402_RERUN=1`. |
 
-No cloud-provider credentials are needed. Not yet wired to live
-infrastructure: x402 on a public testnet (the local ledger verifies real
-EIP-3009 signatures), issuer authorization records from a real issuer (ISO
-8583 fields are simulated), and real VoP endpoints.
+No cloud-provider credentials are needed. When no Stripe key is set, E6
+replays the archived Stripe test-mode void-latency measurement and says so.
+Not wired to live infrastructure: the escrow contract (local ledger only),
+issuer authorization records from a real issuer (ISO 8583 fields are
+simulated), and real VoP endpoints.
 
 ## Datasets
 
@@ -99,7 +102,9 @@ EIP-3009 signatures), issuer authorization records from a real issuer (ISO
 | Kaggle: Adversarial Homograph Detection (alishan07, CC BY-SA 4.0), Malicious URLs (sid321axn, CC0), Phishing Site URLs (taruntiwarihp), PhishTank 2026 (quangnguynv, Apache-2.0) | E4c | downloaded with the Kaggle CLI when a token is configured (`~/.kaggle/access_token` or `KAGGLE_API_TOKEN`); SHA-256 recorded in `results/tables/e4c_files.md` |
 | Unicode `confusables.txt` 18.0.0 | CBA | checked in |
 | AgentDojo banking suite v1 | E9 | `agentdojo==0.1.35` |
-| GLEIF LEI records, DNS, TLS certificates, storefront homepages | E10 | queried live (passive), cached under `results/cache/` |
+| GLEIF LEI records, DNS, TLS certificates, storefront homepages | E10, E10b | queried live (passive), cached under `results/cache/`; extracted features are archived in `results/raw/e10*.csv` |
+| Tranco list 56WKN (full top 1M, `data/tranco/top-1m.csv.zip`, not committed) | E10b | downloaded from tranco-list.eu (list 56WKN); the first 20,000 rows equal the committed extract |
+| AIP-Bench scenarios (Louck, arXiv 2607.21824; CC BY 4.0) | E2 external scenarios | scenario descriptions summarised in `payeebench/cases.py` (`AIP_SCENARIOS`), not redistributed |
 
 ## Scope and limitations
 
@@ -114,6 +119,10 @@ EIP-3009 signatures), issuer authorization records from a real issuer (ISO
 * E10 is passive: DNS, one TLS handshake and one homepage request per site,
   and GLEIF API lookups; LEI matches are name-based.
 * The Groth16 setup uses fixed test entropy and must not protect real payments.
+* E10b samples storefronts from the Tranco list with a marker-based
+  classifier; storefronts rendered entirely in JavaScript are missed.
+* The hosted-model E9 runs depend on the provider's model at the time of the
+  run; the archived run records the model ID and date.
 
 Upstream protocol versions used are pinned in `data/upstream/PINS.txt`.
 

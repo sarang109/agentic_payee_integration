@@ -139,12 +139,27 @@ def run_e6() -> dict:
     profiles = load_profiles()
     rng = np.random.default_rng(SEED)
     n = 60 if QUICK else 400
+    import os
+    import time as _time
+
+    from .common import RAW
     backend = card_backend(rng)
-    with Timer(f"E6 void latency on card backend ({backend.backend})"):
-        voids = measure_void_latency(backend, n=10 if QUICK else 30)
-    write_csv("e6_void_latency", voids)
-    vdf = pd.DataFrame(voids)
-    if backend.backend != "simulator":
+    archived = os.path.join(RAW, "e6_void_latency.csv")
+    void_source = backend.backend
+    if backend.backend == "simulator" and os.path.exists(archived) and \
+            (pd.read_csv(archived).backend == "stripe-test-mode").all():
+        # no key in this run: replay the archived Stripe test-mode measurement
+        vdf = pd.read_csv(archived)
+        void_source = f"stripe-test-mode (archived measurement of {vdf.get('measured_utc', pd.Series(['?'])).iloc[0]})"
+    else:
+        with Timer(f"E6 void latency on card backend ({backend.backend})"):
+            voids = measure_void_latency(backend, n=10 if QUICK else 30)
+        vdf = pd.DataFrame(voids)
+        vdf["measured_utc"] = _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime())
+        write_csv("e6_void_latency", vdf)
+    modelled_void = profiles["card"].void
+    modelled_success = profiles["card"].void_success
+    if (vdf.backend == "stripe-test-mode").all():
         profiles["card"].void = empirical(vdf.void_s.tolist())
         profiles["card"].void_success = float(vdf.void_ok.mean())
     # the Monte Carlo runs below never call a live API: they use the simulator
@@ -197,13 +212,16 @@ def run_e6() -> dict:
     agg["residual loss rate"] = (1 - agg.undone / agg.n).round(3)
     t0 = agg[agg.f == 0].pivot(index=["rail", "scenario"], columns="mode", values="residual loss rate")
     write_table("e6_residual_loss_f0", t0, "E6: residual loss rate per rail, diversion class and mode (f = 0)",
-                "1.0 means no post-authorization diversion of this class was undone in time. 'first-hop' on "
+                "Simulation over modelled rail timings (config/rails.yaml); only the card void latency is measured "
+                "(see e6_timing_sources). 1.0 means no post-authorization diversion of this class was undone in time. 'first-hop' on "
                 "stablecoin is stopped by the EIP-3009 signature binding before settlement.")
     tf = agg[(agg["mode"].isin([POST, "RWS"]))].pivot(index=["rail", "scenario", "mode"], columns="f",
                                                      values="residual loss rate")
-    write_table("e6_observer_corruption", tf, "E6: residual loss vs number of corrupted observers f (POST and RWS)")
+    write_table("e6_observer_corruption", tf, "E6: residual loss vs number of corrupted observers f (POST and RWS)",
+                "Simulation over modelled rail timings (config/rails.yaml); card void latency measured.")
     rws_modes = df[df["mode"] == "RWS"].groupby(["rail", "f", "chosen"]).size().unstack(fill_value=0)
-    write_table("e6_rws_choice", rws_modes, "E6: modes chosen by RWS (counts)")
+    write_table("e6_rws_choice", rws_modes, "E6: modes chosen by RWS (counts)",
+                "Simulation over modelled rail timings (config/rails.yaml).")
 
     # Theorem 3 probabilities --------------------------------------------
     th = []
@@ -216,7 +234,29 @@ def run_e6() -> dict:
                        "FRESH-safe prob rho=300s": round(fresh_safe_prob(prof.window_model(lvl), 300, n=100_000), 4),
                        "ESCROW catch prob": round(post_safe_prob(prof.window_model(lvl, escrow=True), f=f, n=100_000), 4)
                        if prof.escrow_supported else None})
-    write_table("e6_theorem3", pd.DataFrame(th), "E6: Theorem 3 quantities per rail (modelled latencies, config/rails.yaml)",
+    write_table("e6_theorem3", pd.DataFrame(th), "E6: Theorem 3 quantities per rail (modelled latencies, config/rails.yaml; card void measured when available)",
+                index=False)
+    srcs = []
+    for rail, prof in profiles.items():
+        srcs.append({"rail": rail, "quantity": "reversibility window W_r", "source": "modelled (config/rails.yaml)"})
+        srcs.append({"rail": rail, "quantity": "observer latencies", "source": "modelled (config/rails.yaml)"})
+        srcs.append({"rail": rail, "quantity": "decision latency", "source": "modelled (config/rails.yaml)"})
+        if rail == "card":
+            srcs.append({"rail": rail, "quantity": "void latency and success",
+                         "source": f"measured: {void_source}, n = {len(vdf)}, p50 {vdf.void_s.median():.2f} s"
+                         if (vdf.backend == "stripe-test-mode").all() else "modelled (config/rails.yaml)"})
+        else:
+            srcs.append({"rail": rail, "quantity": "void / recall latency and success",
+                         "source": "modelled (config/rails.yaml)"})
+    xp = os.path.join(RAW, "x402_testnet_runs.csv")
+    if os.path.exists(xp):
+        xd = pd.read_csv(xp)
+        rec = pd.to_numeric(xd.get("settle_to_receipt_s"), errors="coerce").dropna()
+        if len(rec):
+            srcs.append({"rail": "stablecoin", "quantity": "chain receipt after settlement (context, not used in "
+                         "the simulation)", "source": f"measured on Base Sepolia, n = {len(rec)}, p50 "
+                         f"{rec.median():.2f} s (modelled chain_receipt median: 2 s)"})
+    write_table("e6_timing_sources", pd.DataFrame(srcs), "E6: source of every timing input (measured or modelled)",
                 index=False)
     toy = toy_illustration()
     write_table("f4_toy", pd.DataFrame([{
@@ -227,17 +267,26 @@ def run_e6() -> dict:
         "condition": "stale-authority catch, rho = 3", "blueprint": "67%", "this run": f"{toy['fresh_rho_3']:.1%}"}]),
         "F4 toy illustration", f"Parameters: {toy['parameters']}", index=False)
 
-    vlat = {"backend": backend.backend, "void_p50_s": float(vdf.void_s.median()), "void_p95_s": float(vdf.void_s.quantile(0.95)),
+    vlat = {"backend": void_source, "void_p50_s": float(vdf.void_s.median()), "void_p95_s": float(vdf.void_s.quantile(0.95)),
             "void_success": float(vdf.void_ok.mean())}
     summary = {"void": vlat, "toy": toy}
     card_fh = agg[(agg.rail == "card") & (agg.scenario == "first-hop") & (agg.f == 0) & (agg["mode"] == POST)]
     inst_post = agg[(agg.rail != "card") & (agg.scenario == "late-evidence") & (agg["mode"] == POST)]
     inst_esc = agg[(agg.rail != "card") & (agg.scenario == "late-evidence") & (agg["mode"] == ESCROW)]
     card_rate = card_fh.undone.sum() / max(1, card_fh.n.sum())
+    # sensitivity: the same card first-hop runs with the modelled void latency
+    # and success from config/rails.yaml instead of the measured ones
+    prof_m = load_profiles()["card"]
+    sim_m = StripeSimulator(np.random.default_rng(SEED + 1), void_median_s=float(np.median(modelled_void(np.random.default_rng(1), 10_000))),
+                            void_success=modelled_success)
+    rng_m = np.random.default_rng(SEED + 2)
+    sens = [card_run(prof_m, "first-hop", POST, 0, rng_m, sim_m, iic_map)["undone"] for _ in range(n)]
     card_post_safe = post_safe_prob(profiles["card"].window_model(1), 0, n=100_000)
     summary["H3"] = {
         "card_post_safe_probability": round(card_post_safe, 4),
         "card_first_hop_POST_undone": f"{int(card_fh.undone.sum())}/{int(card_fh.n.sum())}",
+        "card_first_hop_POST_undone_with_modelled_void": f"{int(sum(sens))}/{len(sens)}",
+        "void_latency_source": void_source,
         "instant_late_evidence_POST_undone": f"{int(inst_post.undone.sum())}/{int(inst_post.n.sum())}",
         "instant_late_evidence_ESCROW_undone": f"{int(inst_esc.undone.sum())}/{int(inst_esc.n.sum())}",
         "supported": bool(card_post_safe >= 0.99 and card_rate >= 0.99 and inst_post.undone.sum() == 0

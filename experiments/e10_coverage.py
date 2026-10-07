@@ -189,7 +189,7 @@ def measure(entry: Dict, market: str) -> Dict:
             "vmc": vmc, "lei": (lei or {}).get("lei"), "lei_name": (lei or {}).get("legal_name"),
             "homepage_ok": hp["ok"], "psp": ",".join(hp["psp"]), "platform": ",".join(hp["platform"]),
             "edge_L0_L1": l0l1, "edge_mark": vmc, "edge_L1_lei": bool(lei), "edge_L1_L2L3": psp,
-            "edge_L1_L4": vop, "full_path": l0l1 and psp and vop}
+            "edge_L1_L4": vop, "g1_path": l0l1 and psp, "full_path": l0l1 and psp and vop}
 
 
 def lookalikes(domain: str, rng, k: int) -> Dict:
@@ -222,6 +222,119 @@ def lookalikes(domain: str, rng, k: int) -> Dict:
     return {"domain": domain, "generated": len(hits), "registered": sum(hits.values())}
 
 
+# ------------------------------------------------------------------ sampled storefronts
+
+TRANCO_1M = os.path.join(ROOT, "data", "tranco", "top-1m.csv.zip")  # Tranco list 56WKN (same list as the top 20k)
+MARKET_TLDS = {"UK": (".co.uk", ".uk"), "IN": (".in", ".co.in"),
+               "EU": (".de", ".fr", ".nl", ".es", ".it", ".se", ".ie", ".be", ".at"), "US": (".com", ".us")}
+SHOP_MARKERS = ["add to cart", "add to bag", "add to basket", "in den warenkorb", "warenkorb", "ajouter au panier",
+                "panier", "añadir al carrito", "carrito", "aggiungi al carrello", "carrello", "winkelwagen",
+                "in winkelmand", "varukorg", "lägg i varukorgen", "checkout", "/cart", "shopping bag", "basket"]
+PRODUCT_MARKERS = ['"@type":"product"', '"@type": "product"', '"@type":"offer"', '"@type": "offer"',
+                   'itemtype="http://schema.org/product"', 'itemtype="https://schema.org/product"',
+                   "og:type\" content=\"product", "pricecurrency", "data-product-id", "product-card", "productcard"]
+USD_MARKERS = ['"pricecurrency":"usd"', '"pricecurrency": "usd"', "usd", "$"]
+
+
+def storefront(domain: str) -> Dict:
+    """One homepage request: storefront signals, PSP and platform markers.
+    Only extracted features are kept, never page content."""
+    for url in (f"https://www.{domain}/", f"https://{domain}/"):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "text/html"})
+            with urllib.request.urlopen(req, timeout=10, context=TLS) as r:
+                html = r.read(800_000).decode(errors="replace").lower()
+            shop = sorted({m for m in SHOP_MARKERS if m in html})
+            prod = sorted({m for m in PRODUCT_MARKERS if m in html})
+            return {"ok": True, "shop_markers": len(shop), "product_markers": len(prod),
+                    "usd": any(m in html for m in USD_MARKERS[:2]) or bool(re.search(r"\$\s?\d{1,4}(?:[.,]\d{2})\b", html)),
+                    "psp": sorted(k for k, ms in PSP_MARKERS.items() if any(m in html for m in ms)),
+                    "platform": sorted(k for k, ms in PLATFORM_MARKERS.items() if any(m in html for m in ms))}
+        except Exception as e:
+            last = str(e)[:80]
+    return {"ok": False, "shop_markers": 0, "product_markers": 0, "usd": False, "psp": [], "platform": [],
+            "error": last}
+
+
+def is_storefront(f: Dict, market: str) -> bool:
+    ok = f["ok"] and ((f["shop_markers"] >= 1 and f["product_markers"] >= 1) or
+                      (f["shop_markers"] >= 2 and bool(f["platform"])))
+    return ok and (market != "US" or f["usd"])
+
+
+def tranco_by_market(max_rank: int = 1_000_000) -> Dict[str, List[tuple]]:
+    import zipfile
+    out: Dict[str, List[tuple]] = {m: [] for m in MARKET_TLDS}
+    with zipfile.ZipFile(TRANCO_1M) as z:
+        name = z.namelist()[0]
+        for line in z.read(name).decode().splitlines():
+            rank, dom = line.strip().split(",", 1)
+            if int(rank) > max_rank:
+                break
+            for m, tlds in MARKET_TLDS.items():
+                if dom.endswith(tlds):
+                    out[m].append((int(rank), dom))
+                    break
+    return out
+
+
+def sample_storefronts(per_market: int, max_candidates: int) -> pd.DataFrame:
+    by_m = tranco_by_market()
+    rows = []
+    for m, cands in by_m.items():
+        found, k = 0, 0
+        batch = 64
+        while found < per_market and k < min(len(cands), max_candidates):
+            chunk = cands[k:k + batch]
+            k += len(chunk)
+            with ThreadPoolExecutor(16) as ex:
+                feats = list(ex.map(lambda rd: _cache(f"store_{rd[1]}", lambda: storefront(rd[1])), chunk))
+            for (rank, dom), f in zip(chunk, feats):
+                sf = is_storefront(f, m)
+                rows.append({"market": m, "rank": rank, "domain": dom, "storefront": sf,
+                             "shop_markers": f["shop_markers"], "product_markers": f["product_markers"],
+                             "fetched": f["ok"]})
+                if sf and found < per_market:
+                    found += 1
+        print(f"  E10b {m}: {found} storefronts among {k} candidates")
+    return pd.DataFrame(rows)
+
+
+def run_e10b(per_market: int, max_candidates: int) -> Dict:
+    with Timer(f"E10b sampling storefronts from Tranco ({per_market} per market)"):
+        cand = sample_storefronts(per_market, max_candidates)
+    write_csv("e10b_candidates", cand)
+    picked = cand[cand.storefront].groupby("market").head(per_market)
+    jobs = [({"domain": r.domain}, r.market) for r in picked.itertuples()]
+    with Timer(f"E10b measuring {len(jobs)} sampled storefronts"):
+        with ThreadPoolExecutor(8) as ex:
+            rows = list(ex.map(lambda j: measure(*j), jobs))
+    df = pd.DataFrame(rows)
+    write_csv("e10b_storefronts", df)
+    agg = []
+    for m, g in df.groupby("market"):
+        n = len(g)
+        c = cand[cand.market == m]
+        agg.append({"market": m, "storefronts": n, "candidates fetched": int(c.fetched.sum()),
+                    "Tranco rank range": f"{int(c['rank'].min())}-{int(c['rank'].max())}",
+                    "L0->L1 domain to entity": fmt_rate(int(g.edge_L0_L1.sum()), n),
+                    "verified mark (VMC)": fmt_rate(int(g.edge_mark.sum()), n),
+                    "LEI candidate": fmt_rate(int(g.edge_L1_lei.sum()), n),
+                    "platform/PSP identifiable": fmt_rate(int(g.edge_L1_L2L3.sum()), n),
+                    "G1 route buildable (no terminal binding)": fmt_rate(int(g.g1_path.sum()), n),
+                    "full path buildable today": fmt_rate(int(g.full_path.sum()), n)})
+    write_table("e10b_coverage", pd.DataFrame(agg),
+                "E10b: edges buildable for storefronts sampled from the Tranco list (passive measurement)",
+                "Storefronts are Tranco 56WKN domains in the market's ccTLDs (US: .com/.us with USD prices) whose "
+                "homepage shows a cart or checkout marker and a product marker (or two cart markers and a known "
+                "commerce platform), taken in rank order. Storefronts that render entirely in JavaScript are missed, "
+                "so the sample leans towards server-rendered shops. One homepage request per site. With no retailer legal name, the LEI "
+                "lookup uses the certificate organisation or the domain label, so LEI candidates are looser than in "
+                "E10 and need confirmation. Wilson 95% intervals.", index=False)
+    return {"coverage": agg, "n": len(df),
+            "measured_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
 def run_e10() -> Dict:
     with open(os.path.join(ROOT, "data", "retailers.yaml")) as fh:
         retailers = yaml.safe_load(fh)
@@ -240,6 +353,7 @@ def run_e10() -> Dict:
                     "LEI issued": fmt_rate(int(g.edge_L1_lei.sum()), n),
                     "platform/PSP identifiable": fmt_rate(int(g.edge_L1_L2L3.sum()), n),
                     "bank terminal binding (VoP/CoP)": "yes" if VOP_POLICY[m][0] else "no",
+                    "G1 route buildable (no terminal binding)": fmt_rate(int(g.g1_path.sum()), n),
                     "full path buildable today": fmt_rate(int(g.full_path.sum()), n)})
     write_table("e10_coverage", pd.DataFrame(agg), "E10: receiving-authority edges buildable from public / KYB data",
                 "Wilson 95% intervals. 'Identifiable' means the storefront exposes the PSP or commerce platform that "
@@ -259,7 +373,9 @@ def run_e10() -> Dict:
     write_table("e10_lookalike_prevalence", lagg, "E10: registered lookalike domains (DNS A or NS record exists)",
                 "Registered does not mean malicious: many are defensive registrations by the brand itself.",
                 index=False)
-    out = {"coverage": agg, "lookalikes": lagg.to_dict(orient="records"), "n": len(df)}
+    out = {"coverage": agg, "lookalikes": lagg.to_dict(orient="records"), "n": len(df),
+           "measured_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    out["sampled"] = run_e10b(20 if QUICK else 250, 400 if QUICK else 4000)
     write_json("e10_summary", out)
     return out
 
