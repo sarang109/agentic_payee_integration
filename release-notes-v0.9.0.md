@@ -50,6 +50,29 @@ not supported. Failed targets are reported as failed.
   by counsel and is stated as an assumption; this is not legal advice.
 - Some `docs/supplement/prior_art.md` entries are marked abstract-only.
 
+## Which results were regenerated
+
+`results/` and the header of `results/REPORT.md` come from commit `95bca57`.
+Four later commits changed the tree: wording and the E12 errata (`0d5a44c`,
+`327cc87`, `b6c0a4a`) and a code change that makes `verify_route` check each
+commitment's amount and currency and adds an opt-in spent-nonce store
+(`37e941b`). Nothing in `results/` was rewritten for the code change. To check
+that it moves no number, these steps were rerun at the later commit in a copy
+of the repository and compared with the archived files:
+
+- Rerun, identical apart from timing columns: toys (F3, T4 and the rest of
+  that step), E1, E2/E3 with the AIP-Bench and BNPL supplements, E4, E5, E6,
+  E8, E11, E12, ablations. The timing columns that differ are latencies and
+  the time-limited F5 split search (nodes searched and seconds).
+- Archived from the earlier run, not rerun: E4b and E4c (third-party data is
+  not archived), E7, E9 (hosted API, one model), E10 and E10b (live network),
+  x402 on Base Sepolia, Stripe Connect and Stripe void latency (test-mode
+  keys), the upstream B2 check (network), and the formal models.
+
+Neither new commitment reason (`commitment-amount`, `commitment-currency`) nor
+`nonce-spent` occurs in any rerun table, and no benchmark configuration
+enables the nonce store.
+
 ## Reproducibility
 
 - Test keys only, no live money; Stripe in test mode only.

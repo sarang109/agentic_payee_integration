@@ -34,6 +34,14 @@ own archived release (version DOI on Zenodo), so its tables can be
 regenerated exactly as reported. `v0.9.0` is a pre-submission snapshot, not
 the release a paper cites. See `docs/RELEASING.md` for the release procedure.
 
+Headline experiments per paper (the table after this one lists everything each
+paper draws on):
+
+| Paper | Experiments |
+|---|---|
+| Paper 1: Verifiable Discharge (IEEE TDSC) | E2, E3, E4/E4b/E4c, E5, E10/E10b, E12 (author-written, not independent; `e12/ERRATA.md`), the Tamarin models in `formal/`, T4 mutation tests, Stripe Connect X2/X3 |
+| Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | E6, E9, E11, and the A11-A13 rows of E2/E3 |
+
 | | Paper 1: Verifiable Discharge (IEEE TDSC) | Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | Paper 3 (optional): Private Payee Checks |
 |---|---|---|---|
 | Release | v1.x | v2.x | v3.x |
