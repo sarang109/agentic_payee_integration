@@ -52,6 +52,12 @@ SECTIONS = [
     ("E6 rail scheduling", ["e6_timing_sources", "e6_residual_loss_f0", "e6_observer_corruption", "e6_rws_choice",
                             "e6_theorem3", "f4_toy"], "e6_rail_residual.png", "", [MODELLED,
                                                                                    "card void latency " + SANDBOX], "2"),
+    ("E12 independently authored attacks (Gate A)", ["e12_attack_matrix", "e12_mcnemar", "e12_by_scenario",
+                                                       "e12_by_author"], None,
+     "The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated "
+     "against ground truth only, and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this "
+     "run. The attacks are compiled onto the same world builder as the main benchmark.",
+     [CONSTRUCTED], "1"),
     ("E11 funded routes (F6), hypothesis H6", ["e11_loss", "e11_refusal", "e11_refusal_by_workload", "e11_capacity",
                                                 "e11_bond", "e11_tstar", "e11_compromised", "e11_coalition",
                                                 "e11_a13_bench"], None,
@@ -262,6 +268,15 @@ def build_report() -> str:
                  f"({h5.get('legacy_latency_tiebreak')}); that verdict rested on the 0/0 cell and is withdrawn. "
                  f"Exploratory, with the BNPL supplement: best on every rail {ex5.get('best_on_every_rail')}. "
                  f"See rq5_pareto for the security versus friction trade-off |")
+    e12 = _load("e12_summary") or {}
+    if e12:
+        d = e12["decision"]
+        lines.append(
+            f"| E12 independent attacks: {d['comparison']} (decision rule e12/DECISION_RULE.md) | 1 | "
+            f"{d['label']} | {d['attacks_in_model']} in-model attacks by {len(e12['authors'])} authors; "
+            f"M2 {d['M2_losses']} losses, B7 {d['B7_losses']}; {d['loss_only_under_M2']} lost only under M2, "
+            f"{d['loss_only_under_B7']} only under B7 (exact McNemar p = {d['p_exact_mcnemar']:.3g}); "
+            f"{d['wording']}. First run reproduced: {e12['matches_first_run']} |")
     e11 = _load("e11_summary") or {}
     if e11:
         h6 = e11["H6"]

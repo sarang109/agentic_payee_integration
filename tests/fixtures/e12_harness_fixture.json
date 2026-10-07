@@ -1,0 +1,237 @@
+{
+ "schema": "meridian-e12/1",
+ "attacks": [
+  {
+   "id": "fx-01-lookalike",
+   "author": "fixture-a",
+   "title": "fixture lookalike",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. lookalike",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "homoglyph"
+   },
+   "user_words": "typo"
+  },
+  {
+   "id": "fx-02-lookalike",
+   "author": "fixture-b",
+   "title": "fixture lookalike",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. lookalike",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "affix"
+   },
+   "listing": {
+    "manifest_valid": false
+   }
+  },
+  {
+   "id": "fx-03-payee_swap",
+   "author": "fixture-a",
+   "title": "fixture payee_swap",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. payee_swap",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "keep"
+   },
+   "checkout": {
+    "swap_after_mandate": true
+   }
+  },
+  {
+   "id": "fx-04-payee_swap",
+   "author": "fixture-b",
+   "title": "fixture payee_swap",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. payee_swap",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "own"
+   }
+  },
+  {
+   "id": "fx-05-payee_swap",
+   "author": "fixture-a",
+   "title": "fixture payee_swap",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. payee_swap",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "none"
+   }
+  },
+  {
+   "id": "fx-06-rogue_submerchant",
+   "author": "fixture-b",
+   "title": "fixture rogue_submerchant",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. rogue_submerchant",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "rogue_submerchant",
+    "evidence": "entity"
+   }
+  },
+  {
+   "id": "fx-07-processor_payout_change",
+   "author": "fixture-a",
+   "title": "fixture processor_payout_change",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. processor_payout_change",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "processor_payout_change",
+    "hours_before": 12
+   },
+   "amount_cents": 48000
+  },
+  {
+   "id": "fx-08-custodian_redirect",
+   "author": "fixture-b",
+   "title": "fixture custodian_redirect",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. custodian_redirect",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "custodian_redirect"
+   }
+  },
+  {
+   "id": "fx-09-first_hop_mismatch",
+   "author": "fixture-a",
+   "title": "fixture first_hop_mismatch",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. first_hop_mismatch",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "first_hop_mismatch",
+    "variant": "transaction-laundering"
+   }
+  },
+  {
+   "id": "fx-10-revoked_delegation",
+   "author": "fixture-b",
+   "title": "fixture revoked_delegation",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. revoked_delegation",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "revoked_delegation",
+    "seconds_since_revocation": 432000,
+    "snapshot": "stale"
+   }
+  },
+  {
+   "id": "fx-11-scope_abuse",
+   "author": "fixture-a",
+   "title": "fixture scope_abuse",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. scope_abuse",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "geo"
+   }
+  },
+  {
+   "id": "fx-12-fresh_fake_delegation",
+   "author": "fixture-b",
+   "title": "fixture fresh_fake_delegation",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. fresh_fake_delegation",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "rush"
+   }
+  },
+  {
+   "id": "fx-13-split_view",
+   "author": "fixture-a",
+   "title": "fixture split_view",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. split_view",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "split_view"
+   }
+  },
+  {
+   "id": "fx-14-irreversible_revocation",
+   "author": "fixture-b",
+   "title": "fixture irreversible_revocation",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. irreversible_revocation",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "stale-authority"
+   }
+  },
+  {
+   "id": "fx-15-irreversible_revocation",
+   "author": "fixture-a",
+   "title": "fixture irreversible_revocation",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. irreversible_revocation",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "late-revocation"
+   }
+  },
+  {
+   "id": "fx-16-fresh_fake_delegation",
+   "author": "fixture-b",
+   "title": "fixture fresh_fake_delegation",
+   "narrative": "Harness fixture: exercises the compiler for this scenario kind; not an attack of record. fresh_fake_delegation",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "patient",
+    "brand_monitor": "offline"
+   }
+  }
+ ]
+}

@@ -7,7 +7,8 @@
 Order matters: E4 calibrates anchoring before E2 uses it. E2-E6 refuse to
 run if the pre-registration file changed after it was locked; E11 refuses
 unless preregistration/hypotheses_v2.yaml is locked in LOCK_V2 and records
-the v1 hash (`python -m experiments.prereg lock-v2`).
+the v1 hash (`python -m experiments.prereg lock-v2`). E12 runs only on the
+frozen independent attack set (e12/LOCK) and is skipped until it exists.
 """
 
 from __future__ import annotations
@@ -22,7 +23,7 @@ import traceback
 from . import prereg
 from .common import RESULTS, Timer, environment, manifest, write_json
 
-STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "x402", "e7", "e8", "e9", "e11", "e10",
+STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "x402", "e7", "e8", "e9", "e11", "e12", "e10",
          "ablations"]
 PREREG_GATED = {"e2", "e5", "e6"}
 PREREG_V2_GATED = {"e11"}  # H6 has its own registration and lock
@@ -75,6 +76,9 @@ def _run(step: str):
     if step == "e9":
         from .e9_agents import run_e9
         return run_e9()
+    if step == "e12":
+        from .e12_independent import run_e12
+        return run_e12()
     if step == "e11":
         from .e11_exposure import run_e11
         return run_e11()

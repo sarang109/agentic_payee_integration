@@ -1,7 +1,7 @@
 PY ?= .venv/bin/python
 export HF_HUB_OFFLINE ?= 1
 
-.PHONY: setup zk test quick reproduce formal report docker docker-quick clean-results lock-v2 e11
+.PHONY: setup zk test quick reproduce formal report docker docker-quick clean-results lock-v2 e11 e12
 
 setup:
 	python3.12 -m venv .venv
@@ -27,6 +27,9 @@ lock-v2:
 
 e11:
 	$(PY) -m experiments.run_all --only e11
+
+e12:
+	$(PY) -m experiments.e12_independent run
 
 formal:
 	$(PY) -m experiments.formal_check
