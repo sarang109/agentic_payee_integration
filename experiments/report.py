@@ -58,8 +58,8 @@ SECTIONS = [
      [MEASURED + " by running upstream code on constructed cases"], "1"),
     ("E12 author-written attacks (Gate A; not independent)", ["e12_attack_matrix", "e12_mcnemar", "e12_by_scenario",
                                                        "e12_by_author"], None,
-     "The attack set was written from the schema in docs/e12/AUTHORING.md by the same side that built the "
-     "generator, with the generator in view, so it is author-dependent and does not answer the circular-evaluation "
+     "The attack set was written from the schema in docs/e12/AUTHORING.md after the author had written the "
+     "generator and with the generator in view, so it is author-dependent and does not answer the circular-evaluation "
      "objection (e12/ERRATA.md). It was validated against ground truth only and frozen (e12/LOCK) with the "
      "decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder "
      "as the main benchmark. The two author labels are batches, not independent people.",

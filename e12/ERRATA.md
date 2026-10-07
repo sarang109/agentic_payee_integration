@@ -11,10 +11,13 @@ report and the code docstrings describe the E12 attacks as written by
 independent authors who had not seen the PayeeBench generator and who worked
 from `docs/e12/AUTHORING.md` alone. That was not the case.
 
-* The attacks were written inside the project, by the same side that built
-  the generator, with the repository, the generator, the baselines and the
-  MERIDIAN code in view. The authoring protocol in `docs/e12/AUTHORING.md`
-  (read only that file, read no code) was not followed.
+* The generator, the harness and the MERIDIAN code were written by the
+  project author before the attacks were (the generator is in the first
+  commit, 2026-10-06; the attack file is in `c64f04d`, 2026-10-07). The
+  attacks were written afterwards, with the repository, the generator, the
+  baselines and that code in view. The authoring protocol in
+  `docs/e12/AUTHORING.md` (read only that file, read no code) was not
+  followed.
 * `author-1` and `author-2` are two labels used to split the file into two
   batches. They are not two independent people and the by-author table is not
   evidence of independence between authors.

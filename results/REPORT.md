@@ -992,7 +992,7 @@ The earlier AP2 reference reported in arXiv 2609.00060 matched any payee here; t
 
 _Evidence: exact counts over constructed cases. Paper 1._
 
-The attack set was written from the schema in docs/e12/AUTHORING.md by the same side that built the generator, with the generator in view, so it is author-dependent and does not answer the circular-evaluation objection (e12/ERRATA.md). It was validated against ground truth only and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark. The two author labels are batches, not independent people.
+The attack set was written from the schema in docs/e12/AUTHORING.md after the author had written the generator and with the generator in view, so it is author-dependent and does not answer the circular-evaluation objection (e12/ERRATA.md). It was validated against ground truth only and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark. The two author labels are batches, not independent people.
 
 #### E12: losses on the author-written attacks
 
