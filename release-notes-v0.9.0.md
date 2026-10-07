@@ -10,6 +10,7 @@ The whole repository at the tagged commit:
 
 - reference implementation (`meridian/`), PayeeBench generator and judges (`payeebench/`)
 - experiments E1-E10b, ablations 1-6, the F3 toy check, T4 mutation tests, F5 split check
+- E12, an author-written attack set frozen in `e12/LOCK` with its decision rule and run log; the attacks were written with the generator in view, so it is not independent of it (`e12/ERRATA.md`)
 - Stripe Connect test-mode reproduction of X2 and X3, Stripe test-mode void latency
 - x402 on Base Sepolia (public testnet), hosted-model E9 (one model, 1,516 runs)
 - Tamarin and ProVerif models (`formal/`)
@@ -29,8 +30,9 @@ not supported. Failed targets are reported as failed.
 - PayeeBench attacks, legitimate structures and the strongest baseline B7 are
   built from one generator and grammar, so a 0% false-block rate on those
   structures is partly by construction. Baselines B1-B7 are re-specified from
-  their public descriptions, not independent reimplementations. The
-  author-written attack set (E12, which is not independent of the generator) is not in this snapshot.
+  their public descriptions, not independent reimplementations. E12
+  (in this snapshot) was written by the same side that built the generator, so
+  it does not remove that circularity (`e12/ERRATA.md`).
 - The proofs of Theorems 1 and 2 and Proposition 4 have not been reviewed by
   anyone outside the project; treat them as proof sketches.
 - ISO 8583 authorization data is simulated; no real issuer data was available.

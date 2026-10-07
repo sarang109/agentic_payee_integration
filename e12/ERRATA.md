@@ -26,6 +26,14 @@ from `docs/e12/AUTHORING.md` alone. That was not the case.
   not tuned against a result. What it cannot show is that the attacks are
   free of the generator's assumptions.
 
+## Commit messages and other early text
+
+The messages of commits `c64f04d` and `2ccfda6` call the attack set
+"independent", and the same word appears in `DECISION_RULE.md` and in the
+history of the files this commit corrected. History is not rewritten, so this
+file is the correction for all of them: wherever the repository's history says
+the E12 attacks were independent, read it as author-written.
+
 ## Consequence for the decision rule
 
 The rule's wording consequences ("outperforms" may be used on the
