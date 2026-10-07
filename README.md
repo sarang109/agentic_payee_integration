@@ -29,22 +29,31 @@ the generated report.
 
 ## Papers and releases
 
-The repository backs two papers. Each paper cites its own archived release
-(version DOI on Zenodo), so its tables can be regenerated exactly as
-reported. See `docs/RELEASING.md` for the release procedure.
+The repository backs two papers and an optional third. Each paper cites its
+own archived release (version DOI on Zenodo), so its tables can be
+regenerated exactly as reported. `v0.9.0` is a pre-submission snapshot, not
+the release a paper cites. See `docs/RELEASING.md` for the release procedure.
 
-| | Paper 1: Verifiable Discharge (authority-to-receive verification) | Paper 2: Closing the Loop (window-safe settlement checks and private payee proofs) |
-|---|---|---|
-| Release | v1.x | v2.x |
-| Hypotheses | H1, H2 | H3, H4, H5 |
-| Theory | Hierarchy G0-G4 and Theorem 1, typed edges and Theorem 2, committed routes (F3), Proposition 4 (F5), Lemma 1 | Theorem 3 window condition (F4), T7, T8, T9 |
-| Supplement | `docs/supplement/proofs.md` Sections 1-6, `prior_art.md`, `baselines.md` | `docs/supplement/proofs.md` Sections 7-8, `prior_art.md` |
-| Experiments | E1, E2/E3 (with the AIP-Bench external scenarios), E4/E4b/E4c (with the string-weak stress set), E5, E8, E10/E10b; F3 toy check, T4 mutations, F5 split; ablations 1-4 and 6 (4 is E5, 6 is E1); Stripe Connect X2/X3 (`stripe_connect`) | E6 (with timing sources), E7, E9 (hosted-model agents, allowlist gate, synthetic benign tasks); x402 on Base Sepolia; F4 toy; per-rail comparison (H5, RQ5 Pareto, BNPL supplement); ablation 5 (E6); Stripe test-mode void latency |
-| Formal models | `formal/tamarin/` (meridian_v1, meridian_g2, checkout_ext) | `formal/proverif/` (private_lookup) |
-| Code | `meridian/core`, `meridian/issuers`, `meridian/log`, `meridian/cba`, `meridian/protocols`, `payeebench/` | `meridian/rws`, `meridian/zk`, `zk/` |
+| | Paper 1: Verifiable Discharge (IEEE TDSC) | Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | Paper 3 (optional): Private Payee Checks |
+|---|---|---|---|
+| Release | v1.x | v2.x | v3.x |
+| Hypotheses | H1, H2 | H3, H4 (SNARK variant), H5, and H6 (pre-registered in `preregistration/hypotheses_v2.yaml`) | H4 privacy part |
+| Theory | Hierarchy G0-G4 and Theorem 1, typed edges and Theorem 2, committed routes (F3), Proposition 4 (F5), Lemma 1 | Theorem 3 window condition (F4), T7, T8; Theorem 4 funded routes (F6) only if E11 passes | T9 |
+| Supplement | `docs/supplement/proofs.md` Sections 1-6, `prior_art.md`, `baselines.md` | `docs/supplement/proofs.md` Sections 7-8 (and Theorem 4), `prior_art.md` | circuit details |
+| Experiments | E1, E2/E3 (with the AIP-Bench external scenarios), E4/E4b/E4c (with the string-weak stress set), E5, E8, E10/E10b; F3 toy check, T4 mutations, F5 split; ablations 1-4 and 6 (4 is E5, 6 is E1); Stripe Connect X2/X3 (`stripe_connect`); E12 independent attack set | E6 (with timing sources), E9 (hosted-model agents, allowlist gate, synthetic benign tasks); E11 (funded routes, configuration M5 = M3 + F6); x402 on Base Sepolia; F4 toy; per-rail comparison (H5, RQ5 Pareto, BNPL supplement); ablation 5 (E6); Stripe test-mode void latency | E7 (V4 SNARK and BBS variants) |
+| Formal models | `formal/tamarin/` (meridian_v1, meridian_g2, checkout_ext) | rail timing lemmas | `formal/proverif/` (private_lookup) |
+| Code | `meridian/core`, `meridian/issuers`, `meridian/log`, `meridian/cba`, `meridian/protocols`, `payeebench/` | `meridian/rws`, `meridian/core/exposure.py`, `experiments/e11_exposure.py` | `meridian/zk`, `zk/` |
 
-`make reproduce` runs both sets; the pre-registration (`preregistration/`)
-covers all five hypotheses and is unchanged between releases.
+`make reproduce` runs every experiment. The v1 pre-registration
+(`preregistration/hypotheses.yaml`, lock in `preregistration/LOCK`) is
+unchanged between releases; the v2 file (`preregistration/hypotheses_v2.yaml`,
+lock in `preregistration/LOCK_V2`) is added for H6 and records the SHA-256 of
+the v1 file.
+
+E10 queries live DNS, TLS and GLEIF and will not reproduce on a later run:
+the archived results carry the measurement date. Kaggle and phishing data are
+git-ignored and not archived. The Groth16 setup uses fixed
+test entropy and must not protect real payments.
 
 ## Running
 
