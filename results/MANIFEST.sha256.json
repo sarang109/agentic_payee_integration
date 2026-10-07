@@ -3,10 +3,10 @@
     "python": "3.12.0",
     "platform": "macOS-26.6.2-arm64-arm-64bit",
     "machine": "arm64",
-    "git": "af6f0ba87c4686adf27d1ff5992ff923ce970963",
+    "git": "774eb7b2584f3eabe014ecd4d3934d5fa6c4bf7c",
     "seed": 7,
     "quick": false,
-    "time_utc": "2026-10-07T03:57:39Z",
+    "time_utc": "2026-10-07T11:05:23Z",
     "numpy": "2.5.3",
     "scipy": "1.18.1",
     "pandas": "3.0.6",
@@ -49,6 +49,51 @@
       "path": "results/raw/e10b_storefronts.csv",
       "sha256": "c9acbc5bdb71cf13effe18e7c9c7fc4a0ec14f8f112fe6a8d415ceae7d4bbced",
       "bytes": 71267
+    },
+    {
+      "path": "results/raw/e11_a13_bench.csv",
+      "sha256": "0662560a2ef08a1300cfd5e057f3b5633cbbc629dbbc7516e7b717d1b0dd1230",
+      "bytes": 5717
+    },
+    {
+      "path": "results/raw/e11_bond.csv",
+      "sha256": "63823dfb598709c4770f9099a1904587d1612a7def95f59d419b85ed7458d405",
+      "bytes": 943
+    },
+    {
+      "path": "results/raw/e11_capacity.csv",
+      "sha256": "ce30eb12070fea4340d612237049967d532fc2144de49c44ed2b0285dbc08c2c",
+      "bytes": 1144
+    },
+    {
+      "path": "results/raw/e11_coalition.csv",
+      "sha256": "0b74e2d9d3de81f5d7c0ee6ff35cfe45e31efa941b9ff364080fe8fefecaa799",
+      "bytes": 1510
+    },
+    {
+      "path": "results/raw/e11_compromised.csv",
+      "sha256": "c597917952212d8f6571f37beda313ed35c494cc29ef5e3470bba394630b2264",
+      "bytes": 22817
+    },
+    {
+      "path": "results/raw/e11_loss.csv",
+      "sha256": "5e88e51aaef80687caefb4dd73fef3c7546dc8e47436746ddc81604072a864b9",
+      "bytes": 15547
+    },
+    {
+      "path": "results/raw/e11_refusal.csv",
+      "sha256": "05c0fd0726136fd4df47e2f281b07feead24a004f43f4587afdef742dd451a84",
+      "bytes": 15247
+    },
+    {
+      "path": "results/raw/e11_summary.json",
+      "sha256": "896b3b63279f6a80516259256ddf996ad29dc4b10b263f8f2c2efdee5f49e4b9",
+      "bytes": 709
+    },
+    {
+      "path": "results/raw/e11_tstar.csv",
+      "sha256": "9cc3d25cc87758a6a8b00684f0180332dd898b0342e0f7622760bf9779de4dce",
+      "bytes": 5562
     },
     {
       "path": "results/raw/e1_decisions.csv",
@@ -269,6 +314,96 @@
       "path": "results/tables/e10b_coverage.md",
       "sha256": "193dcff10610e93457393e11ee2eaf4e7f73efd5e5e5940de3f4feed39fe20b8",
       "bytes": 2178
+    },
+    {
+      "path": "results/tables/e11_a13_bench.csv",
+      "sha256": "e31e6161bb737ad058cb42bdc467efd0643d010eda7d2768628889a40c907bb2",
+      "bytes": 99
+    },
+    {
+      "path": "results/tables/e11_a13_bench.md",
+      "sha256": "f1f84f93282edc7e33b452d2ce2bb9e005d44df40122e5b11bb89cf08349cee1",
+      "bytes": 699
+    },
+    {
+      "path": "results/tables/e11_bond.csv",
+      "sha256": "65652f5dc63cafa24be95cf34360c8d94ceb874172234ca3cc3924809a2645f3",
+      "bytes": 267
+    },
+    {
+      "path": "results/tables/e11_bond.md",
+      "sha256": "3a702da995f2835b4c7eab64cb93219d34d6b32d3912f0c1d1b0aff3bacf1db1",
+      "bytes": 1383
+    },
+    {
+      "path": "results/tables/e11_capacity.csv",
+      "sha256": "d3822bb350488b07e77797eaafedccefdb9d0d3e04d6596958aed91068ff1601",
+      "bytes": 566
+    },
+    {
+      "path": "results/tables/e11_capacity.md",
+      "sha256": "6795b591cd731631e0762c68653c04487b45497e960b0a67c855364f077c337f",
+      "bytes": 1612
+    },
+    {
+      "path": "results/tables/e11_coalition.csv",
+      "sha256": "ae4d0035c4f8cb049ffbba6af3290b7ebba8f52dbb1e7e0f28c985b9e1e84dd8",
+      "bytes": 391
+    },
+    {
+      "path": "results/tables/e11_coalition.md",
+      "sha256": "b22c4e664b0f6f21737029b37e39745853971b2715a02b8a8d67d1c0d0435b8f",
+      "bytes": 916
+    },
+    {
+      "path": "results/tables/e11_compromised.csv",
+      "sha256": "d0bccd4ca28a335d4ee720f5021a6bb8d3c2cb28283c5edf1f3f3369adc57c1d",
+      "bytes": 4946
+    },
+    {
+      "path": "results/tables/e11_compromised.md",
+      "sha256": "07ebc0cf3b8478c63c242453fcfe77e1bf3875eda251d5989d5d6a4b8c8a6e17",
+      "bytes": 17129
+    },
+    {
+      "path": "results/tables/e11_loss.csv",
+      "sha256": "a99d6d90eabcb8530b7f6defa21f242409dd235066fbafd362363bd1243167b1",
+      "bytes": 984
+    },
+    {
+      "path": "results/tables/e11_loss.md",
+      "sha256": "e4ec9b77cf3c514c50ff9c68139682a3c91bc62590d2de56f04b965d65d8e7ce",
+      "bytes": 1985
+    },
+    {
+      "path": "results/tables/e11_refusal.csv",
+      "sha256": "c9272154df9bb714ec6cbabd0765c6e7e03de7a53ac2b23dc1a47a3b07d232b9",
+      "bytes": 510
+    },
+    {
+      "path": "results/tables/e11_refusal.md",
+      "sha256": "caab77b8d065838f48634e106de871fc401f963befcac0eca3eb103a8aaf1121",
+      "bytes": 1346
+    },
+    {
+      "path": "results/tables/e11_refusal_by_workload.csv",
+      "sha256": "e440982c2de742710550d10cf1e09184624f6ce68486d6c997c7254ac6815d21",
+      "bytes": 172
+    },
+    {
+      "path": "results/tables/e11_refusal_by_workload.md",
+      "sha256": "114b88e1262be336271d42867905162008854c1513722347844cab60f4970607",
+      "bytes": 540
+    },
+    {
+      "path": "results/tables/e11_tstar.csv",
+      "sha256": "386d99445a577beb85e804f632646665923d86499034519748477954e397ed0c",
+      "bytes": 1481
+    },
+    {
+      "path": "results/tables/e11_tstar.md",
+      "sha256": "f7210ef0444c1f40774a611f191d78693264607b98b7a094840d6cb3979bf584",
+      "bytes": 4747
     },
     {
       "path": "results/tables/e1_disagreements.csv",

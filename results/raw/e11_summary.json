@@ -1,0 +1,25 @@
+{
+  "H6": {
+    "a_cells": 48,
+    "a_losses_zero": true,
+    "a_max_deviating": 0,
+    "b_refusal_ok": true,
+    "b_threshold": 0.05,
+    "b_worst_refusal_rate": 0.011557782165037934,
+    "kill_rule_triggered": false,
+    "note": "q is swept, not measured; the kill rule also applies if q cannot be bounded credibly from below",
+    "optimistic_rule_deviating_total": 1011,
+    "reference_workload": 30,
+    "supported": true
+  },
+  "a13_bench": {
+    "M3_losses": 60,
+    "M5_losses": 0,
+    "M5_refused": 60,
+    "cases": 60
+  },
+  "mean_amount_cents": 8989.051832531528,
+  "preregistration_v2_sha256": "8d00dbbf3e1aed56cc07f946a32e3508895321e3eafa7794e4a487c4b28494c9",
+  "quick": false,
+  "seed": 11011
+}

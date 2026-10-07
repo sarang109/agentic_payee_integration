@@ -1,6 +1,6 @@
 # MERIDIAN results
 
-Generated 2026-10-07T03:53:43Z from commit `af6f0ba87c4686adf27d1ff5992ff923ce970963`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
+Generated 2026-10-07T11:05:11Z from commit `774eb7b2584f3eabe014ecd4d3934d5fa6c4bf7c`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
 
 ## Run status
 
@@ -9,6 +9,7 @@ Generated 2026-10-07T03:53:43Z from commit `af6f0ba87c4686adf27d1ff5992ff923ce97
 | ablations | ok | 1.5 |
 | e1 | ok | 3.8 |
 | e10 | ok | 224.0 |
+| e11 | ok | 8.1 |
 | e2 | ok | 18.5 |
 | e4 | ok | 82.1 |
 | e4b | ok | 50.5 |
@@ -32,6 +33,7 @@ Generated 2026-10-07T03:53:43Z from commit `af6f0ba87c4686adf27d1ff5992ff923ce97
 | H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | 2 | supported | card: POST-safe probability 1.0, first-hop swaps voided before capture 400/400 = 1.0000, 95% CI [0.990, 1.000] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2389/2400; card void latency from stripe-test-mode (archived measurement of 2026-10-07T02:32:18Z) (p50 0.40 s, success 1.0). Sensitivity: with the modelled void latency and success from config/rails.yaml instead, the same runs give 399/400, which also meets the 0.99 threshold |
 | H4 V4 keeps decisions; payer p95 <= 150 ms | 2 | supported for the SNARK variant | agreement 1.000 [0.985, 1.000] on 250 cases; SNARK payer-side p95 11.1 ms; prover p95 577 ms. The BBS variant was not part of the agreement test; its payer-side verify p95 is 221 ms, above the 150 ms target |
 | H5 no single version dominates every rail | 2 | not supported | lowest (loss, step-up) per rail, ties kept: {'a2a_instant': ['M3'], 'card': ['M3'], 'psp_token': ['M2', 'M3'], 'stablecoin': ['M3'], 'wallet': ['M2', 'M3']}; among the best on every rail with attack data: ['M3']; rails without attack cases: ['bnpl']. An earlier computation broke ties by decision latency and counted the BNPL rail, which has no attack cases, and reported 'supported' ({'a2a_instant': 'M3', 'bnpl': 'M1', 'card': 'M3', 'psp_token': 'M2', 'stablecoin': 'M3', 'wallet': 'M3'}); that verdict rested on the 0/0 cell and is withdrawn. Exploratory, with the BNPL supplement: best on every rail ['M3']. See rq5_pareto for the security versus friction trade-off |
+| H6 funded routes: rational-custodian A13 losses zero for every q in [0.3, 1] when q_hat <= q; refusal <= 0.05 at capacity 1.5x mean exposure (hypotheses_v2.yaml) | 2 | supported | (a) at most 0 rational custodians deviate over 48 cells (oracle and floor rules, provisioned); (b) worst refusal rate 0.0116 at the reference workload (30 payments in flight). The optimistic rule (q_hat above q) lets 1011 custodian-cells deviate. PayeeBench A13: M3 loses 60/60, M5 (M3 + F6) 0/60 with 60 refused. q is swept, not measured. Kill rule triggered: False |
 
 Formal models: all results as expected (30 lemma results). F3 toy table: 13/14 rows match the blueprint (the mismatch is corrected in the f3_toy caption). T4 mutation tests: 36/36 pass. E1 V1a/V1b agreement: 1.000 [0.995, 1.000] on allow vs block, 0.957 [0.941, 0.969] exact.
 
@@ -54,6 +56,7 @@ Paired exact McNemar tests over all in-model cases against the strongest combine
 * A13 (a custodian deviates after committing) is not prevented: M2 51/60, M3 51/60 losses; 51 of the 51 M3 losses carry a breach certificate (Theorem 2: attributable, not prevented).
 * On the BNPL route (exploratory supplement), M3 does not undo first-hop or custodian diversions: the modelled BNPL void success (0.98) is below 1 - eps, so POST is not POST-safe and RWS falls back to PRE. The strongest baseline B7 stops some of these through the receipt service's view.
 * H4 holds for the SNARK variant only; the BBS variant's payer-side verify p95 is 221 ms, above the 150 ms target.
+* Hosted-model evidence (E9) covers a single model (openai gpt-4o-mini-2024-07-18 (run 2026-10-07)); results may not carry over to other models, and no second model was run.
 * V4 hides acquiring relationships and the terminal account but not the brand or payee identifier; proofs for one merchant are linkable, and the k-anonymous lookup's anonymity set shrinks with the prefix length and log size (e7_leakage, e7_lookups).
 * Rail windows, observer latencies and every void or recall latency except the card void are modelled (config/rails.yaml); see e6_timing_sources. Issuer authorization records (ISO 8583 fields) are simulated; no real issuer data was available.
 * PayeeBench attacks, legitimate structures and the strongest baseline B7 are built from the same generator and grammar, so 0% false block on those structures is partly by construction. The AIP-Bench scenarios fix the attack externally but are instantiated by the same generator.
@@ -379,6 +382,9 @@ Scenarios from AIP-Bench (arXiv 2607.21824; Hugging Face anonymos-2321135/aip-be
 ## E3 legitimate structures
 
 _Evidence: exact counts over constructed cases. Paper 1._
+
+_(e3_cost_vs_benefit not produced in this run)_
+
 
 #### E3: false blocks on legitimate structures (count / payments)
 
@@ -942,6 +948,284 @@ Simulation over modelled rail timings (config/rails.yaml).
 | stale-authority catch, rho = 3        | 67%         | 66.5%      |
 
 Parameters: {'window': 10, 'observer_medians': [1, 4], 'void_median': 5, 'void_success': 0.97, 'decision_median': 0.25, 'lognormal_sigma': 0.6}
+
+
+## Gate A2: baseline B2 against upstream AP2 code
+
+_Evidence: measured (timing or passive web measurement) by running upstream code on constructed cases. Paper 1._
+
+Runs the AP2 SDK payee check at the pinned commit (fetched into data/upstream/src, git-ignored); skipped without network. B5 has no reference implementation and stays re-specified.
+
+_(upstream_b2_agreement not produced in this run)_
+
+
+_(upstream_empty_id_wildcard not produced in this run)_
+
+
+## E12 independently authored attacks (Gate A)
+
+_Evidence: exact counts over constructed cases. Paper 1._
+
+The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated against ground truth only, and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark.
+
+_(e12_attack_matrix not produced in this run)_
+
+
+_(e12_mcnemar not produced in this run)_
+
+
+_(e12_by_scenario not produced in this run)_
+
+
+_(e12_by_author not produced in this run)_
+
+
+## E11 funded routes (F6), hypothesis H6
+
+_Evidence: simulation over modelled timings (config/rails.yaml); no custodian or detection process is measured. Paper 2._
+
+Registered in preregistration/hypotheses_v2.yaml and locked in LOCK_V2 before the run. The detection probability q is swept, not measured.
+
+#### E11: rational custodians that steal, reference workload (30 payments in flight)
+
+|                                        | 0.3     | 0.4     | 0.5     | 0.6    | 0.7    | 0.8    | 0.9    | 1.0   |
+|:---------------------------------------|:--------|:--------|:--------|:-------|:-------|:-------|:-------|:------|
+| ('provisioned', 'floor', 'off')        | 144/180 | 3/180   | 0/180   | 0/180  | 0/180  | 0/180  | 0/180  | 0/180 |
+| ('provisioned', 'floor', 'on')         | 0/180   | 0/180   | 0/180   | 0/180  | 0/180  | 0/180  | 0/180  | 0/180 |
+| ('provisioned', 'optimistic', 'off')   | 144/180 | 123/180 | 86/180  | 33/180 | 11/180 | 2/180  | 0/180  | 0/180 |
+| ('provisioned', 'optimistic', 'on')    | 134/180 | 105/180 | 55/180  | 19/180 | 6/180  | 0/180  | 0/180  | 0/180 |
+| ('provisioned', 'oracle', 'off')       | 144/180 | 123/180 | 86/180  | 33/180 | 11/180 | 2/180  | 0/180  | 0/180 |
+| ('provisioned', 'oracle', 'on')        | 0/180   | 0/180   | 0/180   | 0/180  | 0/180  | 0/180  | 0/180  | 0/180 |
+| ('unprovisioned', 'floor', 'off')      | 152/180 | 131/180 | 108/180 | 89/180 | 63/180 | 38/180 | 14/180 | 0/180 |
+| ('unprovisioned', 'floor', 'on')       | 0/180   | 0/180   | 0/180   | 0/180  | 0/180  | 0/180  | 0/180  | 0/180 |
+| ('unprovisioned', 'optimistic', 'off') | 152/180 | 131/180 | 108/180 | 89/180 | 63/180 | 38/180 | 14/180 | 0/180 |
+| ('unprovisioned', 'optimistic', 'on')  | 95/180  | 69/180  | 44/180  | 15/180 | 5/180  | 0/180  | 0/180  | 0/180 |
+| ('unprovisioned', 'oracle', 'off')     | 152/180 | 131/180 | 108/180 | 89/180 | 63/180 | 38/180 | 14/180 | 0/180 |
+| ('unprovisioned', 'oracle', 'on')      | 0/180   | 0/180   | 0/180   | 0/180  | 0/180  | 0/180  | 0/180  | 0/180 |
+
+Exact counts over simulated custodians. Provisioned: bond sized so the cap is 1.5 x mean exposure at the rule's q_hat. q is an input, swept from 0.3 to 1, not a measurement. Simulation of an economic model; the numbers say nothing about any deployed custodian.
+
+
+#### E11: refusal rate on legitimate payments, reference workload (30 payments in flight)
+
+|                                 |    0.3 |    0.4 |    0.5 |    0.6 |    0.7 |    0.8 |    0.9 |    1.0 |
+|:--------------------------------|-------:|-------:|-------:|-------:|-------:|-------:|-------:|-------:|
+| ('provisioned', 'floor')        | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 |
+| ('provisioned', 'optimistic')   | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 |
+| ('provisioned', 'oracle')       | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 | 0.0116 |
+| ('unprovisioned', 'floor')      | 0.4602 | 0.4602 | 0.4602 | 0.4602 | 0.4602 | 0.4602 | 0.4602 | 0.4602 |
+| ('unprovisioned', 'optimistic') | 0.3465 | 0.3465 | 0.3465 | 0.3465 | 0.3465 | 0.3465 | 0.3465 | 0.3465 |
+| ('unprovisioned', 'oracle')     | 0.4602 | 0.4057 | 0.369  | 0.3554 | 0.3484 | 0.3465 | 0.3464 | 0.3464 |
+
+Pooled over custodians; cluster bootstrap by custodian in e11_refusal.csv. Target at most 0.05. For the provisioned population the cap is the same at every q, so the refusal rate does not depend on q; what q changes is the bond required (e11_bond). q is an input, swept from 0.3 to 1, not a measurement. Simulation of an economic model; the numbers say nothing about any deployed custodian.
+
+
+#### E11: refusal rate by mean payments in flight (provisioned, capacity factor 1.5)
+
+|   workload |   payments |   refused |   refusal rate |   bootstrap lo |   bootstrap hi |
+|-----------:|-----------:|----------:|---------------:|---------------:|---------------:|
+|         10 |      73723 |      3874 |         0.0525 |         0.0502 |         0.0548 |
+|         30 |     222361 |      2570 |         0.0116 |         0.0108 |         0.0124 |
+|        100 |     739778 |       237 |         0.0003 |         0.0002 |         0.0004 |
+
+
+#### E11: refusal rate against capacity provisioning (not part of the H6 decision)
+
+|   workload |   capacity factor |   payments |   refused |   refusal rate |   wilson lo |   wilson hi |   bootstrap lo |   bootstrap hi |
+|-----------:|------------------:|-----------:|----------:|---------------:|------------:|------------:|---------------:|---------------:|
+|         10 |              1.5  |      73723 |      3874 |         0.0525 |      0.051  |      0.0542 |         0.0502 |         0.0548 |
+|         10 |              1.25 |      73723 |      6847 |         0.0929 |      0.0908 |      0.095  |         0.0898 |         0.0959 |
+|         10 |              2    |      73723 |      1085 |         0.0147 |      0.0139 |      0.0156 |         0.0134 |         0.0161 |
+|         30 |              1.5  |     222361 |      2570 |         0.0116 |      0.0111 |      0.012  |         0.0108 |         0.0124 |
+|         30 |              1.25 |     222361 |      8272 |         0.0372 |      0.0364 |      0.038  |         0.0356 |         0.0387 |
+|         30 |              2    |     222361 |       129 |         0.0006 |      0.0005 |      0.0007 |         0.0004 |         0.0008 |
+|        100 |              1.5  |     739778 |       237 |         0.0003 |      0.0003 |      0.0004 |         0.0002 |         0.0004 |
+|        100 |              1.25 |     739778 |      5483 |         0.0074 |      0.0072 |      0.0076 |         0.0069 |         0.0079 |
+|        100 |              2    |     739778 |         0 |         0      |      0      |      0      |         0      |         0      |
+
+
+#### E11: bond required per unit of mean exposure to sustain the capacity, by assumed q_hat
+
+|   q_hat |   bond / mean exposure (median) |   p25 |   p75 |   share where deterrence (not coverage) binds |
+|--------:|--------------------------------:|------:|------:|----------------------------------------------:|
+|     0.3 |                           3.142 | 1.575 | 3.86  |                                         0.755 |
+|     0.4 |                           1.86  | 1.5   | 2.456 |                                         0.59  |
+|     0.5 |                           1.5   | 1.5   | 1.609 |                                         0.32  |
+|     0.6 |                           1.5   | 1.5   | 1.5   |                                         0.11  |
+|     0.7 |                           1.5   | 1.5   | 1.5   |                                         0.035 |
+|     0.8 |                           1.5   | 1.5   | 1.5   |                                         0.005 |
+|     0.9 |                           1.5   | 1.5   | 1.5   |                                         0     |
+|     1   |                           1.5   | 1.5   | 1.5   |                                         0     |
+
+A smaller q_hat means a larger bond. 'Deterrence binds' means the bond must exceed the capacity itself, because the custodian's franchise and the discounted bond do not deter at that q_hat.
+
+
+#### E11: hold-time threshold T* at exposure = 1.5 x mean (days)
+
+| population    | rule       |   q |   share unbounded |   share infeasible |   median T* (days, finite) |   share with hold <= T* |
+|:--------------|:-----------|----:|------------------:|-------------------:|---------------------------:|------------------------:|
+| provisioned   | oracle     | 0.3 |             0.165 |              0     |                      2.15  |                   1     |
+| provisioned   | oracle     | 0.4 |             0.225 |              0     |                      2.535 |                   1     |
+| provisioned   | oracle     | 0.5 |             0.3   |              0     |                      4.069 |                   1     |
+| provisioned   | oracle     | 0.6 |             0.37  |              0     |                     11.247 |                   1     |
+| provisioned   | oracle     | 0.7 |             0.44  |              0     |                     16.948 |                   1     |
+| provisioned   | oracle     | 0.8 |             0.535 |              0     |                     20.318 |                   1     |
+| provisioned   | oracle     | 0.9 |             0.63  |              0     |                     21.755 |                   1     |
+| provisioned   | oracle     | 1   |             1     |              0     |                    nan     |                   1     |
+| provisioned   | floor      | 0.3 |             0.165 |              0     |                      2.15  |                   1     |
+| provisioned   | floor      | 0.4 |             0.225 |              0     |                     21.046 |                   1     |
+| provisioned   | floor      | 0.5 |             0.3   |              0     |                     27.58  |                   1     |
+| provisioned   | floor      | 0.6 |             0.37  |              0     |                     31.262 |                   1     |
+| provisioned   | floor      | 0.7 |             0.44  |              0     |                     34.991 |                   1     |
+| provisioned   | floor      | 0.8 |             0.535 |              0     |                     32.709 |                   1     |
+| provisioned   | floor      | 0.9 |             0.63  |              0     |                     30.595 |                   1     |
+| provisioned   | floor      | 1   |             1     |              0     |                    nan     |                   1     |
+| provisioned   | optimistic | 0.3 |             0.165 |              0.755 |                    348.474 |                   0.245 |
+| provisioned   | optimistic | 0.4 |             0.225 |              0.585 |                    141.737 |                   0.41  |
+| provisioned   | optimistic | 0.5 |             0.3   |              0     |                      2.552 |                   0.68  |
+| provisioned   | optimistic | 0.6 |             0.37  |              0     |                     11.247 |                   0.89  |
+| provisioned   | optimistic | 0.7 |             0.44  |              0     |                     16.948 |                   0.965 |
+| provisioned   | optimistic | 0.8 |             0.535 |              0     |                     20.318 |                   1     |
+| provisioned   | optimistic | 0.9 |             0.63  |              0     |                     21.755 |                   1     |
+| provisioned   | optimistic | 1   |             1     |              0     |                    nan     |                   1     |
+| unprovisioned | -          | 0.3 |             0.165 |              0.79  |                    179.114 |                   0.21  |
+| unprovisioned | -          | 0.4 |             0.225 |              0.655 |                     28.497 |                   0.33  |
+| unprovisioned | -          | 0.5 |             0.3   |              0.51  |                     26.002 |                   0.435 |
+| unprovisioned | -          | 0.6 |             0.37  |              0.38  |                     20.095 |                   0.6   |
+| unprovisioned | -          | 0.7 |             0.44  |              0.235 |                     12.739 |                   0.715 |
+| unprovisioned | -          | 0.8 |             0.535 |              0.115 |                     10.443 |                   0.825 |
+| unprovisioned | -          | 0.9 |             0.63  |              0.015 |                     13     |                   0.965 |
+| unprovisioned | -          | 1   |             1     |              0     |                    nan     |                   1     |
+
+unbounded: margin and franchise alone deter; infeasible: even immediate release is not enough for this bond. Provisioned rows use the bond for the named rule.
+
+
+#### E11: compromised custodians (deviate at a random time whatever the incentives)
+
+| population    | rule       | admission   |   q |   q_hat |   compromised custodians |   deviating |   gross loss / mean exposure |   expected uncovered / mean exposure |
+|:--------------|:-----------|:------------|----:|--------:|-------------------------:|------------:|-----------------------------:|-------------------------------------:|
+| provisioned   | oracle     | on          | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | oracle     | off         | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | oracle     | on          | 0.4 |     0.4 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | oracle     | off         | 0.4 |     0.4 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | oracle     | on          | 0.5 |     0.5 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | oracle     | off         | 0.5 |     0.5 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | oracle     | on          | 0.6 |     0.6 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | oracle     | off         | 0.6 |     0.6 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | oracle     | on          | 0.7 |     0.7 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | oracle     | off         | 0.7 |     0.7 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | oracle     | on          | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | oracle     | off         | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | oracle     | on          | 0.9 |     0.9 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | oracle     | off         | 0.9 |     0.9 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | oracle     | on          | 1   |     1   |                       20 |          20 |                       0.88   |                               0      |
+| provisioned   | oracle     | off         | 1   |     1   |                       20 |          20 |                       0.88   |                               0      |
+| provisioned   | floor      | on          | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | floor      | off         | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | floor      | on          | 0.4 |     0.3 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | floor      | off         | 0.4 |     0.3 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | floor      | on          | 0.5 |     0.3 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | floor      | off         | 0.5 |     0.3 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | floor      | on          | 0.6 |     0.3 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | floor      | off         | 0.6 |     0.3 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | floor      | on          | 0.7 |     0.3 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | floor      | off         | 0.7 |     0.3 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | floor      | on          | 0.8 |     0.3 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | floor      | off         | 0.8 |     0.3 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | floor      | on          | 0.9 |     0.3 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | floor      | off         | 0.9 |     0.3 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | floor      | on          | 1   |     0.3 |                       20 |          20 |                       0.88   |                               0      |
+| provisioned   | floor      | off         | 1   |     0.3 |                       20 |          20 |                       0.88   |                               0      |
+| provisioned   | optimistic | on          | 0.3 |     0.8 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | optimistic | off         | 0.3 |     0.8 |                       20 |          20 |                       0.88   |                               0.616  |
+| provisioned   | optimistic | on          | 0.4 |     0.8 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | optimistic | off         | 0.4 |     0.8 |                       20 |          20 |                       0.88   |                               0.528  |
+| provisioned   | optimistic | on          | 0.5 |     0.8 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | optimistic | off         | 0.5 |     0.8 |                       20 |          20 |                       0.88   |                               0.44   |
+| provisioned   | optimistic | on          | 0.6 |     0.8 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | optimistic | off         | 0.6 |     0.8 |                       20 |          20 |                       0.88   |                               0.352  |
+| provisioned   | optimistic | on          | 0.7 |     0.8 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | optimistic | off         | 0.7 |     0.8 |                       20 |          20 |                       0.88   |                               0.264  |
+| provisioned   | optimistic | on          | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | optimistic | off         | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.176  |
+| provisioned   | optimistic | on          | 0.9 |     0.8 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | optimistic | off         | 0.9 |     0.8 |                       20 |          20 |                       0.88   |                               0.088  |
+| provisioned   | optimistic | on          | 1   |     0.8 |                       20 |          20 |                       0.88   |                               0      |
+| provisioned   | optimistic | off         | 1   |     0.8 |                       20 |          20 |                       0.88   |                               0      |
+| unprovisioned | oracle     | on          | 0.3 |     0.3 |                       20 |          20 |                       0.2705 |                               0.1893 |
+| unprovisioned | oracle     | off         | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.7425 |
+| unprovisioned | oracle     | on          | 0.4 |     0.4 |                       20 |          20 |                       0.3569 |                               0.2141 |
+| unprovisioned | oracle     | off         | 0.4 |     0.4 |                       20 |          20 |                       0.88   |                               0.6967 |
+| unprovisioned | oracle     | on          | 0.5 |     0.5 |                       20 |          20 |                       0.4052 |                               0.2026 |
+| unprovisioned | oracle     | off         | 0.5 |     0.5 |                       20 |          20 |                       0.88   |                               0.6508 |
+| unprovisioned | oracle     | on          | 0.6 |     0.6 |                       20 |          20 |                       0.4081 |                               0.1632 |
+| unprovisioned | oracle     | off         | 0.6 |     0.6 |                       20 |          20 |                       0.88   |                               0.605  |
+| unprovisioned | oracle     | on          | 0.7 |     0.7 |                       20 |          20 |                       0.4089 |                               0.1227 |
+| unprovisioned | oracle     | off         | 0.7 |     0.7 |                       20 |          20 |                       0.88   |                               0.5592 |
+| unprovisioned | oracle     | on          | 0.8 |     0.8 |                       20 |          20 |                       0.4089 |                               0.0818 |
+| unprovisioned | oracle     | off         | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.5134 |
+| unprovisioned | oracle     | on          | 0.9 |     0.9 |                       20 |          20 |                       0.4089 |                               0.0409 |
+| unprovisioned | oracle     | off         | 0.9 |     0.9 |                       20 |          20 |                       0.88   |                               0.4675 |
+| unprovisioned | oracle     | on          | 1   |     1   |                       20 |          20 |                       0.4089 |                               0      |
+| unprovisioned | oracle     | off         | 1   |     1   |                       20 |          20 |                       0.88   |                               0.4217 |
+| unprovisioned | floor      | on          | 0.3 |     0.3 |                       20 |          20 |                       0.2705 |                               0.1893 |
+| unprovisioned | floor      | off         | 0.3 |     0.3 |                       20 |          20 |                       0.88   |                               0.7425 |
+| unprovisioned | floor      | on          | 0.4 |     0.3 |                       20 |          20 |                       0.2705 |                               0.1623 |
+| unprovisioned | floor      | off         | 0.4 |     0.3 |                       20 |          20 |                       0.88   |                               0.6967 |
+| unprovisioned | floor      | on          | 0.5 |     0.3 |                       20 |          20 |                       0.2705 |                               0.1352 |
+| unprovisioned | floor      | off         | 0.5 |     0.3 |                       20 |          20 |                       0.88   |                               0.6508 |
+| unprovisioned | floor      | on          | 0.6 |     0.3 |                       20 |          20 |                       0.2705 |                               0.1082 |
+| unprovisioned | floor      | off         | 0.6 |     0.3 |                       20 |          20 |                       0.88   |                               0.605  |
+| unprovisioned | floor      | on          | 0.7 |     0.3 |                       20 |          20 |                       0.2705 |                               0.0811 |
+| unprovisioned | floor      | off         | 0.7 |     0.3 |                       20 |          20 |                       0.88   |                               0.5592 |
+| unprovisioned | floor      | on          | 0.8 |     0.3 |                       20 |          20 |                       0.2705 |                               0.0541 |
+| unprovisioned | floor      | off         | 0.8 |     0.3 |                       20 |          20 |                       0.88   |                               0.5134 |
+| unprovisioned | floor      | on          | 0.9 |     0.3 |                       20 |          20 |                       0.2705 |                               0.027  |
+| unprovisioned | floor      | off         | 0.9 |     0.3 |                       20 |          20 |                       0.88   |                               0.4675 |
+| unprovisioned | floor      | on          | 1   |     0.3 |                       20 |          20 |                       0.2705 |                               0      |
+| unprovisioned | floor      | off         | 1   |     0.3 |                       20 |          20 |                       0.88   |                               0.4217 |
+| unprovisioned | optimistic | on          | 0.3 |     0.8 |                       20 |          20 |                       0.4089 |                               0.2862 |
+| unprovisioned | optimistic | off         | 0.3 |     0.8 |                       20 |          20 |                       0.88   |                               0.7425 |
+| unprovisioned | optimistic | on          | 0.4 |     0.8 |                       20 |          20 |                       0.4089 |                               0.2453 |
+| unprovisioned | optimistic | off         | 0.4 |     0.8 |                       20 |          20 |                       0.88   |                               0.6967 |
+| unprovisioned | optimistic | on          | 0.5 |     0.8 |                       20 |          20 |                       0.4089 |                               0.2044 |
+| unprovisioned | optimistic | off         | 0.5 |     0.8 |                       20 |          20 |                       0.88   |                               0.6508 |
+| unprovisioned | optimistic | on          | 0.6 |     0.8 |                       20 |          20 |                       0.4089 |                               0.1635 |
+| unprovisioned | optimistic | off         | 0.6 |     0.8 |                       20 |          20 |                       0.88   |                               0.605  |
+| unprovisioned | optimistic | on          | 0.7 |     0.8 |                       20 |          20 |                       0.4089 |                               0.1227 |
+| unprovisioned | optimistic | off         | 0.7 |     0.8 |                       20 |          20 |                       0.88   |                               0.5592 |
+| unprovisioned | optimistic | on          | 0.8 |     0.8 |                       20 |          20 |                       0.4089 |                               0.0818 |
+| unprovisioned | optimistic | off         | 0.8 |     0.8 |                       20 |          20 |                       0.88   |                               0.5134 |
+| unprovisioned | optimistic | on          | 0.9 |     0.8 |                       20 |          20 |                       0.4089 |                               0.0409 |
+| unprovisioned | optimistic | off         | 0.9 |     0.8 |                       20 |          20 |                       0.88   |                               0.4675 |
+| unprovisioned | optimistic | on          | 1   |     0.8 |                       20 |          20 |                       0.4089 |                               0      |
+| unprovisioned | optimistic | off         | 1   |     0.8 |                       20 |          20 |                       0.88   |                               0.4217 |
+
+The rule cannot deter them; the bond gives coverage only if the theft is detected (expected uncovered loss = gross - q x min(exposure, bond)). Reported apart from the rational custodians.
+
+
+#### E11: share of coalitions for which joint deviation pays, every member at its admission cap
+
+|               |   0.3 |   0.4 |   0.5 |   0.6 |   0.7 |   0.8 |   0.9 |   1.0 |
+|:--------------|------:|------:|------:|------:|------:|------:|------:|------:|
+| ('floor', 1)  | 0     | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+| ('floor', 2)  | 0.825 | 0.677 | 0     | 0     | 0     | 0     | 0     | 0     |
+| ('floor', 3)  | 0.995 | 0.992 | 0.991 | 0.992 | 0.993 | 0.997 | 0.993 | 0.993 |
+| ('oracle', 1) | 0     | 0     | 0     | 0     | 0     | 0     | 0     | 0     |
+| ('oracle', 2) | 0.831 | 0.754 | 0.639 | 0.474 | 0.274 | 0.058 | 0.004 | 0     |
+| ('oracle', 3) | 0.992 | 0.993 | 0.991 | 0.994 | 0.995 | 0.994 | 0.995 | 0.992 |
+
+Route of 3 custodians; colluders withhold their own evidence, so detection falls to the remaining honest hops and a 0.1 external channel (see hypotheses_v2.yaml).
+
+
+#### E11: PayeeBench A13 cases generated from the rational-deviation condition
+
+| configuration   | losses   | with breach certificate   | refused   |
+|:----------------|:---------|:--------------------------|:----------|
+| M3              | 60/60    | 60/60                     | 0/60      |
+| M5 (M3 + F6)    | 0/60     | -                         | 60/60     |
+
+Each case gets a custodian and an exposure at which stealing pays at q = 0.5; M5 refuses the payment when the exposure exceeds the cap. M5's refusals of legitimate payments are in e11_refusal. q is an input, swept from 0.3 to 1, not a measurement. Simulation of an economic model; the numbers say nothing about any deployed custodian.
 
 
 ## X2 / X3 on Stripe Connect test mode

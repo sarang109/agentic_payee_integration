@@ -1,0 +1,7 @@
+### E11: refusal rate by mean payments in flight (provisioned, capacity factor 1.5)
+
+|   workload |   payments |   refused |   refusal rate |   bootstrap lo |   bootstrap hi |
+|-----------:|-----------:|----------:|---------------:|---------------:|---------------:|
+|         10 |      73723 |      3874 |         0.0525 |         0.0502 |         0.0548 |
+|         30 |     222361 |      2570 |         0.0116 |         0.0108 |         0.0124 |
+|        100 |     739778 |       237 |         0.0003 |         0.0002 |         0.0004 |
