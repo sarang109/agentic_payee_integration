@@ -1,0 +1,37 @@
+MERIDIAN
+Copyright 2026 Sarang Kulkarni
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Third-party material distributed in this repository
+---------------------------------------------------
+
+data/unicode/confusables.txt
+  Unicode Security Mechanisms (UTS #39) confusables data, version 18.0.0.
+  Copyright (c) 2026 Unicode, Inc. Unicode and the Unicode Logo are
+  registered trademarks of Unicode, Inc. in the U.S. and other countries.
+  Distributed under the Unicode License v3; see
+  https://www.unicode.org/terms_of_use.html and
+  https://www.unicode.org/license.txt
+
+data/tranco/tranco_56WKN_top20k.csv
+  Top 20,000 entries of the Tranco list, id 56WKN (https://tranco-list.eu/list/56WKN).
+  V. Le Pochat, T. Van Goethem, S. Tajalizadehkhoob, M. Korczynski and
+  W. Joosen, "Tranco: A Research-Oriented Top Sites Ranking Hardened Against
+  Manipulation," NDSS 2019.
+
+Third-party data that is NOT redistributed
+------------------------------------------
+
+The UCI PhiUSIIL Phishing URL Dataset (CC BY 4.0) and the Kaggle datasets
+used by E4c are downloaded at run time and verified by SHA-256; they are not
+part of this repository. Their licenses are listed in README.md.
+
+Upstream protocol sources (AP2, ACP, x402) are fetched at the commits pinned
+in data/upstream/PINS.txt and are not redistributed.
+
+Security note
+-------------
+
+The Groth16 setup in zk/ uses fixed test entropy. It must not be used to
+protect real payments.

@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software or PayeeBench, please cite the archived release you used (see the DOI on its Zenodo record)."
+title: "MERIDIAN: reference implementation, PayeeBench benchmark, formal models and experiment harness for payee verification in agentic payments"
+type: software
+authors:
+  - family-names: Kulkarni
+    given-names: Sarang
+license: Apache-2.0
+repository-code: "https://github.com/sarang109/agentic_payee_integration"
+keywords:
+  - agentic payments
+  - payee verification
+  - authorization
+  - Tamarin
+  - benchmark
