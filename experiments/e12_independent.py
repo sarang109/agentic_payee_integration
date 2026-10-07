@@ -87,7 +87,10 @@ def validate(path: str | None = None, min_attacks: int = 0, min_authors: int = 0
     problems = validate_file(doc, min_attacks, min_authors)
     if problems:
         return problems
-    world, cases = _compile(doc)
+    world = World(seed=E12_SEED).build()
+    cases = compile_attacks(world, doc["attacks"], seed=E12_SEED, errors=problems)
+    if problems:
+        return problems
     for c in cases:
         if not diverts_if_paid(world, c):
             problems.append(f"{c.case_id}: as compiled, the money reaches a legitimate terminal even if every check "

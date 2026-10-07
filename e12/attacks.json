@@ -1,0 +1,1340 @@
+{
+ "schema": "meridian-e12/1",
+ "attacks": [
+  {
+   "id": "A1-01",
+   "author": "author-1",
+   "title": "Homoglyph twin with real company and valid manifest",
+   "narrative": "Attacker registers a real company and publishes a homoglyph domain (Cyrillic a) with a valid signed manifest for that domain and its own account. Every credential verifies for the lookalike; only a comparison against the brand the user meant (not name equality after normalization) catches it. Logo is copied so the agent sees nothing off.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "homoglyph",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 18900,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-02",
+   "author": "author-1",
+   "title": "Semantic twin on irreversible instant rail",
+   "narrative": "Attacker launches a semantic twin brand (different words, same meaning, e.g. 'Swift Strider' for 'Quick Runner') with a real LEI and own bank account. The user typed an abbreviation, so fuzzy name matching has nothing to anchor on and the agent picks the twin; instant transfer makes recovery impossible.",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "semantic-twin",
+    "copy_logo": false
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 420000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-03",
+   "author": "author-1",
+   "title": "Typo-omission clone on a stablecoin merchant",
+   "narrative": "Attacker registers a domain that omits one letter of the brand, with its own wallet and a valid self-issued credential. The user also mistyped the brand, so the typo in the user's words matches the attacker's name exactly, defeating a simple intent-to-payee string comparison. Expected to be caught only if the verifier binds to the brand identity and not the typed string.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "typo-omission",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": true
+   },
+   "user_words": "typo",
+   "amount_cents": 75000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-04",
+   "author": "author-1",
+   "title": "Sibling-brand affix inside a multi-brand group",
+   "narrative": "Victim is a multi-brand group. Attacker creates a name with an affix ('Brand X Outlet Official') and a real company; the group-style name makes it look like one more sibling brand. A verifier that accepts any group-affiliated-looking name or loose affix match would pass it, though the settlement account is the attacker's.",
+   "victim": {
+    "structure": "S9",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "affix",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 31000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-05",
+   "author": "author-1",
+   "title": "TLD swap, obvious and blocklisted (expected caught)",
+   "narrative": "Attacker uses the brand's name on a different TLD with its own account and no logo copy. The domain is already on a blocklist and looks off. This is the baseline lookalike that name checks, blocklists and the verifier should all stop.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "tld-swap",
+    "copy_logo": false
+   },
+   "listing": {
+    "manifest_valid": false,
+    "curated": false,
+    "known_bad": true,
+    "looks_off": true
+   },
+   "user_words": "exact",
+   "amount_cents": 9900,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-06",
+   "author": "author-1",
+   "title": "Checkout payee swapped after mandate, genuine proof kept",
+   "narrative": "A compromised agent shows the genuine merchant's valid proof and name, but after the user signs the mandate the payee in the checkout object is replaced with the attacker's account. The evidence still verifies because it belongs to the genuine merchant; only a check binding the actual settlement/first-hop account to the signed mandate catches it.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "keep",
+    "channel": "checkout"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 56000,
+   "checkout": {
+    "swap_after_mandate": true
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-07",
+   "author": "author-1",
+   "title": "Marketplace product feed poisoned with attacker's own proof",
+   "narrative": "Attacker compromises a product feed and swaps the store payee for an account of the attacker's own that has real, valid marketplace seller credentials (attacker opened a genuine seller account). The proof is valid for the swapped payee but is not a delegation from the brand; the listing is curated so platform trust signals say fine.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "own",
+    "channel": "feed"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 12500,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-08",
+   "author": "author-1",
+   "title": "Registry entry rewritten, no evidence, stablecoin",
+   "narrative": "Attacker edits a payee registry record so the stablecoin address for the merchant points to the attacker's wallet, supplying no evidence at all. Relies on an agent or verifier that treats absence of contradicting evidence as acceptable and on irreversibility. Expected to be caught by any verifier requiring signed evidence.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "none",
+    "channel": "registry"
+   },
+   "listing": {
+    "manifest_valid": false,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 250000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-09",
+   "author": "author-1",
+   "title": "Instant bank payment with late checkout swap and a prompt",
+   "narrative": "Direct account-to-account merchant; attacker swaps the destination account between mandate and send while keeping the displayed name and logo. Large instant payment, and the user would confirm a step-up prompt out of habit, so a 'ask the user' outcome does not save them.",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "keep",
+    "channel": "checkout"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 1800000,
+   "checkout": {
+    "swap_after_mandate": true
+   },
+   "premise_violation": false,
+   "user_confirms_stepup": true
+  },
+  {
+   "id": "A1-10",
+   "author": "author-1",
+   "title": "Rogue sub-merchant under a real payment facilitator",
+   "narrative": "Attacker onboards as a genuine sub-merchant of the facilitator under the brand's display name with no entity proof. Facilitator-issued credentials are real and the first hop is a legitimate facilitator, so a check that only trusts the facilitator layer passes; the sub-merchant is not the brand's.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "rogue_submerchant",
+    "evidence": "none"
+   },
+   "listing": {
+    "manifest_valid": false,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "typo",
+   "amount_cents": 22000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-11",
+   "author": "author-1",
+   "title": "Rogue sub-merchant with a real entity credential",
+   "narrative": "Attacker registers a real company, obtains a legal-entity credential for it, and opens a sub-merchant account at the facilitator under the brand's name via a processor token. The entity evidence is genuine, so L1 checks pass; the entity just is not the brand's. Needs the verifier to bind legal entity to the brand, not merely require an entity.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "rogue_submerchant",
+    "evidence": "entity"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 64000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-12",
+   "author": "author-1",
+   "title": "Processor payout account changed shortly before payment",
+   "narrative": "After taking over the merchant's processor dashboard, attacker changes the payout account an hour before the agent buys. Everything the buyer sees (merchant, processor account, credentials) is unchanged, only the settlement endpoint differs, and a log that has not yet seen the change gives the verifier nothing to compare. Short lead time is meant to beat any stale snapshot.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "processor_payout_change",
+    "hours_before": 1
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 99000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-13",
+   "author": "author-1",
+   "title": "Payout change three days ahead at a facilitator sub-merchant",
+   "narrative": "Dashboard takeover of a sub-merchant's account at its payment facilitator, payout account switched 72 hours before the payment. The long dwell time means a monitor should have seen it, so this is one I expect to be caught; it tests whether the detection actually uses the elapsed time.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "processor_payout_change",
+    "hours_before": 72
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 45000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-14",
+   "author": "author-1",
+   "title": "Marketplace custodian forwards funds to attacker",
+   "narrative": "The marketplace is the legitimate receiver and holds the brand's delegation, so every pre-payment check passes. The attacker, a rogue seller with a stake in settlement, causes the marketplace to forward onward to the attacker's account afterwards. Pre-payment verification cannot see the later hop; only post-payment observation could.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "custodian_redirect"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "typo",
+   "amount_cents": 25000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-15",
+   "author": "author-1",
+   "title": "Agent-platform MOR redirects held funds onward",
+   "narrative": "An agent platform acting as merchant of record legitimately receives the payment through a processor token, then sends it to an attacker's account that it holds as a counterparty. Same logic as any custodian redirect: authorization and chain are fully valid at payment time, the diversion happens after.",
+   "victim": {
+    "structure": "S7",
+    "rail": "psp_token"
+   },
+   "scenario": {
+    "kind": "custodian_redirect"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 380000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-16",
+   "author": "author-1",
+   "title": "Transaction laundering through another processor account",
+   "narrative": "Checkout names the brand's processor account but the authorization lands on a different account at the same facilitator controlled by the attacker (transaction laundering). The named account and the brand evidence both verify; the mismatch is only visible to something that checks the first hop that actually received the authorization.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "first_hop_mismatch",
+    "variant": "transaction-laundering"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 71000,
+   "checkout": {
+    "swap_after_mandate": true
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-17",
+   "author": "author-1",
+   "title": "Acquirer swap at a direct card merchant",
+   "narrative": "Attacker compromised the merchant's endpoint so the card authorization is routed to a different acquirer merchant ID than the one the checkout declared, while all displayed data stays genuine. Small amount keeps risk scoring quiet.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "first_hop_mismatch",
+    "variant": "acquirer-swap"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 4900,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-18",
+   "author": "author-1",
+   "title": "Revoked reseller reuses delegation with a stale snapshot",
+   "narrative": "A former reseller was revoked seconds ago but still holds the signed delegation. The verifier's revocation snapshot is stale, so the delegation still verifies; the window is tiny and the attacker pays out quickly. Tests freshness assumptions in revocation data.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "revoked_delegation",
+    "seconds_since_revocation": 30,
+    "snapshot": "stale"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 133000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-19",
+   "author": "author-1",
+   "title": "Revoked marketplace delegation, fresh snapshot (expected caught)",
+   "narrative": "A revoked store delegation is reused a long time after revocation and the verifier's snapshot is fresh. Straight revocation checking should deny; included as a control to confirm revocation is actually enforced.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "revoked_delegation",
+    "seconds_since_revocation": 86400,
+    "snapshot": "fresh"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 15000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-20",
+   "author": "author-1",
+   "title": "Reseller exceeds its ceiling scope",
+   "narrative": "A real, currently authorized reseller is delegated only for payments up to a low ceiling; the attacker (the reseller's insider) routes a far larger payment through it and diverts settlement. Identity, chain and revocation all check out; only the scope dimension (ceiling) is violated.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "ceiling"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 4500000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-21",
+   "author": "author-1",
+   "title": "Intermediary used outside its permitted rail",
+   "narrative": "A real intermediary is delegated for card payments only, but the attacker has the agent pay a stablecoin merchant endpoint through that same intermediary's account. Name and chain are valid and the intermediary is real; only a rail-dimension scope check blocks it.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "rail"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 60000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-22",
+   "author": "author-1",
+   "title": "Careless issuer signs rushed fake delegation",
+   "narrative": "An issuer carelessly signs the attacker's claim to represent the multi-brand group; the attacker immediately uses it before the brand's monitor can react, and the monitor is online, so this is the version I expect to be caught by public-log monitoring but missed by a verifier that only validates signatures.",
+   "victim": {
+    "structure": "S9",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "rush",
+    "brand_monitor": "online"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 82000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-23",
+   "author": "author-1",
+   "title": "Patient fake delegation with brand monitor offline",
+   "narrative": "A careless issuer signs the attacker's claim; the attacker waits patiently so any log or cache replicas catch up and the delegation looks well-established, and it times the payment when the brand's monitor is offline. Requires a broken assumption, so it is marked as a premise violation.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "patient",
+    "brand_monitor": "offline"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "typo",
+   "amount_cents": 210000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": true
+  },
+  {
+   "id": "A1-24",
+   "author": "author-1",
+   "title": "Split-view forged delegation shown to one verifier",
+   "narrative": "The attacker presents a log view containing a forged authorization only to the victim's verifier, while the brand's monitor sees the honest log. Consistency of log views is what exposes it; a verifier that trusts the single view it is shown passes the payment.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "split_view"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 38000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-25",
+   "author": "author-1",
+   "title": "Split-view against a marketplace store",
+   "narrative": "Same split-view idea against a brand's marketplace store: a forged delegation authorizing the attacker's seller account is shown only to the victim's verifier, while the marketplace and brand monitor see the honest log. A verifier trusting its single view misses it.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "split_view"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 500000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-26",
+   "author": "author-1",
+   "title": "Stale-authority use of a just-revoked instant account",
+   "narrative": "A bank account's authorization to receive for the brand was revoked recently, but the verifier still sees it as authorized. Payment goes over instant transfer so the money cannot be pulled back after the revocation propagates.",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "stale-authority"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "exact",
+   "amount_cents": 275000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A1-27",
+   "author": "author-1",
+   "title": "Late revocation after stablecoin payment into escrowless wallet",
+   "narrative": "A stablecoin account is revoked only just after the payment is sent, so at payment time everything is validly authorized, and the funds leave before the revocation is effective. Pre-payment verification cannot prevent this; it is expected to be missed unless escrow is used.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "late-revocation"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "known_bad": false,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 90000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-01",
+   "author": "author-2",
+   "title": "Marketplace escrow release redirected to attacker account",
+   "narrative": "Victim's brand store on a marketplace is paid through the marketplace's held-funds escrow using a processor delegated token. The marketplace legitimately receives the funds, so the payee check passes, then the attacker (who holds a real seller account there) gets the release pointed onward at their own account. Verifier sees only the first hop, which is genuine.",
+   "victim": {
+    "structure": "S3",
+    "rail": "psp_token"
+   },
+   "scenario": {
+    "kind": "custodian_redirect"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "lowercase",
+   "amount_cents": 1800000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-02",
+   "author": "author-2",
+   "title": "Marketplace payout hop to attacker's account",
+   "narrative": "A brand's store on a marketplace is paid by card via the marketplace, which is genuine. Attacker, a real seller on the same marketplace, arranges for downstream payout to be rerouted onward to their own bank account after capture, so the genuine first hop hides the real destination.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "custodian_redirect"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 42000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-03",
+   "author": "author-2",
+   "title": "Semantic twin of multi-brand group sub-brand",
+   "narrative": "The group owns brands 'Nordlicht Outdoor' and 'Nordlicht Kids'. Attacker registers a real company and curated listing named 'Nordlicht Family Outlet', a semantic twin a user typing loosely would accept, with its own valid credentials. Name similarity checks see a plausible sibling brand of the group.",
+   "victim": {
+    "structure": "S9",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "semantic-twin",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true,
+    "looks_off": false
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 31500,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-04",
+   "author": "author-2",
+   "title": "Hyphenation lookalike with typo user input",
+   "narrative": "Attacker registers 'shoe-mart' style hyphenated domain and company for a brand the user typed with a typo; the user's own misspelling lands close to the attacker's name, so a fuzzy match against user words favours the lookalike over the real brand.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "hyphenation",
+    "copy_logo": false
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false
+   },
+   "user_words": "typo",
+   "amount_cents": 8900,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-05",
+   "author": "author-2",
+   "title": "Homoglyph domain, curated and valid manifest",
+   "narrative": "Attacker uses a homoglyph domain with a signed manifest for its own genuine company and has gotten onto a platform curation list. Every positive signal (valid manifest, curated) is present, so heuristics that reward legitimacy markers will pass it; only identity binding to the brand should fail.",
+   "victim": {
+    "structure": "S3",
+    "rail": "psp_token"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "homoglyph",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 120000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-06",
+   "author": "author-2",
+   "title": "TLD swap on direct stablecoin merchant",
+   "narrative": "Direct stablecoin merchant at brand.com; attacker registers brand.shop with own valid proof and own wallet. Irreversible rail means user step-up is the only defence; the user words are lowercase and the logo is copied, making the prompt easy to approve.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "lookalike",
+    "technique": "tld-swap",
+    "copy_logo": true
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": false
+   },
+   "user_words": "lowercase",
+   "amount_cents": 250000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false,
+   "user_confirms_stepup": true
+  },
+  {
+   "id": "A2-07",
+   "author": "author-2",
+   "title": "Post-mandate account swap with attacker's own proof",
+   "narrative": "After the user signs the mandate for a direct account-to-account purchase, a compromised checkout endpoint swaps the beneficiary account to the attacker's account and attaches the attacker's own valid identity proof for a different company, hoping the verifier only checks that the evidence is internally valid.",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "own",
+    "channel": "checkout"
+   },
+   "listing": {
+    "manifest_valid": true
+   },
+   "user_words": "exact",
+   "amount_cents": 95000,
+   "checkout": {
+    "swap_after_mandate": true
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-08",
+   "author": "author-2",
+   "title": "Product feed poisoning keeping genuine proof",
+   "narrative": "Attacker compromises the product feed of a brand's marketplace store and replaces the settlement account while the genuine merchant evidence (domain and entity proof) is still shown beside it. The proof validates for the brand, but is not bound to the new settlement endpoint.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "keep",
+    "channel": "feed"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "typo",
+   "amount_cents": 56000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-09",
+   "author": "author-2",
+   "title": "Registry entry swap with no evidence, tiny amount",
+   "narrative": "Attacker alters a registry entry to point at their account without supplying any evidence, with a small amount well below typical step-up thresholds. Expected to be caught as no evidence exists, but tests whether low amounts relax the policy.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "payee_swap",
+    "evidence": "none",
+    "channel": "registry"
+   },
+   "listing": {
+    "manifest_valid": false,
+    "looks_off": true
+   },
+   "user_words": "exact",
+   "amount_cents": 100,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-10",
+   "author": "author-2",
+   "title": "Rogue sub-merchant under payment facilitator with entity evidence",
+   "narrative": "Attacker registers a real company and onboards as sub-merchant under a large payment facilitator, presenting the brand's name at the facilitator and a real legal-entity credential for their own company. The facilitator is trusted and the entity evidence is valid, but neither ties the sub-merchant to the brand.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "rogue_submerchant",
+    "evidence": "entity"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 74000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-11",
+   "author": "author-2",
+   "title": "Rogue sub-merchant, no evidence, lowercase wording",
+   "narrative": "Attacker opens a sub-merchant account at the facilitator and calls it by the brand's name with no evidence. The user typed the brand in lowercase, which makes the name look like a match. Expected to be caught for lack of any evidence.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "rogue_submerchant",
+    "evidence": "none"
+   },
+   "listing": {
+    "manifest_valid": false,
+    "looks_off": true
+   },
+   "user_words": "lowercase",
+   "amount_cents": 39900,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-12",
+   "author": "author-2",
+   "title": "Payout account change one hour before payment",
+   "narrative": "Attacker takes over the processor dashboard of a facilitator sub-merchant and changes the payout account one hour before the user pays. Short lead time means a log or monitor with any lag will not yet reflect it, and the processor account itself is still the genuine one.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "processor_payout_change",
+    "hours_before": 1
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 210000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-13",
+   "author": "author-2",
+   "title": "Payout change 70 hours earlier, aged past probation, multi-brand group",
+   "narrative": "Dashboard takeover on one brand of a multi-brand group, then waiting 70 hours so the changed payout account ages past any probation or new-account window before the payment is made; the account looks stable and established by payment time.",
+   "victim": {
+    "structure": "S9",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "processor_payout_change",
+    "hours_before": 70
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "typo",
+   "amount_cents": 480000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-14",
+   "author": "author-2",
+   "title": "Transaction laundering through unrelated processor account",
+   "narrative": "Checkout names the genuine processor account but the authorization is sent to a different account that the attacker holds at the same processor (transaction laundering). First-hop name matches the brand listing but the account that actually receives does not.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "first_hop_mismatch",
+    "variant": "transaction-laundering"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 15500,
+   "checkout": {
+    "swap_after_mandate": true
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-15",
+   "author": "author-2",
+   "title": "Acquirer swap for sub-merchant",
+   "narrative": "Facilitator sub-merchant checkout names one acquirer, but attacker redirects the authorization to a different acquirer merchant ID they own, swapping the L3 account while L0 to L2 remain the genuine brand.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "first_hop_mismatch",
+    "variant": "acquirer-swap"
+   },
+   "listing": {
+    "manifest_valid": true
+   },
+   "user_words": "lowercase",
+   "amount_cents": 63000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-16",
+   "author": "author-2",
+   "title": "Revoked marketplace reseller reused seconds after revocation, stale snapshot",
+   "narrative": "A former reseller storefront of the brand on a marketplace had its authorization revoked 20 seconds ago. The attacker (the ex-reseller or someone who holds its keys) pays immediately; the verifier holds a stale snapshot of the log that still shows the delegation as valid.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "revoked_delegation",
+    "seconds_since_revocation": 20,
+    "snapshot": "stale"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 88000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-17",
+   "author": "author-2",
+   "title": "Revoked delegation on fresh snapshot, expected caught",
+   "narrative": "Ex-reseller reuses its revoked delegation a full day after revocation while the verifier holds a fresh snapshot. This should be denied clearly; included as a control to confirm that revocation visibility works.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "revoked_delegation",
+    "seconds_since_revocation": 86400,
+    "snapshot": "fresh"
+   },
+   "listing": {
+    "manifest_valid": true
+   },
+   "user_words": "exact",
+   "amount_cents": 20000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-18",
+   "author": "author-2",
+   "title": "Ceiling abuse just over the scope limit on a sub-merchant",
+   "narrative": "A real facilitator sub-merchant is authorized only up to a ceiling; the attacker (an operator on that account) routes a payment just beyond the ceiling at 5,001.00, banking on the ceiling check being skipped or rounding in the attacker's favour.",
+   "victim": {
+    "structure": "S4",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "ceiling"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "typo",
+   "amount_cents": 500100,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-19",
+   "author": "author-2",
+   "title": "Rail scope abuse: stablecoin merchant authorized for a different rail",
+   "narrative": "A real direct stablecoin merchant is authorized by its delegation only for card payments (or another rail) and is used to receive an irreversible stablecoin payment. Identity checks pass because the merchant is genuine; only scope on the rail dimension reveals the abuse, and the funds cannot be recalled.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "rail"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 300000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-20",
+   "author": "author-2",
+   "title": "Geo scope abuse via group sub-brand reseller",
+   "narrative": "A multi-brand group authorized a reseller only for one region; the attacker, who controls that reseller account, sells to a user in another region and the payment is accepted because the reseller is real and in the log.",
+   "victim": {
+    "structure": "S9",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "scope_abuse",
+    "dimension": "geo"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "lowercase",
+   "amount_cents": 47000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-21",
+   "author": "author-2",
+   "title": "Careless issuer signs rush delegation, monitor online",
+   "narrative": "A careless issuer signs the attacker's claim to represent the brand. Attacker uses it immediately (rush) before the brand's monitor can react, even though the monitor is online; the delegation is validly signed and sits in the log.",
+   "victim": {
+    "structure": "S3",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "rush",
+    "brand_monitor": "online"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 150000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-22",
+   "author": "author-2",
+   "title": "Patient fake delegation with offline brand monitor",
+   "narrative": "Attacker obtains a careless issuer's signature, waits until the delegation has aged past any new-entry probation and until the brand's monitor is offline, then pays a direct card merchant's brand. Marked premise violation because the monitor is offline.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "fresh_fake_delegation",
+    "wait": "patient",
+    "brand_monitor": "offline"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "typo",
+   "amount_cents": 900000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": true
+  },
+  {
+   "id": "A2-23",
+   "author": "author-2",
+   "title": "Split view of log shown to victim verifier only",
+   "narrative": "Attacker presents a forged authorization entry that appears only in the log view served to the victim's verifier, so the entry is consistent locally but never visible to the brand's monitor. Works if the verifier does not cross-check log consistency with independent witnesses.",
+   "victim": {
+    "structure": "S1",
+    "rail": "card"
+   },
+   "scenario": {
+    "kind": "split_view"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "abbreviated",
+   "amount_cents": 700000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-24",
+   "author": "author-2",
+   "title": "Stale-authority use on instant rail",
+   "narrative": "An account's authorization was revoked a short time ago but the verifier's view is stale. The attacker pays over an instant account-to-account rail, so once the stale view is accepted the funds are unrecoverable.",
+   "victim": {
+    "structure": "S2",
+    "rail": "a2a_instant"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "stale-authority"
+   },
+   "listing": {
+    "manifest_valid": true
+   },
+   "user_words": "lowercase",
+   "amount_cents": 125000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  },
+  {
+   "id": "A2-25",
+   "author": "author-2",
+   "title": "Late revocation after stablecoin payment",
+   "narrative": "The attacker's authorization is revoked just after payment, i.e. after the verifier allowed it. The stablecoin transfer is irreversible and lands in the attacker's wallet; the revocation arrives too late for a pre-payment check.",
+   "victim": {
+    "structure": "S12",
+    "rail": "stablecoin"
+   },
+   "scenario": {
+    "kind": "irreversible_revocation",
+    "variant": "late-revocation"
+   },
+   "listing": {
+    "manifest_valid": true,
+    "curated": true
+   },
+   "user_words": "exact",
+   "amount_cents": 60000,
+   "checkout": {
+    "swap_after_mandate": false
+   },
+   "premise_violation": false
+  }
+ ],
+ "unexpressible": [
+  {
+   "author": "author-1",
+   "title": "Dormant lookalike combined with feed poisoning",
+   "narrative": "The attacker pre-registers a lookalike brand with a clean history, waits for it to age in a curated listing, then compromises the real merchant's product feed to point to the lookalike's account. This combines lookalike and payee_swap in one attack, which the single-kind schema cannot express."
+  },
+  {
+   "author": "author-2",
+   "title": "Brand legitimately sold to a new owner",
+   "narrative": "A brand is acquired and the old entity's settlement account keeps receiving money for the brand under a still-valid delegation, while the new owner has not yet republished credentials. A kind is needed for stale-but-valid ownership transfer in which the legal entity changes."
+  },
+  {
+   "author": "author-2",
+   "title": "Escrow release instruction forged by a compromised agent",
+   "narrative": "The shopping agent itself, not the custodian, is the one whose escrow release instruction is replaced after the payment; this is not a custodian redirect since the custodian behaves honestly, and the swap happens in the post-payment release step."
+  }
+ ]
+}

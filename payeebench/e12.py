@@ -496,14 +496,25 @@ def diverts_if_paid(world: World, case: Case) -> bool:
     return case.exec_terminal not in world.legit_terminals(case.intended, case.payment.tuple)
 
 
-def compile_attacks(world: World, specs: List[Dict[str, Any]], seed: int = 0) -> List[Case]:
-    """Compile validated specs, in file order, into cases on ``world``."""
+def compile_attacks(world: World, specs: List[Dict[str, Any]], seed: int = 0,
+                    errors: Optional[List[str]] = None) -> List[Case]:
+    """Compile validated specs, in file order, into cases on ``world``. With an
+    ``errors`` list, an attack that cannot be built is reported there and
+    skipped; without one the first problem raises."""
     kit = AttackerKit(world, random.Random(seed * 7919 + 1))
     out: List[Case] = []
     for spec in specs:
         validate_spec(spec)
         rng = _rng(world, spec["id"])
-        case = BUILDERS[spec["scenario"]["kind"]](world, kit, rng, spec)
+        try:
+            case = BUILDERS[spec["scenario"]["kind"]](world, kit, rng, spec)
+        except Exception as e:  # a builder that cannot realise the combination in this world
+            err = e if isinstance(e, SpecError) else SpecError(
+                f"{spec['id']}: cannot be built in this world ({type(e).__name__}: {e})")
+            if errors is None:
+                raise err from e
+            errors.append(str(err))
+            continue
         for k, val in spec.get("listing", {}).items():
             setattr(case.listing, k, val)
         case.user_words = _words(world.brands[case.intended], rng, spec.get("user_words", "exact"))
