@@ -1,0 +1,12 @@
+{
+  "attacks": 52,
+  "attacks_sha256": "366e8cea82d4275eae3765c2e12ad75b2e241d5fe672205be3dc964ee68a01af",
+  "authors": [
+    "author-1",
+    "author-2"
+  ],
+  "decision_rule_sha256": "3bd63da0bc8924df840e51695ae01c483479cd1b562cc4dbab7d12bff5f76537",
+  "frozen_utc": "2026-10-07T11:08:32Z",
+  "git": "c64f04db6686a5aebd4d1474db3bfe307884c10a",
+  "schema": "meridian-e12/1"
+}
