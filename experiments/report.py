@@ -35,7 +35,7 @@ SECTIONS = [
     ("E2 attack matrix", ["e2_attack_matrix_loss", "e2_attack_matrix_stepup", "e2_by_variant", "e2_premise_violation",
                           "e2_mcnemar"], "e2_attack_heatmap.png", "", [CONSTRUCTED], "1"),
     ("E2 external scenarios (AIP-Bench)", ["e2_aip_external"], None, "", [CONSTRUCTED, "exploratory"], "1"),
-    ("E3 legitimate structures", ["e3_false_block", "e3_step_up", "e3_stepup_causes", "e3_stepup_exposure",
+    ("E3 legitimate structures", ["e3_cost_vs_benefit", "e3_false_block", "e3_step_up", "e3_stepup_causes", "e3_stepup_exposure",
                                   "e3_rates_bootstrap"], None, "", [CONSTRUCTED], "1"),
     ("RQ5 per-rail comparison", ["rq5_per_rail", "rq5_pareto", "rq5_bnpl_supplement", "rq5_pareto_with_bnpl"], None,
      "", [CONSTRUCTED, "rq5_pareto and the BNPL supplement are exploratory"], "2"),

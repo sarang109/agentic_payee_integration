@@ -98,6 +98,28 @@ def run_e2_e3() -> dict:
     write_table("e3_false_block", fbt, "E3: false blocks on legitimate structures (count / payments)")
     write_table("e3_step_up", sut, "E3: step-ups on legitimate structures (count / payments)")
 
+    # the cost of the loss reduction, side by side: attacks lost against legitimate payments the user had to confirm
+    n_att = att.case_id.nunique()
+    core = ben[~ben.variant.isin(["S10", "S11"])]
+    cb_rows = []
+    for cfg in ["B7", "M1", "M2", "M3"]:
+        la = att[att.config == cfg]
+        row = {"config": cfg, "in-model attacks lost": f"{int(la.loss.sum())}/{n_att}"}
+        for label, d in (("established structures (S1-S9, S12, S13)", core),
+                         ("S10 newly onboarded", ben[ben.variant == "S10"]),
+                         ("S11 no credentials", ben[ben.variant == "S11"])):
+            g = d[d.config == cfg]
+            row[f"step-ups, {label}"] = f"{int(g.step_up.sum())}/{len(g)}"
+        for s_id in ("S9", "S12", "S1"):
+            g = ben[(ben.config == cfg) & (ben.variant == s_id)]
+            row[f"step-ups, {s_id} {STRUCTURES[s_id]}"] = f"{int(g.step_up.sum())}/{len(g)}"
+        cb_rows.append(row)
+    write_table("e3_cost_vs_benefit", pd.DataFrame(cb_rows),
+                "E3: attacks lost next to legitimate payments stepped up to the user",
+                "Exact counts. A step-up is a legitimate payment the user must confirm, so M2's lower loss comes "
+                "with the step-up cost on the right; S11 steps up for every configuration that requires a credential. "
+                "Read this table before quoting M2's advantage over B7.", index=False)
+
     # step-up causes and exposure split for MERIDIAN configs
     causes = ben[ben.step_up].groupby(["config", "stage"]).size().unstack(fill_value=0)
     write_table("e3_stepup_causes", causes, "E3: why benign payments were stepped up (by verifier stage)")
