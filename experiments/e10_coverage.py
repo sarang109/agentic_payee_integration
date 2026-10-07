@@ -324,6 +324,16 @@ def sample_storefronts(per_market: int, max_candidates: int) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
+def _sample_limit(agg, unit: str) -> str:
+    """State the sample size per market and what a zero count cannot rule out."""
+    from .stats import wilson
+    parts = []
+    for r in agg:
+        n = int(r.get("storefronts", r.get("retailers", 0)))
+        parts.append(f"{r['market']} n = {n} (0 of {n} has a 95% upper bound of {wilson(0, n)[1]:.1%})")
+    return f"Sample sizes: {'; '.join(parts)} {unit}. Counts of zero are not evidence that the share is zero."
+
+
 def run_e10b(per_market: int, max_candidates: int) -> Dict:
     with Timer(f"E10b sampling storefronts from Tranco ({per_market} per market)"):
         cand = sample_storefronts(per_market, max_candidates)
@@ -357,7 +367,10 @@ def run_e10b(per_market: int, max_candidates: int) -> Dict:
                 "commerce platform), taken in rank order. Storefronts that render entirely in JavaScript are missed, "
                 "so the sample leans towards server-rendered shops. One homepage request per site. With no retailer legal name, the LEI "
                 "lookup uses the certificate organisation or the domain label, so LEI candidates are looser than in "
-                "E10 and need confirmation. Wilson 95% intervals.", index=False)
+                "E10 and need confirmation. Wilson 95% intervals. " + _sample_limit(agg, "storefronts") +
+                " Where the full path is not buildable today, the deployment path is a G1-only mode (route to the "
+                "first hop, with the terminal binding and onward commitments required only where a custodian can "
+                "provide them); the G1 column is what that mode covers.", index=False)
     return {"coverage": agg, "n": len(df),
             "measured_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 
@@ -385,7 +398,9 @@ def run_e10() -> Dict:
     write_table("e10_coverage", pd.DataFrame(agg), "E10: receiving-authority edges buildable from public / KYB data",
                 "Wilson 95% intervals. 'Identifiable' means the storefront exposes the PSP or commerce platform that "
                 "already runs KYB; LEI matches are name-based and need manual confirmation before use. "
-                + " ".join(f"{k}: {v[1]}." for k, v in VOP_POLICY.items()), index=False)
+                + " ".join(f"{k}: {v[1]}." for k, v in VOP_POLICY.items()) + " " + _sample_limit(agg, "retailers")
+                + " Where the full path is not buildable today, the deployment path is a G1-only mode (see E10b).",
+                index=False)
     with Timer("E10 lookalike prevalence"):
         k = 8 if QUICK else 25
         with ThreadPoolExecutor(8) as ex:
