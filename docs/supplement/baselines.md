@@ -16,10 +16,31 @@ weaker than the real mechanism.
 | B6 agent judgment plus lists | Agent-side heuristics; CAPE's blocklist finding | Denies blocklisted listings; steps up some listings that look off (fixed 30% detection) | Agent judgment is a seeded coin, not a model; E9 measures hosted-model judgment directly |
 | B7 strongest combined | B2 + B3 + B4 + B5 with LEI, plus scoped delegation from the asserted entity, receipts, name anchoring | Manifest, name anchoring on legal or display name, mandate binding, did:web wallet on stablecoin, VoP against the LEI on account-to-account, scoped delegation chain from the asserted entity to the payee, receipt-based first-hop void on reversible rails | Built by this project from the components above rather than taken from a deployed system; it shares the generator with MERIDIAN (see limitations) |
 
-## Not done
+## Status of the baselines: re-specified, not reimplemented
 
-The publication plan asked for baselines "reimplemented from their specs".
-The table above documents the mapping; it does not replace an independent
-reimplementation. The closest external check is `e2_aip_external`, where
+Every baseline is **re-specified** from its public source: the table above
+says what each checks and what it simplifies. None is an independent
+reimplementation, and B7 is built by this project from the other components
+and shares the generator with the attacks (see limitations in the report).
+
+**Upstream check (Gate A2, `experiments/upstream_check.py`).** B2 was run
+against the AP2 SDK at the pinned commit (`data/upstream/PINS.txt`):
+`check_payment_constraints` from `ap2/sdk/constraints.py`, executed, not
+copied. With merchant ids present on both sides the in-repo B2 and the SDK
+agree on every PayeeBench case (`upstream_b2_agreement`, group G1, under the
+mapping stated in the script). With no merchant id in the mandate the SDK
+falls back to name and website, so an attacker that copies the genuine display
+fields is accepted where B2 denies (G2): B2 is stricter than the SDK there,
+which is the AP2-17 fallback the table above already notes. The empty-id
+wildcard reported for an earlier AP2 reference (arXiv 2609.00060) does not
+occur at this pin (`upstream_empty_id_wildcard`). These statements are about
+the pinned commit only.
+
+B5 (EPC Verification of Payee) has no reference implementation to run: the
+rulebook specifies messages and response codes and leaves the name matching to
+each payment service provider. B5 therefore stays re-specified, and the papers
+say so.
+
+The closest external check on the attack side is `e2_aip_external`, where
 AIP-Bench fixes the attack scenario and PCAT's own claim (P2 stops wallet
 substitution) is reproduced by B4 on the V9 scenario.

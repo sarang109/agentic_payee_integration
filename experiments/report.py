@@ -52,6 +52,10 @@ SECTIONS = [
     ("E6 rail scheduling", ["e6_timing_sources", "e6_residual_loss_f0", "e6_observer_corruption", "e6_rws_choice",
                             "e6_theorem3", "f4_toy"], "e6_rail_residual.png", "", [MODELLED,
                                                                                    "card void latency " + SANDBOX], "2"),
+    ("Gate A2: baseline B2 against upstream AP2 code", ["upstream_b2_agreement", "upstream_empty_id_wildcard"], None,
+     "Runs the AP2 SDK payee check at the pinned commit (fetched into data/upstream/src, git-ignored); skipped "
+     "without network. B5 has no reference implementation and stays re-specified.",
+     [MEASURED + " by running upstream code on constructed cases"], "1"),
     ("E12 independently authored attacks (Gate A)", ["e12_attack_matrix", "e12_mcnemar", "e12_by_scenario",
                                                        "e12_by_author"], None,
      "The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated "
