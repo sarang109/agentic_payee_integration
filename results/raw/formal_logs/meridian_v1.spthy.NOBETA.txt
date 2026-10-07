@@ -672,7 +672,7 @@ summary of summaries:
 
 analyzed: formal/tamarin/meridian_v1.spthy
 
-  processing time: 1.49s
+  processing time: 1.44s
   
   executable (exists-trace): verified (11 steps)
   df_soundness (all-traces): verified (18 steps)

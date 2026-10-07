@@ -28,6 +28,7 @@ import os
 import re
 import socket
 import ssl
+import threading
 import time
 import unicodedata
 import urllib.parse
@@ -135,18 +136,39 @@ def _norm(s: str) -> str:
     return "".join(ch for ch in unicodedata.normalize("NFKD", s).lower() if ch.isalnum())
 
 
+_GLEIF_LOCK = threading.Lock()
+_GLEIF_LAST = [0.0]
+
+
+def _gleif_get(url: str) -> dict:
+    """GLEIF allows about 60 requests a minute: space calls and back off on 429."""
+    for attempt in range(8):
+        with _GLEIF_LOCK:
+            wait = _GLEIF_LAST[0] + 1.05 - time.time()
+            if wait > 0:
+                time.sleep(wait)
+            _GLEIF_LAST[0] = time.time()
+        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/vnd.api+json"})
+        try:
+            with urllib.request.urlopen(req, timeout=20, context=TLS) as r:
+                return json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt == 7:
+                raise
+            time.sleep(float(e.headers.get("Retry-After") or 20))
+    raise RuntimeError("unreachable")
+
+
 def gleif_raw(query: str, countries: List[str]) -> List[Dict]:
     q = urllib.parse.quote(query)
     out = []
     for c in countries[:3]:
         url = (f"https://api.gleif.org/api/v1/lei-records?filter%5Bfulltext%5D={q}"
                f"&filter%5Bentity.legalAddress.country%5D={c}&page%5Bsize%5D=20")
-        req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "application/vnd.api+json"})
-        with urllib.request.urlopen(req, timeout=20, context=TLS) as r:
-            for x in json.loads(r.read())["data"]:
-                a = x["attributes"]
-                out.append({"lei": x["id"], "name": a["entity"]["legalName"]["name"],
-                            "country": a["entity"]["legalAddress"]["country"], "status": a["registration"]["status"]})
+        for x in _gleif_get(url)["data"]:
+            a = x["attributes"]
+            out.append({"lei": x["id"], "name": a["entity"]["legalName"]["name"],
+                        "country": a["entity"]["legalAddress"]["country"], "status": a["registration"]["status"]})
     return out
 
 
@@ -179,7 +201,9 @@ def measure(entry: Dict, market: str) -> Dict:
     org = _cache(f"cert_{domain}", lambda: cert_org(domain))
     hp = _cache(f"home_{domain}", lambda: homepage(domain))
     q = entry.get("legal_name") or org or token
-    raw = _cache(f"gleif_{market}_{domain}", lambda: gleif_raw(q, MARKET_COUNTRIES[market]))
+    countries = entry.get("countries") or MARKET_COUNTRIES[market]
+    key = f"gleif_{market}_{domain}" if not entry.get("countries") else f"gleif_{'-'.join(countries)}_{domain}"
+    raw = _cache(key, lambda: gleif_raw(q, countries))
     lei = match_lei(q, raw)
     vmc = bool(d.get("bimi") and re.search(r"\ba=https?://", d["bimi"] or ""))
     vop, _ = VOP_POLICY[market]
@@ -283,11 +307,11 @@ def sample_storefronts(per_market: int, max_candidates: int) -> pd.DataFrame:
     rows = []
     for m, cands in by_m.items():
         found, k = 0, 0
-        batch = 64
+        batch = 256
         while found < per_market and k < min(len(cands), max_candidates):
             chunk = cands[k:k + batch]
             k += len(chunk)
-            with ThreadPoolExecutor(16) as ex:
+            with ThreadPoolExecutor(48) as ex:  # one request per site, so per-site load is unchanged
                 feats = list(ex.map(lambda rd: _cache(f"store_{rd[1]}", lambda: storefront(rd[1])), chunk))
             for (rank, dom), f in zip(chunk, feats):
                 sf = is_storefront(f, m)
@@ -305,7 +329,10 @@ def run_e10b(per_market: int, max_candidates: int) -> Dict:
         cand = sample_storefronts(per_market, max_candidates)
     write_csv("e10b_candidates", cand)
     picked = cand[cand.storefront].groupby("market").head(per_market)
-    jobs = [({"domain": r.domain}, r.market) for r in picked.itertuples()]
+    tld_country = {"de": "DE", "fr": "FR", "nl": "NL", "es": "ES", "it": "IT", "se": "SE", "ie": "IE", "be": "BE",
+                   "at": "AT"}
+    jobs = [({"domain": r.domain, "countries": [tld_country[r.domain.rsplit(".", 1)[-1]]]}
+             if r.market == "EU" else {"domain": r.domain}, r.market) for r in picked.itertuples()]
     with Timer(f"E10b measuring {len(jobs)} sampled storefronts"):
         with ThreadPoolExecutor(8) as ex:
             rows = list(ex.map(lambda j: measure(*j), jobs))

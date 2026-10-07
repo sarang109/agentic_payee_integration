@@ -1,4 +1,4 @@
-### E4: held-out operating point (theta=0.9, tau=0.075) and component ablation
+### E4: held-out operating point (theta=0.7, tau=0.075) and component ablation
 
 | components                   | benign step-up       |   benign wrong commit | attack false commit   |   attack step-up |
 |:-----------------------------|:---------------------|----------------------:|:----------------------|-----------------:|

@@ -1,0 +1,8 @@
+### RQ5 (exploratory): BNPL frontier from the supplement
+
+| rail   | config   | attack loss   |   loss rate |   benign step-up | on the frontier   |
+|:-------|:---------|:--------------|------------:|-----------------:|:------------------|
+| bnpl   | B7       | 21/60         |        0.35 |           0.0889 | yes               |
+| bnpl   | M1       | 30/60         |        0.5  |           0      | yes               |
+| bnpl   | M2       | 30/60         |        0.5  |           0      | yes               |
+| bnpl   | M3       | 30/60         |        0.5  |           0      | yes               |

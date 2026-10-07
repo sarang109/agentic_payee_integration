@@ -1,16 +1,19 @@
 {
   "H4": {
-    "added_payer_p95_ms": 12.703666507150047,
+    "added_payer_p95_ms": 11.079770512878895,
     "allow_block_agreement": "1.000 [0.985, 1.000]",
+    "bbs_meets_latency_target": false,
+    "bbs_verify_p95_ms": 220.86896849999903,
     "cases": 250,
     "exact_verdict_agreement": "1.000 [0.985, 1.000]",
-    "prover_p95_ms": 632.4466957999999,
-    "supported": true
+    "prover_p95_ms": 576.9266065500004,
+    "supported": true,
+    "variant": "SNARK (Groth16); decision agreement and latency are measured for this variant"
   },
   "bbs_all_verified": true,
   "snark": {
     "all_verified": true,
-    "prove_p50_ms": 580.2466039999999,
-    "verify_p50_ms": 9.67614599999979
+    "prove_p50_ms": 559.1171874999995,
+    "verify_p50_ms": 8.993812499999876
   }
 }

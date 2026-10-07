@@ -6,8 +6,8 @@
       "memory_MB": 4.4,
       "nodes": 10000,
       "queries": 300,
-      "query_p50_ms": 0.262,
-      "query_p95_ms": 0.618,
+      "query_p50_ms": 0.259,
+      "query_p95_ms": 0.61,
       "reachable_share": 0.223
     },
     {
@@ -16,18 +16,18 @@
       "memory_MB": 43.7,
       "nodes": 100000,
       "queries": 300,
-      "query_p50_ms": 0.352,
+      "query_p50_ms": 0.355,
       "query_p95_ms": 0.745,
       "reachable_share": 0.123
     },
     {
-      "csr_build_s": 1.73,
+      "csr_build_s": 1.83,
       "edges": 10000000,
       "memory_MB": 436.8,
       "nodes": 1000000,
       "queries": 300,
-      "query_p50_ms": 0.475,
-      "query_p95_ms": 1.077,
+      "query_p50_ms": 0.503,
+      "query_p95_ms": 1.258,
       "reachable_share": 0.057
     }
   ],
@@ -55,52 +55,52 @@
       "inclusion_proof_bytes_max": 640,
       "inclusion_proof_bytes_mean": 640.0,
       "leaves": 1048576,
-      "proof_gen_ms_p50": 0.016,
-      "proof_verify_ms_p50": 0.01,
-      "root_build_s": 0.52
+      "proof_gen_ms_p50": 0.02,
+      "proof_verify_ms_p50": 0.011,
+      "root_build_s": 0.54
     },
     {
       "inclusion_proof_bytes_max": 768,
       "inclusion_proof_bytes_mean": 757.4,
       "leaves": 10000000,
-      "root_build_s": 5.1
+      "root_build_s": 5.38
     }
   ],
   "pav": [
     {
       "k_edges": 2,
-      "pav_per_s": 1550.2,
+      "pav_per_s": 1625.2,
       "rap_bytes": 1575,
       "signature_checks": 7,
-      "us_per_pav": 645.1
+      "us_per_pav": 615.3
     },
     {
       "k_edges": 3,
-      "pav_per_s": 1229.2,
+      "pav_per_s": 1282.1,
       "rap_bytes": 2055,
       "signature_checks": 9,
-      "us_per_pav": 813.5
+      "us_per_pav": 779.9
     },
     {
       "k_edges": 4,
-      "pav_per_s": 1039.5,
+      "pav_per_s": 1051.3,
       "rap_bytes": 2576,
       "signature_checks": 11,
-      "us_per_pav": 962.0
+      "us_per_pav": 951.2
     },
     {
       "k_edges": 5,
-      "pav_per_s": 864.8,
+      "pav_per_s": 889.3,
       "rap_bytes": 3097,
       "signature_checks": 13,
-      "us_per_pav": 1156.3
+      "us_per_pav": 1124.4
     },
     {
       "k_edges": 6,
-      "pav_per_s": 767.6,
+      "pav_per_s": 773.3,
       "rap_bytes": 3618,
       "signature_checks": 15,
-      "us_per_pav": 1302.8
+      "us_per_pav": 1293.1
     }
   ]
 }

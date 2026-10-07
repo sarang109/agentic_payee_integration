@@ -1,0 +1,11 @@
+### RQ5 supplement: attacks on the BNPL route (exploratory, separate world)
+
+|                                                       | B1    | B2    | B3    | B4    | B5    | B6    | B7    | M1-G1   | M1    | M2    | M3    |
+|:------------------------------------------------------|:------|:------|:------|:------|:------|:------|:------|:--------|:------|:------|:------|
+| A3 payee substituted in the checkout object           | 15/15 | 6/15  | 15/15 | 15/15 | 15/15 | 15/15 | 0/15  | 0/15    | 0/15  | 0/15  | 0/15  |
+| A4 feed or registry poisoning of the payment endpoint | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 0/15  | 0/15    | 0/15  | 0/15  | 0/15  |
+| A11 post-authorization first-hop mismatch             | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 7/15  | 15/15   | 15/15 | 15/15 | 15/15 |
+| A13 custodian deviates after committing (extra)       | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 15/15 | 14/15 | 15/15   | 15/15 | 15/15 | 15/15 |
+| benign step-ups (S6)                                  | 0/90  | 0/90  | 0/90  | 0/90  | 0/90  | 0/90  | 8/90  | 0/90    | 0/90  | 0/90  | 0/90  |
+
+Not part of the pre-registered bench. A3/A4 swap the payee, A11 is a first-hop mismatch after authorization, A13 the lender's PSP pays out to an insider. M3 does not undo A11 or A13 here: the modelled BNPL void success (0.98, config/rails.yaml) is below 1 - eps = 0.99, so POST is not POST-safe under Theorem 3 and RWS falls back to PRE, which detects but cannot undo.

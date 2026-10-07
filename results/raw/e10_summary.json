@@ -1,6 +1,7 @@
 {
   "coverage": [
     {
+      "G1 route buildable (no terminal binding)": "0.000 [0.000, 0.161]",
       "L0->L1 domain to entity": "0.800 [0.584, 0.919]",
       "LEI issued": "0.350 [0.181, 0.567]",
       "bank terminal binding (VoP/CoP)": "yes",
@@ -11,6 +12,7 @@
       "verified mark (VMC)": "0.550 [0.342, 0.742]"
     },
     {
+      "G1 route buildable (no terminal binding)": "0.050 [0.009, 0.236]",
       "L0->L1 domain to entity": "0.950 [0.764, 0.991]",
       "LEI issued": "0.850 [0.640, 0.948]",
       "bank terminal binding (VoP/CoP)": "yes",
@@ -21,6 +23,7 @@
       "verified mark (VMC)": "0.100 [0.028, 0.301]"
     },
     {
+      "G1 route buildable (no terminal binding)": "0.050 [0.009, 0.236]",
       "L0->L1 domain to entity": "0.900 [0.699, 0.972]",
       "LEI issued": "0.650 [0.433, 0.819]",
       "bank terminal binding (VoP/CoP)": "yes",
@@ -31,6 +34,7 @@
       "verified mark (VMC)": "0.250 [0.112, 0.469]"
     },
     {
+      "G1 route buildable (no terminal binding)": "0.100 [0.028, 0.301]",
       "L0->L1 domain to entity": "1.000 [0.839, 1.000]",
       "LEI issued": "0.600 [0.387, 0.781]",
       "bank terminal binding (VoP/CoP)": "no",
@@ -75,5 +79,60 @@
       "retailers with >=1 registered lookalike": "20/20"
     }
   ],
-  "n": 80
+  "measured_utc": "2026-10-07T03:53:54Z",
+  "n": 80,
+  "sampled": {
+    "coverage": [
+      {
+        "G1 route buildable (no terminal binding)": "0.097 [0.060, 0.154]",
+        "L0->L1 domain to entity": "0.323 [0.254, 0.400]",
+        "LEI candidate": "0.168 [0.117, 0.234]",
+        "Tranco rank range": "47-65260",
+        "candidates fetched": 3201,
+        "full path buildable today": "0.097 [0.060, 0.154]",
+        "market": "EU",
+        "platform/PSP identifiable": "0.394 [0.320, 0.472]",
+        "storefronts": 155,
+        "verified mark (VMC)": "0.200 [0.145, 0.270]"
+      },
+      {
+        "G1 route buildable (no terminal binding)": "0.052 [0.031, 0.087]",
+        "L0->L1 domain to entity": "0.076 [0.049, 0.116]",
+        "LEI candidate": "0.040 [0.022, 0.072]",
+        "Tranco rank range": "694-334224",
+        "candidates fetched": 2366,
+        "full path buildable today": "0.052 [0.031, 0.087]",
+        "market": "IN",
+        "platform/PSP identifiable": "0.832 [0.781, 0.873]",
+        "storefronts": 250,
+        "verified mark (VMC)": "0.016 [0.006, 0.040]"
+      },
+      {
+        "G1 route buildable (no terminal binding)": "0.116 [0.082, 0.162]",
+        "L0->L1 domain to entity": "0.156 [0.116, 0.206]",
+        "LEI candidate": "0.068 [0.043, 0.106]",
+        "Tranco rank range": "233-261520",
+        "candidates fetched": 2747,
+        "full path buildable today": "0.116 [0.082, 0.162]",
+        "market": "UK",
+        "platform/PSP identifiable": "0.744 [0.686, 0.794]",
+        "storefronts": 250,
+        "verified mark (VMC)": "0.064 [0.040, 0.101]"
+      },
+      {
+        "G1 route buildable (no terminal binding)": "0.155 [0.084, 0.269]",
+        "L0->L1 domain to entity": "0.431 [0.312, 0.559]",
+        "LEI candidate": "0.207 [0.123, 0.328]",
+        "Tranco rank range": "1-7913",
+        "candidates fetched": 2606,
+        "full path buildable today": "0.000 [0.000, 0.062]",
+        "market": "US",
+        "platform/PSP identifiable": "0.293 [0.192, 0.420]",
+        "storefronts": 58,
+        "verified mark (VMC)": "0.241 [0.150, 0.365]"
+      }
+    ],
+    "measured_utc": "2026-10-07T03:57:38Z",
+    "n": 713
+  }
 }

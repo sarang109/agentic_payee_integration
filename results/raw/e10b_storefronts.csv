@@ -1,0 +1,714 @@
+market,domain,resolves,cert_org,bimi,vmc,lei,lei_name,homepage_ok,psp,platform,edge_L0_L1,edge_mark,edge_L1_lei,edge_L1_L2L3,edge_L1_L4,g1_path,full_path
+UK,guardian.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,vam.ac.uk,True,Victoria and Albert Museum,False,False,21380061OPSVF67PEC56,VICTORIA AND ALBERT MUSEUM,True,,Salesforce Commerce Cloud,True,False,True,True,True,True,True
+UK,fasthosts.co.uk,True,Fasthosts Internet Ltd.,True,True,,,True,,,True,True,False,False,True,False,False
+UK,vogue.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,shein.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,wickes.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+UK,matalan.co.uk,True,,False,False,,,True,Afterpay/Clearpay,,False,False,False,True,True,False,False
+UK,gooutdoors.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bonusprint.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,virginmediao2.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,glamourmagazine.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,sony.co.uk,True,Sony Global Solutions Inc.,False,False,,,True,,SAP Commerce,True,False,False,True,True,True,True
+UK,tts-group.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,123-reg.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,zalando.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,houseoffraser.co.uk,True,FRASERS GROUP PLC,True,False,213800JEGHHEAXIJDX34,FRASERS GROUP PLC,True,,,True,False,True,False,True,False,False
+UK,autism.org.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,aldi.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,cultbeauty.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,bes.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,starbucks.co.uk,True,Starbucks Coffee Company,False,False,,,True,Worldpay,,True,False,False,True,True,True,True
+UK,joybuy.co.uk,True,JINGDONG GROUP IRELAND LIMITED,False,False,,,True,,,True,False,False,False,True,False,False
+UK,office.co.uk,True,Office Holdings Limited,False,False,,,True,,SAP Commerce,True,False,False,True,True,True,True
+UK,disneystore.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,backmarket.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,victorianplumbing.co.uk,True,Victorian Plumbing Ltd,False,False,213800AYE4ABA4XHZ949,VICTORIAN PLUMBING LTD,True,Klarna,,True,False,True,True,True,True,True
+UK,bonmarche.co.uk,True,,False,False,,,True,Klarna,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,futureshop.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,emodels.co.uk,True,,False,False,,,True,Klarna,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,quickvit.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,sharkninja.co.uk,True,,False,False,,,True,"Braintree,Klarna",Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,theworks.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,peacocks.co.uk,True,,False,False,,,True,Klarna,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,monsoon.co.uk,True,,False,False,,,True,"Adyen,Klarna",Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,disturbia.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,philips.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,zoomadog.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,lakeland.co.uk,True,,False,False,21380013ZS5DAC789K20,LAKELAND LIMITED,True,,Shopify,True,False,True,True,True,True,True
+UK,harpercollins.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,habitat.co.uk,True,SAINSBURY'S SUPERMARKETS LTD,True,True,213800KMLDLT2PROXX14,SAINSBURY'S SUPERMARKETS LTD,True,,,True,True,True,False,True,False,False
+UK,monstercardcorner.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,graziadaily.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,furniturevillage.co.uk,True,Furniture Village Limited,False,False,213800AYF6G23J9XSR36,FURNITURE VILLAGE HOLDINGS LIMITED,True,Cybersource,Salesforce Commerce Cloud,True,False,True,True,True,True,True
+UK,ralphlauren.co.uk,True,Ralph Lauren Corporation,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,tjc.co.uk,True,,True,True,,,True,,Shopify,False,True,False,True,True,False,False
+UK,postcodeanywhere.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,omaze.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,eticketing.co.uk,True,,False,False,,,True,"Adyen,Klarna",,False,False,False,True,True,False,False
+UK,hyperiontiles.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,treatwell.co.uk,True,,False,False,,,True,Stripe,,False,False,False,True,True,False,False
+UK,edikted.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,keslighting.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,canon.co.uk,True,Canon Europa N.V.,False,False,,,True,,,True,False,False,False,True,False,False
+UK,anglingdirect.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,naturitas.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,skechers.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,joebrowns.co.uk,True,,True,True,,,True,Klarna,Adobe Commerce/Magento,False,True,False,True,True,False,False
+UK,pinkboutique.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,theessencevault.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,woolwarehouse.co.uk,True,,False,False,,,True,Stripe,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,gardeningexpress.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,michaelkors.co.uk,True,"Michael Kors (USA), Inc.",False,False,,,True,"Adyen,Klarna",Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,talktalk.co.uk,True,TalkTalk Communications Limited,False,False,,,True,,,True,False,False,False,True,False,False
+UK,faber.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,offspring.co.uk,True,Office Holdings Limited,False,False,,,True,,SAP Commerce,True,False,False,True,True,True,True
+UK,cssc.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,pcpro.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,farmergracy.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,youknowwhos.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,maplin.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,foodforfoodies.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,cafepress.co.uk,True,,True,False,,,True,,,False,False,False,False,True,False,False
+UK,photobox.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,dreams.co.uk,True,,True,True,213800SNB8OJ6EU5WS05,DREAMS LIMITED,True,,SAP Commerce,True,True,True,True,True,True,True
+UK,oakhousefoods.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,coffeee.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,millets.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,tsohost.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,cardfactory.co.uk,True,Card Factory Plc,False,False,213800TTSOPFVCKPFQ11,CARD FACTORY PLC,True,,Salesforce Commerce Cloud,True,False,True,True,True,True,True
+UK,blacks.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,gadgetwear.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bunkbedsstore.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,vapeuk.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,johnlewis.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,landsend.co.uk,True,"Lands' End, Inc.",True,True,,,True,"Braintree,Stripe",Salesforce Commerce Cloud,True,True,False,True,True,True,True
+UK,goldsmiths.co.uk,True,WATCHES OF SWITZERLAND COMPANY LIMITED,False,False,213800AWSE15HQWJUI96,WATCHES OF SWITZERLAND COMPANY LIMITED,True,,,True,False,True,False,True,False,False
+UK,mainlinemenswear.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,spreadshirt.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,virginexperiencedays.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,poltronesofa.co.uk,True,A. Share & Sons Limited,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,footlocker.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+UK,mdfskirtingmouldings.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,cots4tots.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,frydge.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,lively.org.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,tuinmaximaal.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,hometreadmills.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,ottolenghi.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bissell.co.uk,True,,True,True,,,True,,Adobe Commerce/Magento,False,True,False,True,True,False,False
+UK,jewson.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+UK,powertoolsonline.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,poundland.co.uk,True,,False,False,213800O81ZIP7VFYVM51,POUNDLAND LIMITED,True,,Shopify,True,False,True,True,True,True,True
+UK,vidaxl.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,dragoongaming.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,fenwick.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,bedkingdom.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,brass-works.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,viking-direct.co.uk,True,Viking Office Europe B.V.,False,False,,,True,"Braintree,Google Pay",SAP Commerce,True,False,False,True,True,True,True
+UK,plouise.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,euronics.co.uk,True,,False,False,,,True,"PayPal,Stripe",SAP Commerce,False,False,False,True,True,False,False
+UK,premiumcues.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,pavers.co.uk,True,,False,False,213800JF2HKYZUNSBR83,PAVERS LIMITED,True,,Shopify,True,False,True,True,True,True,True
+UK,prlved.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,harrypottershop.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,theknittingnetwork.co.uk,True,,True,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,facethefuture.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,americangolf.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,highspeedtraining.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,brooktaverner.co.uk,True,,False,False,,,True,"Klarna,PayPal",Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,animed.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,cherryred.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,80scasualclassics.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,boxed2me.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,rselectricalsupplies.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,siniat.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,gtxgaming.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,mandimart.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,fieldandmoor.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,emp.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,omlet.co.uk,True,,False,False,,,True,"PayPal,Stripe",,False,False,False,True,True,False,False
+UK,siemens.co.uk,True,,False,False,529900ZZVLZ93I1AW009,SIEMENS PLC,True,,,True,False,True,False,True,False,False
+UK,lighting-direct.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,affordablegolf.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,tmlewin.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,zendesk.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,damart.co.uk,True,DAMART SAS,False,False,,,True,,Adobe Commerce/Magento,True,False,False,True,True,True,True
+UK,souschef.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bakerross.co.uk,True,,True,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,tinkerer.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,livemail.co.uk,True,Fasthosts Internet Ltd.,False,False,,,True,,,True,False,False,False,True,False,False
+UK,radley.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,startfitness.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,jeanscene.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,psbooks.co.uk,True,,False,False,,,True,,"Adobe Commerce/Magento,Shopify",False,False,False,True,True,False,False
+UK,howetools.co.uk,True,,False,False,,,True,"Braintree,PayPal",Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,terrysfabrics.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,gatheringgames.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,arco.co.uk,True,Arco Limited,False,False,213800Q3OE4NYSM3V954,ARCO LIMITED,True,,SAP Commerce,True,False,True,True,True,True,True
+UK,zaqq.co.uk,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+UK,lifeplan.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,careco.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,opticswarehouse.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,vapouriz.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,alanhoward.co.uk,True,,False,False,,,True,"Adyen,Google Pay,Klarna,PayPal,Worldpay",,False,False,False,True,True,False,False
+UK,whoward.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,buildabear.co.uk,True,"Build-A-Bear Workshop, Inc.",False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,ewm.co.uk,True,,False,False,,,False,,,False,False,False,False,True,False,False
+UK,janeausten.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,ianvisits.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,completepumpsupplies.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,cpapsupply.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,vax.co.uk,True,,False,False,5493006CNOBD2B4PJQ78,VAX LIMITED,True,Klarna,Adobe Commerce/Magento,True,False,True,True,True,True,True
+UK,artunlimitedshop.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,interflora.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,everymarket.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,baylanguagebooks.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bathroommountain.co.uk,True,,True,True,,,True,,,False,True,False,False,True,False,False
+UK,modernfurnituredirect.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,lights.co.uk,True,,True,True,,,True,,Adobe Commerce/Magento,False,True,False,True,True,False,False
+UK,redrobingifts.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,daals.co.uk,True,,False,False,,,True,Klarna,Shopify,False,False,False,True,True,False,False
+UK,globalparts.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,onlinecarpets.co.uk,True,,False,False,,,True,Klarna,Shopify,False,False,False,True,True,False,False
+UK,beautyflash.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,crafterscompanion.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,plates4less.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,simplybearings.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,talkmobile.co.uk,True,Vodafone Group Services Limited,False,False,21380069F2WW2192UO48,VODAFONE GROUP SERVICES LIMITED,True,,Adobe Commerce/Magento,True,False,True,True,True,True,True
+UK,easygardenirrigation.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,mankind.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,poundfabrics.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,dexionstorage.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,apricotonline.co.uk,True,,False,False,,,True,"Afterpay/Clearpay,Klarna",Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,wbcs-ltd.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+UK,golfclubs4cash.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,clove.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,totallywicked-eliquid.co.uk,True,Pillbox38 (UK) Ltd,False,False,,,True,,Adobe Commerce/Magento,True,False,False,True,True,True,True
+UK,famaga.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,mrlmidlands.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,simplysupplements.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,pen-and-sword.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,sallybeauty.co.uk,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+UK,finerfilters.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,chestnutmill.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,hearstmagazines.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,kickers.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,funkyfidgetsshop.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,robotvacuummops.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,regalrose.co.uk,True,,False,False,,,True,Klarna,Shopify,False,False,False,True,True,False,False
+UK,mini.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,whittard.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,petertyson.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,pjoutdoors.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,moshulu.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,bose.co.uk,True,Bose Corporation,False,False,,,True,Adyen,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,wallis.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,reliablemedicare.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,freewheel.co.uk,True,,False,False,9845006F3BC4515DE684,FREEWHEEL GROUP LIMITED,True,"Klarna,Stripe",Adobe Commerce/Magento,True,False,True,True,True,True,True
+UK,starrymart.co.uk,True,,True,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,industville.co.uk,True,,False,False,,,True,Afterpay/Clearpay,Shopify,False,False,False,True,True,False,False
+UK,thegiveawayguys.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,carvers.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,twinings.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,tiffany.co.uk,True,Tiffany and Company,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,ion8.co.uk,True,,False,False,,,True,Afterpay/Clearpay,Shopify,False,False,False,True,True,False,False
+UK,mikimoto.co.uk,True,,False,False,,,True,Affirm,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,jurawatches.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,glamira.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,beds.co.uk,True,,False,False,,,True,Klarna,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,builderdepot.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,collins.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,yourspares.co.uk,True,SJD Supplies Ltd,False,False,,,True,,,True,False,False,False,True,False,False
+UK,inscale-scales.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,ironheart.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,tdesk.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,buy2fix.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,costway.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,leekes.co.uk,True,,False,False,213800QLO5537IE84M14,LEEKES LIMITED,True,Klarna,Adobe Commerce/Magento,True,False,True,True,True,True,True
+UK,arcadianproducts.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,iasservices.org.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,butyjana.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,maccosmetics.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,shepherdspurse.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,visiondirect.co.uk,True,LUXOTTICA GROUP SPA,False,False,,,True,Cybersource,,True,False,False,True,True,True,True
+UK,maxelectrical.co.uk,True,,False,False,,,True,Stripe,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,theindependentpharmacy.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,mincost.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,mymobilityscooters.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,taut-strap.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,healthspan.co.uk,True,,True,True,,,True,"Adyen,Cybersource,Google Pay,PayPal,Stripe,Worldpay",,False,True,False,True,True,False,False
+UK,boden.co.uk,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+UK,fastco.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,ageukincontinence.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,cadburygiftsdirect.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,heamar.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,clarins.co.uk,True,CLARINS SAS,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+UK,uttings.co.uk,True,,False,False,,,True,,,False,False,False,False,True,False,False
+UK,ukassignmenthelp.uk,True,,False,False,,,True,Stripe,,False,False,False,True,True,False,False
+UK,spode.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+UK,solentplastics.co.uk,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,pharmeasy.in,True,,True,False,,,True,,,False,False,False,False,True,False,False
+IN,libas.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,deodap.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,jockey.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,oziva.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,offduty.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,beyondappliances.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,vogue.in,True,,True,True,894500J1HO9PZVJHJH48,VOGUE INC,True,,,True,True,True,False,True,False,False
+IN,hostingraja.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,oneplus.in,True,广东欢太科技有限公司,False,False,,,True,,,True,False,False,False,True,False,False
+IN,grabweb.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,sheinindia.in,True,NEXTGEN FAST FASHION LIMITED,False,False,98450045CBB4BFE1FE45,NEXTGEN FAST FASHION LIMITED,True,,SAP Commerce,True,False,True,True,True,True,True
+IN,myg.in,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+IN,maxlab.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,orra.co.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,architecturaldigest.in,True,,True,True,,,True,,,False,True,False,False,True,False,False
+IN,epson.co.in,True,Seiko Epson Corporation,False,False,,,True,,SAP Commerce,True,False,False,True,True,True,True
+IN,levi.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,vaku.in,True,,True,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,mamaearth.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,kapiva.in,True,,False,False,,,True,,BigCommerce,False,False,False,True,True,False,False
+IN,motorola.in,True,,False,False,,,True,,VTEX,False,False,False,True,True,False,False
+IN,biba.in,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+IN,gokiwi.in,True,GOKIWI TECH PRIVATE LIMITED,False,False,98450093E40CEE38C698,GOKIWI TECH PRIVATE LIMITED,True,,,True,False,True,False,True,False,False
+IN,headphonezone.in,True,,True,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,muftijeans.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,justintime.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thesleepcompany.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,ramrajcotton.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,suzukimotorcycle.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,salty.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,milton.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,guardian.in,True,,False,False,9845007B7PFB1A208A86,GUARDIAN,True,,Shopify,True,False,True,True,True,True,True
+IN,jackjones.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,amway.in,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+IN,skechers.in,True,"Skechers U.S.A., Inc",False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+IN,zouk.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,birkenstock.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,beardo.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,uspoloassn.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,eauto.co.in,True,,True,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,justherbs.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,rubans.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,teamsg.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,makerbazar.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,technosport.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,vastranand.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,emma-sleep.in,True,,False,False,3358001KWIR27TRE4E02,EMMA SLEEP INDIA PRIVATE LIMITED,True,,Shopify,True,False,True,True,True,True,True
+IN,suta.in,True,,False,False,894500IGDRIZSAU6B945,SUTA PRIVATE LIMITED,True,,Shopify,True,False,True,True,True,True,True
+IN,optimumnutrition.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,styleunion.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,aramya.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,aqualogica.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,maplestore.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,powerlook.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,unboxify.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,easyphones.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thedeconstruct.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,homeessentials.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,reneecosmetics.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,tigc.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,theindusvalley.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,yogabars.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,walkaroo.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,goboult.co.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,swissbeauty.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,bananaclub.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,underneat.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,marscosmetics.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,naturaltein.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,argoswatch.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,beastlife.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,click2kart.co.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,fulltimestore.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,ihadesigns.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,instore.co.in,True,,False,False,894500E847Z96TZERV20,INSTORE,True,,Shopify,True,False,True,True,True,True,True
+IN,japam.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,kimti.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,lakshmiboutique.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,movel.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,newsarca.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,oyela.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,pepejeans.in,True,AWWGroup S.L.,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+IN,pitshirts.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,posterized.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,rishiboutique.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,saadaa.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,sbcollection.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,shera.net.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,stwaykar.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,thecasecompany.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,veirdo.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,vootbuy.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,warriorworld.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,wtflex.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,victoriassecret.in,True,"VS Service Company, LLC",False,False,,,True,"PayU,Razorpay",Salesforce Commerce Cloud,True,False,False,True,True,True,True
+IN,netmirror.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,kisanshop.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,redchief.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,giysi.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,rashyam.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,trendzjewellery.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,tickertape.in,True,,False,False,,,True,Razorpay,,False,False,False,True,True,False,False
+IN,giri.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thelotusfab.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,philips.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,delhidutyfree.co.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,gomechanic.in,True,,False,False,,,True,Razorpay,,False,False,False,True,True,False,False
+IN,phonevilla.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,kohler.co.in,True,Kohler Co.,False,False,,,True,,,True,False,False,False,True,False,False
+IN,cyclingboutique.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,itse.in,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+IN,kent.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,dotcomcreations.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,quickheal.co.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,reliancegeneral.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,crompton.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,himalayawellness.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,shein.in,True,ROADGET BUSINESS PTE. LTD.,False,False,,,True,,,True,False,False,False,True,False,False
+IN,montecarlo.in,True,,False,False,335800EJ5V1TB8LXZ830,MONTECARLO LIMITED,True,,Shopify,True,False,True,True,True,True,True
+IN,crossword.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,justbake.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,bigpage.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,blingqueen.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,veromoda.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,wellversed.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,vlebazaar.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,mbz.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,lacoste.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,boichitro.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,hamleys.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,zeespares.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,leafstudios.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,gripinvest.in,True,,True,True,,,True,,,False,True,False,False,True,False,False
+IN,myprotein.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,thepowerhost.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,superkicks.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,casence.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,gullysports.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,naturali.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,kindlife.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,zop.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,intex.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,komaki.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,infinixmobiles.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,varanga.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,budli.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,scentoria.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,peppermint.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,perfumepalace.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,magicneedles.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,cosmoslayers.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,fomostore.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,bathandbodyworks.in,True,Bath & Body Works Inc,False,False,,,True,Razorpay,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+IN,fila.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,cahoot.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,wwwcollections.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,fragstalk.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,sleepycat.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,americantourister.in,True,,False,False,,,True,PayU,Shopify,False,False,False,True,True,False,False
+IN,missmosa.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,houseofchikankari.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,perfumenetwork.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,preethiwear.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,littlewish.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,mfwonline.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,safari.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,digitek.net.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,99customizedjewellery.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,amalfa.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,blink-basket.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,blueisland.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,centrumshop.in,True,HALEON UK TRADING LIMITED,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+IN,daivik.in,True,,False,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,embeyvally.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,fetchnbuy.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,flyingcarts.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,gadgetlane.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,goodmonk.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,greenerynursery.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,grest.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,healthfab.in,True,,True,False,,,True,Razorpay,Shopify,False,False,False,True,True,False,False
+IN,insightcosmetics.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,johnellies.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,mlada.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,moxiebeauty.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,mybombae.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,myfitness.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,nivaaya.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,ovaisabayacollection.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,peacockshop.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,pronk.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,queensjewellery.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,rdservice.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,saffrron.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,sanfe.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,scrubsy.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,sharkninja.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,shopping99.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,shrishtijewels.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,solara.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,sotrue.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,store1914.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,superyou.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,surma.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thayyilsports.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thewalletstore.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,thewellnessshop.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,toykoo.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,treverlii.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,urbanshop.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,uzhamagal.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,yaleonline.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,zonealpha.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,glamira.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,unicornstore.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,websites.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,spigen.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,arhandlooms.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,backdropindia.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,brillare.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,celestialperfume.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,chandranipearls.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,clayco.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,d-more.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,fubs.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,lottosport.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,mototorque.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,naseemperfume.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,procares.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,shyle.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,subhvastra.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,tjsarees.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,underthehood.co.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,vintagewatcholic.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,vytron.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,phonemore.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,trolin.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,bebeautiful.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,kaya.in,True,,False,False,335800GE9WJ2KDECK480,KAYA LIMITED,True,,Adobe Commerce/Magento,True,False,True,True,True,True,True
+IN,univest.in,True,,True,True,,,True,,,False,True,False,False,True,False,False
+IN,milesweb.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,themomstore.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,hosting.co.in,True,,False,False,,,True,,,False,False,False,False,True,False,False
+IN,thescmsilk.in,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+IN,bikedilwado.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,onlinemantra.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,ethnicplus.in,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+IN,trustedhosting.in,True,,True,False,,,True,Razorpay,,False,False,False,True,True,False,False
+IN,bajajbroking.in,True,Bajaj Financial Securities Limited,False,False,335800KG7DOSVFPLL139,BAJAJ FINANCIAL SECURITIES LIMITED,True,,,True,False,True,False,True,False,False
+EU,zalando.de,True,,True,True,529900YRFFGH5AXU4S86,Zalando SE,True,,,True,True,True,False,True,False,False
+EU,poste.it,True,POSTE ITALIANE S.p.A.,False,False,,,True,,,True,False,False,False,True,False,False
+EU,siemens.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,hostnet.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,orange.es,True,MasOrange S.L.,False,False,959800D5CE1X280T7D15,"MASORANGE, S.L.",True,,Salesforce Commerce Cloud,True,False,True,True,True,True,True
+EU,zalando.fr,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,auchan.fr,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,zalando.nl,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,zalando.it,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,zalando.es,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,electrodepot.fr,True,,False,False,,,True,PayPal,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,ah.nl,True,Ahold Delhaize Licensing Sàrl,True,True,,,True,,,True,True,False,False,True,False,False
+EU,tele2.se,True,Tele2 Sverige AB,False,False,213800PP7RCOOKTCKJ34,TELE2 SVERIGE AKTIEBOLAG,True,,,True,False,True,False,True,False,False
+EU,albelli.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,test.de,True,Stiftung Warentest,False,False,391200IYT3FCXLAEOX37,Stiftung Warentest,True,,,True,False,True,False,True,False,False
+EU,hema.nl,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,zalando.be,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,coop.se,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+EU,sky.de,True,Sky Deutschland Fernsehen GmbH & Co. KG,True,True,5299007HP50AYBJ0CS17,Sky Deutschland Fernsehen GmbH & Co. KG,True,,,True,True,True,False,True,False,False
+EU,zalando.at,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,avm.de,True,AVM Computersysteme Vertriebs GmbH,False,False,,,True,,Shopify,True,False,False,True,True,True,True
+EU,arsys.es,True,Arsys Internet SL,True,True,,,True,,,True,True,False,False,True,False,False
+EU,zalando.se,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,poco.de,True,,True,False,,,True,,,False,False,False,False,True,False,False
+EU,bricodepot.fr,True,KINGFISHER PLC,False,False,,,True,,,True,False,False,False,True,False,False
+EU,internex.at,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,druni.es,True,,False,False,,,True,Google Pay,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,unieuro.it,True,Unieuro S.p.A.,False,False,815600583BE5BC67EB82,UNIEURO S.P.A.,True,"Klarna,PayPal",SAP Commerce,True,False,True,True,True,True,True
+EU,pandect.es,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,gifi.fr,True,GIFI SAS,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+EU,vogue.fr,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,humanite.fr,True,,False,False,,,True,Stripe,,False,False,False,True,True,False,False
+EU,vodafone.es,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,vogue.it,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,wired.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,vogue.de,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,vistaexpert.it,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,eram.fr,True,CHAUSSURES ERAM SASU,False,False,,,True,,Adobe Commerce/Magento,True,False,False,True,True,True,True
+EU,eolo.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,infocert.it,True,InfoCert SpA,False,False,815600F58F7382929F40,TINEXTA INFOCERT SPA,True,,,True,False,True,False,True,False,False
+EU,altroconsumo.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,morenutrition.de,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,bbva.es,True,Banco Bilbao Vizcaya Argentaria S.A.,False,False,,,True,,,True,False,False,False,True,False,False
+EU,telia.se,True,Telia Company AB,False,False,213800FSR9RNDUOTXO25,TELIA COMPANY AB,True,,,True,False,True,False,True,False,False
+EU,enel.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,limango.de,True,,True,True,529900P5WE2AUELUHC23,Limango GmbH,True,,,True,True,True,False,True,False,False
+EU,ilmanifesto.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,billiger.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,docmorris.de,True,DocMorris N.V.,False,False,,,True,,,True,False,False,False,True,False,False
+EU,zalando.ie,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,beslist.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,bike-components.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,ruhrnachrichten.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,ad-magazin.de,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,gqmagazine.fr,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,etos.nl,True,Ahold Delhaize Licensing Sàrl,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+EU,viceroy.es,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,louis.de,True,Detlev Louis Motorrad-Vertriebsgesellschaft mbH,False,False,52990040A8Q84SWONG07,Detlev Louis Motorrad-Vertriebsgesellschaft mbH,False,,,True,False,True,False,True,False,False
+EU,joybuy.de,True,JINGDONG GROUP IRELAND LIMITED,False,False,,,True,,,True,False,False,False,True,False,False
+EU,backmarket.fr,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,vintagestory.at,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,ohou.se,True,"bucketplace Co.,Ltd.",False,False,,,True,,,True,False,False,False,True,False,False
+EU,rueducommerce.fr,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,antagonist.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,delhaize.be,True,DELHAIZE LE LION/DE LEEUW,True,True,549300BEQWGXQBVYA835,DELHAIZE LE LION/DE LEEUW,True,,,True,True,True,False,True,False,False
+EU,fcbarcelona.es,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,euronics.it,True,Euronics Italia S.p.a.,False,False,,,True,Klarna,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+EU,sony.de,True,Sony Global Solutions Inc.,False,False,,,True,,SAP Commerce,True,False,False,True,True,True,True
+EU,emp.de,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,fressnapf.de,True,,False,False,,,True,Google Pay,SAP Commerce,False,False,False,True,True,False,False
+EU,yves-rocher.fr,True,Laboratoires de Biologie Vegetale Yves Rocher,True,True,549300KJPQZ8FP5J7V50,LABORATOIRES DE BIOLOGIE VEGETALE YVES ROCHER,True,,,True,True,True,False,True,False,False
+EU,blancheporte.fr,True,COMPAGNIE INTERNATIONALE POUR LA VENTE A DISTANCE SAS,True,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+EU,carrefour.it,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,quellogiusto.it,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,roller.de,True,,False,False,529900XD6NV3MX5C4D22,ROLLER GmbH & Co. KG,True,,SAP Commerce,True,False,True,True,True,True,True
+EU,dogado.de,True,,False,False,391200WP1BYNWTYRUC75,dogado GmbH,True,,,True,False,True,False,True,False,False
+EU,macif.fr,True,AÉMA GROUPE,False,False,,,True,,,True,False,False,False,True,False,False
+EU,backmarket.de,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,game.es,True,GAME STORES IBERIA SL,True,True,,,True,,,True,True,False,False,True,False,False
+EU,wuerth.it,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,eweka.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,pageloft.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,fielmann.de,True,,False,False,529900BU5B7N9GE4XU15,Fielmann Group AG,True,,,True,False,True,False,True,False,False
+EU,medikamente-per-klick.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,efloorball.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,joybuy.fr,True,JINGDONG GROUP IRELAND LIMITED,False,False,,,True,,,True,False,False,False,True,False,False
+EU,christ.de,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+EU,smoothr.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,espressoshop.se,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,robhost.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,vidaxl.nl,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,globus-baumarkt.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,alcampo.es,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,sharkninja.de,True,,False,False,,,True,"Braintree,Klarna",Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,lampenwelt.de,True,,True,True,529900MSOQ2P3UOWPC97,Lampenwelt GmbH,True,,Adobe Commerce/Magento,True,True,True,True,True,True,True
+EU,intratuin.nl,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,i-run.fr,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,businessinsider.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,fahrrad-xxl.de,True,,True,False,391200DB486I5L7FQU14,Fahrrad XXL Stores GmbH,True,,,True,False,True,False,True,False,False
+EU,gall.nl,True,Ahold Delhaize Licensing Sàrl,False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,True,True,True
+EU,philips.de,True,,False,False,549300248MLTYR8U3N92,PHILIPS GMBH,True,,,True,False,True,False,True,False,False
+EU,calzatureginevra.it,True,,False,False,,,True,PayPal,Shopify,False,False,False,True,True,False,False
+EU,joybuy.nl,True,JINGDONG GROUP IRELAND LIMITED,False,False,,,True,,,True,False,False,False,True,False,False
+EU,posterxxl.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,vidaxl.de,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,backmarket.es,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,deonlinedrogist.nl,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,jollyroom.se,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,zweirad-stadler.de,True,,False,False,,,True,Amazon Pay,,False,False,False,True,True,False,False
+EU,atida.fr,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,lomax.se,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,ad-italia.it,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,mecshopping.it,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,petsplace.nl,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,ccm19.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,miele.de,True,Miele & Cie. KG,False,False,529900IZ8AYE18GURC54,Miele & Cie. KG,True,,,True,False,True,False,True,False,False
+EU,vidaxl.fr,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,labourseauxlivres.fr,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,tedox.de,True,,False,False,529900VPUA0HRL685T67,tedox KG,True,,Adobe Commerce/Magento,True,False,True,True,True,True,True
+EU,talk-point.de,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,kicks.se,True,,False,False,549300BDWYK1CT6LVJ60,KICKS Group AB,True,,,True,False,True,False,True,False,False
+EU,comviq.se,True,Tele2 Sverige AB,False,False,213800PP7RCOOKTCKJ34,TELE2 SVERIGE AKTIEBOLAG,True,,,True,False,True,False,True,False,False
+EU,bike-magazin.de,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,ucon-acrobatics.fr,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,backmarket.it,True,,True,True,,,True,Klarna,,False,True,False,True,True,False,False
+EU,apoteket.se,True,Apoteket AB,True,True,5493002BPCYCMAXG9N95,Apoteket AB,True,,,True,True,True,False,True,False,False
+EU,deutsche-apotheker-zeitung.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,elverys.ie,True,,False,False,,,True,,"SAP Commerce,Shopify",False,False,False,True,True,False,False
+EU,intrend.it,True,DIFFUSIONE TESSILE SRL,False,False,,,True,,,True,False,False,False,True,False,False
+EU,da-x.de,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,torfs.be,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,bauhaus.se,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,retoura.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,easypara.fr,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,panini.it,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,gps.ie,True,,False,False,,,True,,Shopify,False,False,False,True,True,False,False
+EU,baldur-garten.de,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+EU,apotal.de,True,Bad-Apotheke Henning Fichter e.K.,False,False,,,True,,,True,False,False,False,True,False,False
+EU,picard.fr,True,PICARD SURGELES,False,False,96950060THCJP2U5U446,PICARD SURGELES,True,,Salesforce Commerce Cloud,True,False,True,True,True,True,True
+EU,tiendanimal.es,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,philips.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,hood.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,babypark.nl,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,bureau-vallee.fr,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,linevast.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,norma24.de,True,NORMA Lebensmittelfilialbetrieb Stiftung & Co. KG,True,True,529900QPL0XW17E16660,Norma Lebensmittelfilialbetrieb Stiftung & Co. KG,True,,,True,True,True,False,True,False,False
+EU,nen.nl,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,homestoreandmore.ie,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,babyone.de,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,wunderweib.de,True,,False,False,,,True,,Adobe Commerce/Magento,False,False,False,True,True,False,False
+EU,autoland.de,True,,False,False,529900KV4EMKMMJPI102,AUTOLAND AG,True,,,True,False,True,False,True,False,False
+EU,modz.fr,True,MODZ SARL,True,False,,,True,,,True,False,False,False,True,False,False
+EU,skechers.fr,True,,False,False,,,True,,Salesforce Commerce Cloud,False,False,False,True,True,False,False
+EU,dirk.nl,True,,False,False,,,True,,,False,False,False,False,True,False,False
+EU,landsend.de,True,"Lands' End, Inc.",True,True,,,True,"Braintree,Stripe",Salesforce Commerce Cloud,True,True,False,True,True,True,True
+US,dropbox.com,True,"Dropbox, Inc",True,True,549300JCDF7UAR6TJR51,"DROPBOX, INC.",True,,,True,True,True,False,False,False,False
+US,paypal.com,True,"PayPal, Inc.",True,True,LBQ3CAGQB6M55WHL3G85,"PAYPAL, INC.",True,PayPal,,True,True,True,True,False,True,False
+US,stripe.com,True,"Stripe, Inc",False,False,549300CLHGIPTCYHQ143,"STRIPE, LLC",True,,,True,False,True,False,False,False,False
+US,zendesk.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,mcafee.com,True,"McAfee, LLC",True,True,2549009UKR8UEZYVCR93,MCAFEE CORP.,True,,,True,True,True,False,False,False,False
+US,shein.com,True,ROADGET BUSINESS PTE. LTD.,True,True,,,True,,,True,True,False,False,False,False,False
+US,ring.com,True,Ring LLC,False,False,,,True,,Shopify,True,False,False,True,False,True,False
+US,wyzecam.com,True,"WYZE LABS, INC.",False,False,,,True,,Shopify,True,False,False,True,False,True,False
+US,crazygames.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,auth0.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,meethue.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,wpastra.com,True,,False,False,,,True,"Braintree,Google Pay,PayPal,Razorpay,Stripe",,False,False,False,True,False,False,False
+US,crowdstrike.com,True,,True,True,549300R070HUWKN8SG56,"CROWDSTRIKE, INC.",True,,,True,True,True,False,False,False,False
+US,klarna.com,True,,True,True,6488YJDQ759M4YM13211,KLARNA INC.,True,Klarna,,True,True,True,True,False,True,False
+US,polymarket.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,dropboxapi.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,peacocktv.com,True,"NBCUniversal, LLC",True,True,,,True,,,True,True,False,False,False,False,False
+US,cookieyes.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,grok.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,a2hosting.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,today.com,True,"NBCUniversal Media, LLC",False,False,VTBDOQJ6KOGQ6K786R46,"NBCUNIVERSAL MEDIA, LLC",True,,,True,False,True,False,False,False,False
+US,walgreens.com,True,Walgreen Co.,False,False,,,True,,,True,False,False,False,False,False,False
+US,goodhousekeeping.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,gap.com,True,"The Gap, Inc.",True,True,T2ZG1WRWZ4BUCMQL9224,"THE GAP, INC.",True,,,True,True,True,False,False,False,False
+US,gog.com,True,GOG  sp. z o.o,False,False,,,True,,,True,False,False,False,False,False,False
+US,bentley.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,dmca.com,True,,True,False,,,True,,,False,False,False,False,False,False,False
+US,easydns.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,seekingalpha.com,True,,True,False,,,True,,,False,False,False,False,False,False,False
+US,nanit.com,True,,True,False,,,True,,Shopify,False,False,False,True,False,False,False
+US,wolt.com,True,,True,True,,,True,,,False,True,False,False,False,False,False
+US,belkin.com,True,"Belkin International, Inc.",False,False,,,True,"Adyen,Amazon Pay,Klarna",Salesforce Commerce Cloud,True,False,False,True,False,True,False
+US,brother.com,True,"BROTHER INDUSTRIES, LTD.",False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,False,True,False
+US,nespresso.com,True,Nestlé Nespresso SA,False,False,,,True,,,True,False,False,False,False,False,False
+US,ulta.com,True,Ulta Inc.,False,False,,,True,,,True,False,False,False,False,False,False
+US,eufylife.com,True,,False,False,,,True,,Shopify,False,False,False,True,False,False,False
+US,bittorrent.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,msnbc.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,motorola.com,True,Lenovo Technology Sdn. Bhd.,False,False,,,True,Braintree,,True,False,False,True,False,True,False
+US,jcpenney.com,True,"Penney Opco, LLC.",False,False,25490031F1O4D2ZVXH60,Penney OpCo LLC,True,Klarna,,True,False,True,True,False,True,False
+US,vizio.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,stripecdn.com,True,"Stripe, LLC",False,False,549300CLHGIPTCYHQ143,"STRIPE, LLC",True,,,True,False,True,False,False,False,False
+US,cricketwireless.com,True,Cricket Wireless LLC,True,False,,,True,,,True,False,False,False,False,False,False
+US,skechers.com,True,"Skechers U.S.A., Inc",False,False,,,True,,Salesforce Commerce Cloud,True,False,False,True,False,True,False
+US,getdropbox.com,True,"Dropbox, Inc",False,False,549300JCDF7UAR6TJR51,"DROPBOX, INC.",True,,,True,False,True,False,False,False,False
+US,webstaurantstore.com,True,,True,True,,,True,PayPal,,False,True,False,True,False,False,False
+US,logitechg.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,ecobee.com,True,,False,False,,,True,Affirm,Shopify,False,False,False,True,False,False,False
+US,ifixit.com,True,,True,True,,,True,,Shopify,False,True,False,True,False,False,False
+US,techsmith.com,True,,False,False,254900NXHLTLSC296P92,TECHSMITH CORPORATION,True,,,True,False,True,False,False,False,False
+US,wyze.com,True,,True,True,,,True,,Shopify,False,True,False,True,False,False,False
+US,teachable.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,shareasale.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,stylevana.com,True,,True,True,,,True,,Adobe Commerce/Magento,False,True,False,True,False,False,False
+US,streamlabs.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,pixlr.com,True,,False,False,,,True,,,False,False,False,False,False,False,False
+US,cafepress.com,True,,True,True,,,True,,,False,True,False,False,False,False,False
+US,getredo.com,True,,False,False,,,True,,,False,False,False,False,False,False,False

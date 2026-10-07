@@ -10,4 +10,4 @@
 | ('stablecoin', 'first-hop')      |    0     |  0     |     0 | 0     |
 | ('stablecoin', 'late-evidence')  |    0.007 |  1     |     1 | 0.032 |
 
-1.0 means no post-authorization diversion of this class was undone in time. 'first-hop' on stablecoin is stopped by the EIP-3009 signature binding before settlement.
+Simulation over modelled rail timings (config/rails.yaml); only the card void latency is measured (see e6_timing_sources). 1.0 means no post-authorization diversion of this class was undone in time. 'first-hop' on stablecoin is stopped by the EIP-3009 signature binding before settlement.

@@ -10,6 +10,14 @@
 | MERIDIAN  | novel            |                    0.25 |                            0      |
 | MERIDIAN  | novel            |                    0.5  |                            0      |
 | MERIDIAN  | novel            |                    1    |                            0      |
+| allowlist | known            |                    0.1  |                            0      |
+| allowlist | known            |                    0.25 |                            0      |
+| allowlist | known            |                    0.5  |                            0      |
+| allowlist | known            |                    1    |                            0      |
+| allowlist | novel            |                    0.1  |                            0      |
+| allowlist | novel            |                    0.25 |                            0      |
+| allowlist | novel            |                    0.5  |                            0      |
+| allowlist | novel            |                    1    |                            0      |
 | blocklist | known            |                    0.1  |                            0      |
 | blocklist | known            |                    0.25 |                            0      |
 | blocklist | known            |                    0.5  |                            0      |

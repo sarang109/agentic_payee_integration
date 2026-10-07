@@ -16,3 +16,5 @@
 | ('stablecoin', 'first-hop', 'RWS')       | 0     | 0     | 0     |
 | ('stablecoin', 'late-evidence', 'POST')  | 1     | 1     | 1     |
 | ('stablecoin', 'late-evidence', 'RWS')   | 0.032 | 0.042 | 1     |
+
+Simulation over modelled rail timings (config/rails.yaml); card void latency measured.

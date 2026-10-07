@@ -17,7 +17,8 @@
     "m1_loss_A1_A2": "120/120",
     "m2_loss_A1_A2": "0/120",
     "mcnemar_p": 1.504632769052528e-36,
-    "supported": false
+    "note": "the step-up target is measured in E4 (held-out brands); the bench value above is context",
+    "security_part_supported": true
   },
   "H3_bench_part": {
     "A12_M3_modes": {
@@ -33,19 +34,89 @@
     "note": "full H3 decision uses E6"
   },
   "H5": {
-    "best_meridian_config_per_rail": {
+    "best_meridian_configs_per_rail": {
+      "a2a_instant": [
+        "M3"
+      ],
+      "card": [
+        "M3"
+      ],
+      "psp_token": [
+        "M2",
+        "M3"
+      ],
+      "stablecoin": [
+        "M3"
+      ],
+      "wallet": [
+        "M2",
+        "M3"
+      ]
+    },
+    "best_on_every_rail": [
+      "M3"
+    ],
+    "legacy_latency_tiebreak": {
       "a2a_instant": "M3",
       "bnpl": "M1",
       "card": "M3",
-      "psp_token": "M3",
+      "psp_token": "M2",
       "stablecoin": "M3",
       "wallet": "M3"
     },
-    "supported": true
+    "legacy_supported": true,
+    "rails_without_attack_cases": [
+      "bnpl"
+    ],
+    "supported": false
+  },
+  "H5_exploratory_with_bnpl_supplement": {
+    "best_meridian_configs_per_rail": {
+      "a2a_instant": [
+        "M3"
+      ],
+      "bnpl": [
+        "M1",
+        "M2",
+        "M3"
+      ],
+      "card": [
+        "M3"
+      ],
+      "psp_token": [
+        "M2",
+        "M3"
+      ],
+      "stablecoin": [
+        "M3"
+      ],
+      "wallet": [
+        "M2",
+        "M3"
+      ]
+    },
+    "best_on_every_rail": [
+      "M3"
+    ],
+    "rails_without_attack_cases": [],
+    "supported": false
+  },
+  "aip_external_loss": {
+    "B1": 120,
+    "B2": 90,
+    "B3": 120,
+    "B4": 90,
+    "B5": 120,
+    "B6": 120,
+    "B7": 0,
+    "M1": 0,
+    "M1-G1": 0,
+    "M2": 0,
+    "M3": 0
   },
   "cba_params": {
     "tau": 0.075,
-    "theta": 0.9
+    "theta": 0.7
   },
   "n_cases": 2050,
   "n_records": 22550

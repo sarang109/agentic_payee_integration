@@ -126,12 +126,34 @@ def run_live(key: str, n_honest: int, n_bad: int) -> List[Dict]:
     return rows
 
 
+def prev_meta() -> Dict:
+    p = os.path.join(RAW, "x402_testnet_meta.json")
+    return json.load(open(p)) if os.path.exists(p) else {}
+
+
+def balance_check(meta: Dict, before: int, after: int, rows: List[Dict]) -> Dict:
+    """The payer's on-chain balance must drop by exactly the settled
+    payments; otherwise a failed settlement moved funds."""
+    settled = sum(1 for r in rows if r["case"] == "honest" and r.get("settle_success"))
+    old = meta.get("balance_check", {})
+    return {"start_usdc": old.get("start_usdc", before / 1e6), "after_usdc": after / 1e6,
+            "settled_payments_all_runs": old.get("settled_payments_all_runs", 0) + settled,
+            "this_run_drop_usdc": (before - after) / 1e6, "this_run_expected_drop_usdc": settled * AMOUNT / 1e6,
+            "consistent": before - after == settled * AMOUNT and old.get("consistent", True),
+            "checked_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
 def run_x402_testnet() -> Dict:
     key_file = os.environ.get("MERIDIAN_X402_KEY_FILE", "")
     df: Optional[pd.DataFrame] = None
     source = ""
-    if os.path.exists(RUNS_CSV) and os.environ.get("MERIDIAN_X402_RERUN") != "1":
-        df, source = pd.read_csv(RUNS_CSV, keep_default_na=False), "archived"
+    prev = pd.read_csv(RUNS_CSV, keep_default_na=False) if os.path.exists(RUNS_CSV) else None
+    if prev is not None and "run" not in prev.columns:
+        prev["run"] = 1
+        prev["run_utc"] = (json.load(open(os.path.join(RAW, "x402_testnet_meta.json"))).get("run_date_utc", "")
+                           if os.path.exists(os.path.join(RAW, "x402_testnet_meta.json")) else "")
+    if prev is not None and os.environ.get("MERIDIAN_X402_RERUN") != "1":
+        df, source = prev, "archived"
     elif key_file and os.path.exists(key_file):
         with open(key_file) as fh:
             key = fh.read().strip()
@@ -142,46 +164,70 @@ def run_x402_testnet() -> Dict:
             return {"status": f"skipped: test wallet holds {bal / 1e6:.2f} USDC, needs {need / 1e6:.2f}"}
         with Timer("x402 on Base Sepolia via the public facilitator"):
             rows = run_live(key, 3 if QUICK else 20, 2 if QUICK else 10)
+        time.sleep(5)
+        bal_after = usdc_balance(addr)
         df, source = pd.DataFrame(rows), "live"
+        # repeated runs are appended, never replaced
+        df["run"] = (int(prev["run"].max()) + 1) if prev is not None else 1
+        df["run_utc"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+        if prev is not None:
+            df = pd.concat([prev, df], ignore_index=True)
         write_csv("x402_testnet_runs", df)
         write_json("x402_testnet_meta", {"network": "Base Sepolia (eip155:84532)", "asset": x402.USDC,
                                          "facilitator": FACILITATOR, "payer": addr, "merchant": MERCHANT,
                                          "attacker": ATTACKER, "amount_units": AMOUNT,
-                                         "run_date_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+                                         "run_date_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                                         "balance_check": balance_check(prev_meta(), bal, bal_after, rows)})
     if df is None:
         return {"status": "skipped: no funded test key (MERIDIAN_X402_KEY_FILE) and no archived run"}
 
-    def b(col):
-        return df[col].astype(str).str.lower().isin(["true", "1", "1.0"])
+    def b(frame, col):
+        return frame[col].astype(str).str.lower().isin(["true", "1", "1.0"])
 
-    hon = df[df.case == "honest"]
     out_rows = []
-    if len(hon):
-        settled = hon[b("settle_success")]
+    groups = [(f"honest payment to merchant, run {int(r)} ({str(g.run_utc.iloc[0])[:16]})", g)
+              for r, g in df[df.case == "honest"].groupby("run")] if "run" in df.columns else []
+    if len(groups) > 1:
+        groups.append(("honest payment to merchant, all runs", df[df.case == "honest"]))
+    elif not groups:
+        groups = [("honest payment to merchant", df[df.case == "honest"])]
+    for label_h, hon in groups:
+        settled = hon[b(hon, "settle_success")]
+        fails = sorted({str(x).splitlines()[0][:80] for x in hon[~b(hon, "settle_success")].settle_reason})
         lat = pd.to_numeric(settled.settle_s, errors="coerce")
         rec = pd.to_numeric(settled.settle_to_receipt_s, errors="coerce")
-        out_rows.append({"case": "honest payment to merchant", "runs": len(hon),
-                         "facilitator verify accepted": fmt_rate(int(b("verify_valid")[hon.index].sum()), len(hon)),
+        out_rows.append({"case": label_h, "runs": len(hon),
+                         "facilitator verify accepted": fmt_rate(int(b(hon, "verify_valid").sum()), len(hon)),
                          "settled on chain": fmt_rate(len(settled), len(hon)),
                          "settle p50 / p95 s": f"{lat.median():.2f} / {lat.quantile(0.95):.2f}" if len(lat) else "-",
                          "settle to receipt p50 / p95 s": f"{rec.median():.2f} / {rec.quantile(0.95):.2f}"
-                         if rec.notna().any() else "-"})
+                         if rec.notna().any() else "-",
+                         "rejection reasons": ("settlement errors: " + "; ".join(fails)) if fails else ""})
     for case, label in (("tampered", "recipient rewritten after signing"),
                         ("mismatch", "signed to attacker, presented as merchant")):
         x = df[df.case == case]
         if len(x):
             out_rows.append({"case": label, "runs": len(x),
-                             "facilitator verify accepted": fmt_rate(int(b("verify_valid")[x.index].sum()), len(x)),
+                             "facilitator verify accepted": fmt_rate(int(b(x, "verify_valid").sum()), len(x)),
                              "settled on chain": "-", "settle p50 / p95 s": "-", "settle to receipt p50 / p95 s": "-",
                              "rejection reasons": ", ".join(sorted(set(x.verify_reason.astype(str)) - {""}))})
     meta_p = os.path.join(RAW, "x402_testnet_meta.json")
     meta = json.load(open(meta_p)) if os.path.exists(meta_p) else {}
     write_table("x402_testnet", pd.DataFrame(out_rows),
                 "x402 exact payments on Base Sepolia through the public facilitator (measured on a public testnet)",
-                f"Run {meta.get('run_date_utc', '?')}, test USDC {AMOUNT / 1e6} per payment. Transaction hashes are in "
+                f"All runs are kept, none are dropped. {_balance_text(meta)}Latest run {meta.get('run_date_utc', '?')}, test USDC {AMOUNT / 1e6} per payment. Transaction hashes are in "
                 "results/raw/x402_testnet_runs.csv. The escrow wrapper used by the ESCROW mode runs on the local "
                 "ledger only.", index=False)
     return {"status": "ok", "source": source, "rows": out_rows, "meta": meta}
+
+
+def _balance_text(meta: Dict) -> str:
+    bc = meta.get("balance_check")
+    if not bc:
+        return ""
+    return (f"On-chain check: the payer held {bc['start_usdc']:.2f} test USDC before the first run and "
+            f"{bc['after_usdc']:.2f} after the last, a drop of exactly {bc['settled_payments_all_runs']} settled "
+            f"payments, so {'failed settlements moved no funds' if bc['consistent'] else 'THE BALANCE DOES NOT MATCH'}. ")
 
 
 if __name__ == "__main__":

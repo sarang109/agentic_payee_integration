@@ -1,0 +1,30 @@
+### E4 (exploratory): lookalikes with no name overlap, by component set
+
+| components        | intent      | rival              |   n | wrong commit         | step-up              | correct commit       |
+|:------------------|:------------|:-------------------|----:|:---------------------|:---------------------|:---------------------|
+| string only       | name        | logo clone         | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string only       | name        | description twin   | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string only       | name        | logo + description | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string only       | description | logo clone         | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string only       | description | description twin   | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string only       | description | logo + description | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+visual     | name        | logo clone         | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+visual     | name        | description twin   | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+visual     | name        | logo + description | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+visual     | description | logo clone         | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+visual     | description | description twin   | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+visual     | description | logo + description | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+semantic   | name        | logo clone         | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+semantic   | name        | description twin   | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+semantic   | name        | logo + description | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| string+semantic   | description | logo clone         | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+semantic   | description | description twin   | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| string+semantic   | description | logo + description | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| all (str+vis+sem) | name        | logo clone         | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| all (str+vis+sem) | name        | description twin   | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| all (str+vis+sem) | name        | logo + description | 654 | 0.000 [0.000, 0.006] | 0.154 [0.129, 0.184] | 0.784 [0.751, 0.814] |
+| all (str+vis+sem) | description | logo clone         | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| all (str+vis+sem) | description | description twin   | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+| all (str+vis+sem) | description | logo + description | 654 | 0.000 [0.000, 0.006] | 1.000 [0.994, 1.000] | 0.000 [0.000, 0.006] |
+
+Not part of the pre-registered calibration. Each held-out brand gets one rival with a random name and domain that copies its logo (re-encoded), its site description, or both; the agent surfaces the rival as a candidate. 'name' intents use the brand name, 'description' intents the brand's site description. Wrong commit means anchoring committed to the rival.

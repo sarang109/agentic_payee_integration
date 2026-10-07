@@ -3,23 +3,23 @@
   "agreement_exact_verdict": "0.957 [0.941, 0.969]",
   "latency": [
     {
-      "p50_ms": 0.642,
-      "p95_ms": 0.917,
-      "p95_with_modelled_wan_ms": 0.917,
+      "p50_ms": 0.647,
+      "p95_ms": 0.929,
+      "p95_with_modelled_wan_ms": 0.929,
       "third_party_round_trips": 0,
       "variant": "V1b (stapled status)"
     },
     {
-      "p50_ms": 1.349,
-      "p95_ms": 1.962,
-      "p95_with_modelled_wan_ms": 86.127,
+      "p50_ms": 1.326,
+      "p95_ms": 1.93,
+      "p95_with_modelled_wan_ms": 86.128,
       "third_party_round_trips": 1,
       "variant": "V1b + synchronous status fetch"
     },
     {
-      "p50_ms": 1.088,
-      "p95_ms": 1.413,
-      "p95_with_modelled_wan_ms": 86.176,
+      "p50_ms": 1.074,
+      "p95_ms": 1.405,
+      "p95_with_modelled_wan_ms": 86.019,
       "third_party_round_trips": 1,
       "variant": "V1a directory (signed answers)"
     }

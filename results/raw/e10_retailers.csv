@@ -1,81 +1,81 @@
-market,domain,resolves,cert_org,bimi,vmc,lei,lei_name,homepage_ok,psp,platform,edge_L0_L1,edge_mark,edge_L1_lei,edge_L1_L2L3,edge_L1_L4,full_path
-US,amazon.com,True,,True,True,549300VRR0S0ANY77J68,AMAZON.COM LLC,True,,,True,True,True,False,False,False
-US,walmart.com,True,Walmart Inc.,False,False,Y87794H0US1R65VBXU25,WALMART INC.,True,Google Pay,,True,False,True,True,False,False
-US,target.com,True,Target Corporation,False,False,,,True,Affirm,,True,False,False,True,False,False
-US,bestbuy.com,True,"Best Buy Co., Inc.",True,True,HL5XPTVRV0O8TUN5LL90,"Best Buy Co., Inc.",True,,,True,True,True,False,False,False
-US,homedepot.com,True,"THE HOME DEPOT, INC",False,False,,,True,,,True,False,False,False,False,False
-US,costco.com,True,,False,False,29DX7H14B9S6O3FD6V18,COSTCO WHOLESALE CORPORATION,True,,,True,False,True,False,False,False
-US,ebay.com,True,"eBay, Inc.",True,True,OML71K8X303XQONU6T67,EBAY INC.,False,,,True,True,True,False,False,False
-US,lowes.com,True,Lowes Companies Inc,True,True,WAFCR4OKGSC504WU3E95,"Lowe's Companies, Inc.",True,,,True,True,True,False,False,False
-US,macys.com,True,"Macy's Systems and Technology, Inc.",True,True,,,False,,,True,True,False,False,False,False
-US,kohls.com,True,"Kohl's, Inc.",True,True,,,False,,,True,True,False,False,False,False
-US,wayfair.com,True,,False,False,54930027N9ZAVYFDHK53,"WAYFAIR, INC.",True,,,True,False,True,False,False,False
-US,chewy.com,True,"Chewy, Inc.",True,True,254900NPQSTG9I422879,"CHEWY, INC.",False,,,True,True,True,False,False,False
-US,nordstrom.com,True,"Nordstrom, Inc.",False,False,,,True,,,True,False,False,False,False,False
-US,etsy.com,True,,False,False,54930089Q7XT501AEA40,"ETSY, INC.",False,,,True,False,True,False,False,False
-US,apple.com,True,Apple Inc.,True,True,,,True,,,True,True,False,False,False,False
-US,nike.com,True,"Nike, Inc.",False,False,,,True,,,True,False,False,False,False,False
-US,gap.com,True,"The Gap, Inc.",True,True,T2ZG1WRWZ4BUCMQL9224,"THE GAP, INC.",True,,,True,True,True,False,False,False
-US,kroger.com,True,The Kroger Co.,False,False,6CPEOKI6OYJ13Q6O7870,THE KROGER CO.,False,,,True,False,True,False,False,False
-US,cvs.com,True,CVS Pharmacy Inc,True,True,549300EJG376EN5NQE29,CVS HEALTH CORPORATION,True,,,True,True,True,False,False,False
-US,walgreens.com,True,Walgreen Co.,False,False,,,True,,,True,False,False,False,False,False
-UK,tesco.com,True,Tesco PLC,False,False,213800ET4MA6J4AHS397,TESCO STORES LIMITED,False,,,True,False,True,False,True,False
-UK,argos.co.uk,True,SAINSBURY'S SUPERMARKETS LTD,True,True,2138002C57UH77UL1B54,ARGOS LIMITED,False,,,True,True,True,False,True,False
-UK,johnlewis.com,True,John Lewis plc,False,False,213800JSUFNZLZLCVJ25,JOHN LEWIS PLC,True,,,True,False,True,False,True,False
-UK,marksandspencer.com,True,Marks and Spencer P.L.C.,True,True,,,True,"Afterpay/Clearpay,Klarna",,True,True,False,True,True,True
-UK,next.co.uk,True,NEXT PLC,False,False,,,True,,,True,False,False,False,True,False
-UK,asos.com,True,ASOS.com Limited,True,True,213800VLBWOAHUWXRF54,ASOS.COM LIMITED,True,,,True,True,True,False,True,False
-UK,currys.co.uk,True,Currys plc,False,False,2138001E12GWLLDQQF16,CURRYS PLC,False,,,True,False,True,False,True,False
-UK,sainsburys.co.uk,True,SAINSBURY'S SUPERMARKETS LTD,True,True,213800KMLDLT2PROXX14,SAINSBURY'S SUPERMARKETS LTD,True,,,True,True,True,False,True,False
-UK,boots.com,True,Boots UK Ltd.,False,False,,,True,,,True,False,False,False,True,False
-UK,very.co.uk,True,Shop Direct Home Shopping Limited,False,False,254900P6674A3D3JRW33,SHOP DIRECT FINANCE COMPANY LIMITED,False,,,True,False,True,False,True,False
-UK,ao.com,True,,False,False,213800SEP4O3QOAAMU07,AO RETAIL LIMITED,False,,,True,False,True,False,True,False
-UK,screwfix.com,True,,False,False,213800DG6VECMBIL9P59,SCREWFIX DIRECT LIMITED,False,,,True,False,True,False,True,False
-UK,dunelm.com,True,,False,False,,,True,"Google Pay,Klarna,PayPal",,False,False,False,True,True,False
-UK,russellandbromley.co.uk,True,Next PLC,False,False,,,False,,,True,False,False,False,True,False
-UK,sportsdirect.com,True,SportsDirect.com Retail Limited,True,False,213800KAJ4LXOKLNO654,SPORTSDIRECT.COM RETAIL LIMITED,True,,,True,False,True,False,True,False
-UK,asda.com,True,,False,False,549300IVCS91O4IUFA35,ASDA STORES LIMITED,False,,,True,False,True,False,True,False
-UK,waitrose.com,True,Waitrose Limited,False,False,213800O75COKRCLN1I34,WAITROSE LIMITED,True,,,True,False,True,False,True,False
-UK,superdrug.com,True,AS Watson (Europe) Holdings B.V.,True,True,,,True,,,True,True,False,False,True,False
-UK,halfords.com,True,HALFORDS GROUP PLC,False,False,2138002JLJRFE47Q6720,HALFORDS LIMITED,True,,,True,False,True,False,True,False
-UK,wickes.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False
-EU,zalando.de,True,,True,True,529900YRFFGH5AXU4S86,Zalando SE,True,,,True,True,True,False,True,False
-EU,otto.de,True,Otto GmbH & Co. KGaA,False,False,,,True,,,True,False,False,False,True,False
-EU,mediamarkt.de,True,MMS Technology GmbH,True,True,,,False,,,True,True,False,False,True,False
-EU,lidl.de,True,Lidl Stiftung & Co. KG,False,False,,,True,,,True,False,False,False,True,False
-EU,dm.de,True,,True,True,391200BJDTMV65NJ7G34,dm-drogerie markt GmbH + Co. KG,True,,,True,True,True,False,True,False
-EU,douglas.de,True,Parfümerie Douglas GmbH & Co. KG,False,False,,,False,,,True,False,False,False,True,False
-EU,fnac.com,True,FNAC DARTY,True,True,96950091FL62XSLPHO35,FNAC DARTY,False,,,True,True,True,False,True,False
-EU,cdiscount.com,True,C-Technology,False,False,,,True,,,True,False,False,False,True,False
-EU,carrefour.fr,True,,False,False,,,False,,,False,False,False,False,True,False
-EU,decathlon.fr,True,,False,False,9695007JOO3V2B0GMP47,DECATHLON,False,,,True,False,True,False,True,False
-EU,leroymerlin.fr,True,,False,False,,,False,,,False,False,False,False,True,False
-EU,bol.com,True,,True,True,724500PI68UVLK7E3S11,bol.com B.V.,False,,,True,True,True,False,True,False
-EU,coolblue.nl,True,,True,True,72450020ONP2TGFMWS03,Coolblue B.V.,False,,,True,True,True,False,True,False
-EU,elcorteingles.es,True,El Corte Ingles S.A.,True,True,,,True,,,True,True,False,False,True,False
-EU,mediamarkt.es,True,MMS Technology GmbH,True,True,,,False,,,True,True,False,False,True,False
-EU,zara.com,True,INDUSTRIA DE DISEÑO TEXTIL SA,True,True,,,True,,,True,True,False,False,True,False
-EU,ikea.com,True,,True,True,,,True,,,False,True,False,False,True,False
-EU,hm.com,True,H & M Hennes & Mauritz AB,True,True,,,False,,,True,True,False,False,True,False
-EU,aboutyou.de,True,,False,False,894500A85A8VDRIGZ723,ABOUT YOU SE & Co. KG,True,,,True,False,True,False,True,False
-EU,thalia.de,True,,True,False,,,False,,,False,False,False,False,True,False
-IN,flipkart.com,True,FLIPKART INTERNET PRIVATE LIMITED,True,False,335800KS8LATZVLFH345,FLIPKART INTERNET PRIVATE LIMITED,True,,,True,False,True,False,True,False
-IN,amazon.in,True,,True,True,33580043AP7H1NXKG316,AMAZON SELLER SERVICES PRIVATE LIMITED,True,,,True,True,True,False,True,False
-IN,myntra.com,True,MYNTRA DESIGNS PRIVATE LIMITED,False,False,335800UYD9YQC7QAVA42,MYNTRA DESIGNS PRIVATE LIMITED,True,,,True,False,True,False,True,False
-IN,nykaa.com,True,NYKAA E- RETAIL LIMITED,False,False,335800X5BJYC18NHDQ91,FSN E-COMMERCE VENTURES LIMITED,False,,,True,False,True,False,True,False
-IN,ajio.com,True,Reliance Jio Infocomm Limited,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,False,,,True,False,True,False,True,False
-IN,meesho.com,True,Fashnear Technologies Private Limited,False,False,,,False,,,True,False,False,False,True,False
-IN,tatacliq.com,True,,False,False,335800HITQ4VM26ETP22,TATA UNISTORE LIMITED,True,,,True,False,True,False,True,False
-IN,croma.com,True,INFINITI RETAIL LIMITED,False,False,335800B2F3DH6QMOGR59,INFINITI RETAIL LIMITED,True,Juspay,,True,False,True,True,True,True
-IN,reliancedigital.in,True,JIO PLATFORMS LIMITED,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,True,,,True,False,True,False,True,False
-IN,bigbasket.com,True,Innovative Retail Concepts Private Limited,True,True,9845009D9AEDDA4D5809,SUPERMARKET GROCERY SUPPLIES PRIVATE LIMITED,False,,,True,True,True,False,True,False
-IN,jiomart.com,True,RELIANCE JIO INFOCOMM LIMITED,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,True,,,True,False,True,False,True,False
-IN,snapdeal.com,True,,False,False,5493002HL9KOT2Y5UT46,AceVector Limited,False,,,True,False,True,False,True,False
-IN,firstcry.com,True,,False,False,984500FBE5B11U0E8846,BRAINBEES SOLUTIONS LIMITED,True,,,True,False,True,False,True,False
-IN,lenskart.com,True,,False,False,984500L5O4479DCDCF14,LENSKART SOLUTIONS LIMITED,False,,,True,False,True,False,True,False
-IN,pepperfry.com,True,PEPPERFRY LIMITED,True,False,,,True,,,True,False,False,False,True,False
-IN,decathlon.in,True,,False,False,54930086HCDLUGW8ZY42,DECATHLON SPORTS INDIA PRIVATE LIMITED,True,,,True,False,True,False,True,False
-IN,shoppersstop.com,True,,False,False,335800M4GP4ZWJAJGM86,SHOPPERS STOP LIMITED,False,,,True,False,True,False,True,False
-IN,swiggy.com,True,SWIGGY LIMITED,False,False,335800R11DC3QR7KH186,SWIGGY LIMITED,False,,,True,False,True,False,True,False
-IN,blinkit.com,True,,False,False,2549005U21Q67J1H0O16,BLINK COMMERCE PRIVATE LIMITED,False,,,True,False,True,False,True,False
-IN,zeptonow.com,True,,False,False,,,True,,,False,False,False,False,True,False
+market,domain,resolves,cert_org,bimi,vmc,lei,lei_name,homepage_ok,psp,platform,edge_L0_L1,edge_mark,edge_L1_lei,edge_L1_L2L3,edge_L1_L4,g1_path,full_path
+US,amazon.com,True,,True,True,549300VRR0S0ANY77J68,AMAZON.COM LLC,True,,,True,True,True,False,False,False,False
+US,walmart.com,True,Walmart Inc.,False,False,Y87794H0US1R65VBXU25,WALMART INC.,True,Google Pay,,True,False,True,True,False,True,False
+US,target.com,True,Target Corporation,False,False,,,True,Affirm,,True,False,False,True,False,True,False
+US,bestbuy.com,True,"Best Buy Co., Inc.",True,True,HL5XPTVRV0O8TUN5LL90,"Best Buy Co., Inc.",True,,,True,True,True,False,False,False,False
+US,homedepot.com,True,"THE HOME DEPOT, INC",False,False,,,True,,,True,False,False,False,False,False,False
+US,costco.com,True,,False,False,29DX7H14B9S6O3FD6V18,COSTCO WHOLESALE CORPORATION,True,,,True,False,True,False,False,False,False
+US,ebay.com,True,"eBay, Inc.",True,True,OML71K8X303XQONU6T67,EBAY INC.,False,,,True,True,True,False,False,False,False
+US,lowes.com,True,Lowes Companies Inc,True,True,WAFCR4OKGSC504WU3E95,"Lowe's Companies, Inc.",True,,,True,True,True,False,False,False,False
+US,macys.com,True,"Macy's Systems and Technology, Inc.",True,True,,,False,,,True,True,False,False,False,False,False
+US,kohls.com,True,"Kohl's, Inc.",True,True,,,False,,,True,True,False,False,False,False,False
+US,wayfair.com,True,,False,False,54930027N9ZAVYFDHK53,"WAYFAIR, INC.",True,,,True,False,True,False,False,False,False
+US,chewy.com,True,"Chewy, Inc.",True,True,254900NPQSTG9I422879,"CHEWY, INC.",False,,,True,True,True,False,False,False,False
+US,nordstrom.com,True,"Nordstrom, Inc.",False,False,,,True,,,True,False,False,False,False,False,False
+US,etsy.com,True,,False,False,54930089Q7XT501AEA40,"ETSY, INC.",False,,,True,False,True,False,False,False,False
+US,apple.com,True,Apple Inc.,True,True,,,True,,,True,True,False,False,False,False,False
+US,nike.com,True,"Nike, Inc.",False,False,,,True,,,True,False,False,False,False,False,False
+US,gap.com,True,"The Gap, Inc.",True,True,T2ZG1WRWZ4BUCMQL9224,"THE GAP, INC.",True,,,True,True,True,False,False,False,False
+US,kroger.com,True,The Kroger Co.,False,False,6CPEOKI6OYJ13Q6O7870,THE KROGER CO.,False,,,True,False,True,False,False,False,False
+US,cvs.com,True,CVS Pharmacy Inc,True,True,549300EJG376EN5NQE29,CVS HEALTH CORPORATION,True,,,True,True,True,False,False,False,False
+US,walgreens.com,True,Walgreen Co.,False,False,,,True,,,True,False,False,False,False,False,False
+UK,tesco.com,True,Tesco PLC,False,False,213800ET4MA6J4AHS397,TESCO STORES LIMITED,False,,,True,False,True,False,True,False,False
+UK,argos.co.uk,True,SAINSBURY'S SUPERMARKETS LTD,True,True,2138002C57UH77UL1B54,ARGOS LIMITED,False,,,True,True,True,False,True,False,False
+UK,johnlewis.com,True,John Lewis plc,False,False,213800JSUFNZLZLCVJ25,JOHN LEWIS PLC,True,,,True,False,True,False,True,False,False
+UK,marksandspencer.com,True,Marks and Spencer P.L.C.,True,True,,,True,"Afterpay/Clearpay,Klarna",,True,True,False,True,True,True,True
+UK,next.co.uk,True,NEXT PLC,False,False,,,True,,,True,False,False,False,True,False,False
+UK,asos.com,True,ASOS.com Limited,True,True,213800VLBWOAHUWXRF54,ASOS.COM LIMITED,True,,,True,True,True,False,True,False,False
+UK,currys.co.uk,True,Currys plc,False,False,2138001E12GWLLDQQF16,CURRYS PLC,False,,,True,False,True,False,True,False,False
+UK,sainsburys.co.uk,True,SAINSBURY'S SUPERMARKETS LTD,True,True,213800KMLDLT2PROXX14,SAINSBURY'S SUPERMARKETS LTD,True,,,True,True,True,False,True,False,False
+UK,boots.com,True,Boots UK Ltd.,False,False,,,True,,,True,False,False,False,True,False,False
+UK,very.co.uk,True,Shop Direct Home Shopping Limited,False,False,254900P6674A3D3JRW33,SHOP DIRECT FINANCE COMPANY LIMITED,False,,,True,False,True,False,True,False,False
+UK,ao.com,True,,False,False,213800SEP4O3QOAAMU07,AO RETAIL LIMITED,False,,,True,False,True,False,True,False,False
+UK,screwfix.com,True,,False,False,213800DG6VECMBIL9P59,SCREWFIX DIRECT LIMITED,False,,,True,False,True,False,True,False,False
+UK,dunelm.com,True,,False,False,,,True,"Google Pay,Klarna,PayPal",,False,False,False,True,True,False,False
+UK,russellandbromley.co.uk,True,Next PLC,False,False,,,False,,,True,False,False,False,True,False,False
+UK,sportsdirect.com,True,SportsDirect.com Retail Limited,True,False,213800KAJ4LXOKLNO654,SPORTSDIRECT.COM RETAIL LIMITED,True,,,True,False,True,False,True,False,False
+UK,asda.com,True,,False,False,549300IVCS91O4IUFA35,ASDA STORES LIMITED,False,,,True,False,True,False,True,False,False
+UK,waitrose.com,True,Waitrose Limited,False,False,213800O75COKRCLN1I34,WAITROSE LIMITED,True,,,True,False,True,False,True,False,False
+UK,superdrug.com,True,AS Watson (Europe) Holdings B.V.,True,True,,,True,,,True,True,False,False,True,False,False
+UK,halfords.com,True,HALFORDS GROUP PLC,False,False,2138002JLJRFE47Q6720,HALFORDS LIMITED,True,,,True,False,True,False,True,False,False
+UK,wickes.co.uk,True,,False,False,,,True,,SAP Commerce,False,False,False,True,True,False,False
+EU,zalando.de,True,,True,True,529900YRFFGH5AXU4S86,Zalando SE,True,,,True,True,True,False,True,False,False
+EU,otto.de,True,Otto GmbH & Co. KGaA,False,False,,,True,,,True,False,False,False,True,False,False
+EU,mediamarkt.de,True,MMS Technology GmbH,True,True,,,False,,,True,True,False,False,True,False,False
+EU,lidl.de,True,Lidl Stiftung & Co. KG,False,False,,,True,,,True,False,False,False,True,False,False
+EU,dm.de,True,,True,True,391200BJDTMV65NJ7G34,dm-drogerie markt GmbH + Co. KG,True,,,True,True,True,False,True,False,False
+EU,douglas.de,True,Parfümerie Douglas GmbH & Co. KG,False,False,,,False,,,True,False,False,False,True,False,False
+EU,fnac.com,True,FNAC DARTY,True,True,96950091FL62XSLPHO35,FNAC DARTY,False,,,True,True,True,False,True,False,False
+EU,cdiscount.com,True,C-Technology,False,False,,,True,,,True,False,False,False,True,False,False
+EU,carrefour.fr,True,,False,False,,,False,,,False,False,False,False,True,False,False
+EU,decathlon.fr,True,,False,False,9695007JOO3V2B0GMP47,DECATHLON,False,,,True,False,True,False,True,False,False
+EU,leroymerlin.fr,True,,False,False,,,False,,,False,False,False,False,True,False,False
+EU,bol.com,True,,True,True,724500PI68UVLK7E3S11,bol.com B.V.,False,,,True,True,True,False,True,False,False
+EU,coolblue.nl,True,,True,True,72450020ONP2TGFMWS03,Coolblue B.V.,False,,,True,True,True,False,True,False,False
+EU,elcorteingles.es,True,El Corte Ingles S.A.,True,True,,,True,,,True,True,False,False,True,False,False
+EU,mediamarkt.es,True,MMS Technology GmbH,True,True,,,False,,,True,True,False,False,True,False,False
+EU,zara.com,True,INDUSTRIA DE DISEÑO TEXTIL SA,True,True,,,True,,,True,True,False,False,True,False,False
+EU,ikea.com,True,,True,True,,,True,,,False,True,False,False,True,False,False
+EU,hm.com,True,H & M Hennes & Mauritz AB,True,True,,,False,,,True,True,False,False,True,False,False
+EU,aboutyou.de,True,,False,False,894500A85A8VDRIGZ723,ABOUT YOU SE & Co. KG,True,,,True,False,True,False,True,False,False
+EU,thalia.de,True,,True,False,,,False,,,False,False,False,False,True,False,False
+IN,flipkart.com,True,FLIPKART INTERNET PRIVATE LIMITED,True,False,335800KS8LATZVLFH345,FLIPKART INTERNET PRIVATE LIMITED,True,,,True,False,True,False,True,False,False
+IN,amazon.in,True,,True,True,33580043AP7H1NXKG316,AMAZON SELLER SERVICES PRIVATE LIMITED,True,,,True,True,True,False,True,False,False
+IN,myntra.com,True,MYNTRA DESIGNS PRIVATE LIMITED,False,False,335800UYD9YQC7QAVA42,MYNTRA DESIGNS PRIVATE LIMITED,True,,,True,False,True,False,True,False,False
+IN,nykaa.com,True,NYKAA E- RETAIL LIMITED,False,False,335800X5BJYC18NHDQ91,FSN E-COMMERCE VENTURES LIMITED,False,,,True,False,True,False,True,False,False
+IN,ajio.com,True,Reliance Jio Infocomm Limited,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,False,,,True,False,True,False,True,False,False
+IN,meesho.com,True,Fashnear Technologies Private Limited,False,False,,,False,,,True,False,False,False,True,False,False
+IN,tatacliq.com,True,,False,False,335800HITQ4VM26ETP22,TATA UNISTORE LIMITED,True,,,True,False,True,False,True,False,False
+IN,croma.com,True,INFINITI RETAIL LIMITED,False,False,335800B2F3DH6QMOGR59,INFINITI RETAIL LIMITED,True,Juspay,,True,False,True,True,True,True,True
+IN,reliancedigital.in,True,JIO PLATFORMS LIMITED,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,True,,,True,False,True,False,True,False,False
+IN,bigbasket.com,True,Innovative Retail Concepts Private Limited,True,True,9845009D9AEDDA4D5809,SUPERMARKET GROCERY SUPPLIES PRIVATE LIMITED,False,,,True,True,True,False,True,False,False
+IN,jiomart.com,True,RELIANCE JIO INFOCOMM LIMITED,False,False,335800PYXJSREF3LSV65,RELIANCE RETAIL LIMITED,True,,,True,False,True,False,True,False,False
+IN,snapdeal.com,True,,False,False,5493002HL9KOT2Y5UT46,AceVector Limited,False,,,True,False,True,False,True,False,False
+IN,firstcry.com,True,,False,False,984500FBE5B11U0E8846,BRAINBEES SOLUTIONS LIMITED,True,,,True,False,True,False,True,False,False
+IN,lenskart.com,True,,False,False,984500L5O4479DCDCF14,LENSKART SOLUTIONS LIMITED,False,,,True,False,True,False,True,False,False
+IN,pepperfry.com,True,PEPPERFRY LIMITED,True,False,,,True,,,True,False,False,False,True,False,False
+IN,decathlon.in,True,,False,False,54930086HCDLUGW8ZY42,DECATHLON SPORTS INDIA PRIVATE LIMITED,True,,,True,False,True,False,True,False,False
+IN,shoppersstop.com,True,,False,False,335800M4GP4ZWJAJGM86,SHOPPERS STOP LIMITED,False,,,True,False,True,False,True,False,False
+IN,swiggy.com,True,SWIGGY LIMITED,False,False,335800R11DC3QR7KH186,SWIGGY LIMITED,False,,,True,False,True,False,True,False,False
+IN,blinkit.com,True,,False,False,2549005U21Q67J1H0O16,BLINK COMMERCE PRIVATE LIMITED,False,,,True,False,True,False,True,False,False
+IN,zeptonow.com,True,,False,False,,,True,,,False,False,False,False,True,False,False

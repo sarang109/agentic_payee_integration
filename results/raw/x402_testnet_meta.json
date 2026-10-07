@@ -1,0 +1,20 @@
+{
+  "amount_units": 10000,
+  "asset": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  "attacker": "0xa4d52eEF21dd95acd83B8F66585d65f9072A7E71",
+  "facilitator": "https://x402.org/facilitator",
+  "merchant": "0xB1FA42BB1bc1397AfC320e441f0ad526f8361281",
+  "network": "Base Sepolia (eip155:84532)",
+  "payer": "0x818fafeE5D32B9D1F9Cd63232d591158534B2f5E",
+  "run_date_utc": "2026-10-07T02:50:00Z",
+  "balance_check": {
+    "start_usdc": 20.0,
+    "after_usdc": 19.63,
+    "settled_payments_all_runs": 37,
+    "this_run_drop_usdc": null,
+    "this_run_expected_drop_usdc": null,
+    "consistent": true,
+    "checked_utc": "2026-10-07T02:50:33Z",
+    "note": "start balance is the faucet grant (20 USDC); balance after runs 1-2 read from the USDC contract on Base Sepolia"
+  }
+}

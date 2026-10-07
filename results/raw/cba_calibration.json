@@ -9,12 +9,15 @@
     "benign_step_up": 0.13608562691131498,
     "benign_wrong_commit": 0.0,
     "tau": 0.075,
-    "theta": 0.9
+    "theta": 0.7
   },
   "embedding_backend": "sentence-transformers/all-MiniLM-L6-v2",
   "s_min": 0.75,
   "tau": 0.075,
-  "theta": 0.9,
+  "theta": 0.7,
+  "use": [
+    "str"
+  ],
   "w_sem": 0.5,
   "w_str": 0.9,
   "w_vis": 0.6

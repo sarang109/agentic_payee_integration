@@ -23,11 +23,11 @@
   ],
   "homograph_all": {
     "attack type": "ALL ATTACKS",
-    "committed to genuine": "0.680 [0.671, 0.689]",
+    "committed to genuine": "0.676 [0.667, 0.685]",
     "committed to spoof": "0.000 [0.000, 0.000]",
-    "flagged as rival (kappa >= theta)": "0.821 [0.814, 0.829]",
+    "flagged as rival (kappa >= theta)": "0.933 [0.928, 0.938]",
     "n": 10070,
-    "stepped up": "0.320 [0.311, 0.329]"
+    "stepped up": "0.324 [0.315, 0.333]"
   },
   "status": "ok",
   "url_datasets": [

@@ -848,7 +848,7 @@ summary of summaries:
 
 analyzed: formal/tamarin/meridian_g2.spthy
 
-  processing time: 1.84s
+  processing time: 1.93s
   
   WARNING: 7 wellformedness check failed!
            The analysis results might be wrong!

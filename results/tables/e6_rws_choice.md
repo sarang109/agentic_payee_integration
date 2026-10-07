@@ -11,3 +11,5 @@
 | ('stablecoin', 0)  |      773 |      0 |    27 |
 | ('stablecoin', 1)  |      760 |      0 |    40 |
 | ('stablecoin', 2)  |        0 |      0 |   800 |
+
+Simulation over modelled rail timings (config/rails.yaml).

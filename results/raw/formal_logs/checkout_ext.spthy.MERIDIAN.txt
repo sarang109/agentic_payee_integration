@@ -1125,7 +1125,7 @@ summary of summaries:
 
 analyzed: formal/tamarin/checkout_ext.spthy
 
-  processing time: 1.83s
+  processing time: 1.93s
   
   executable (exists-trace): verified (15 steps)
   payee_authenticity (all-traces): verified (16 steps)

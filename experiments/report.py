@@ -231,9 +231,10 @@ def build_report() -> str:
     sens = h3.get("card_first_hop_POST_undone_with_modelled_void")
     tail = (f"; card void latency from {void.get('backend')} (p50 {void.get('void_p50_s', 0):.2f} s, "
             f"success {void.get('void_success')})")
-    if sens:
+    sk, sn = _frac(sens) if sens else (None, None)
+    if sk is not None and sn:
         tail += (f". Sensitivity: with the modelled void latency and success from config/rails.yaml instead, the "
-                 f"same runs give {sens}, so the card part depends on the measured void latency")
+                 f"same runs give {sens}, which {'also meets' if sk / sn >= 0.99 else 'misses'} the 0.99 threshold")
     lines.append(f"| H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | 2 | "
                  f"{_verdict(h3.get('supported'))} | card: POST-safe probability {h3.get('card_post_safe_probability')}, "
                  f"first-hop swaps voided before capture {h3.get('card_first_hop_POST_undone')}{card_ci}; instant and "

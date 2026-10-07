@@ -1,4 +1,4 @@
-### E6: Theorem 3 quantities per rail (modelled latencies, config/rails.yaml)
+### E6: Theorem 3 quantities per rail (modelled latencies, config/rails.yaml; card void measured when available)
 
 | rail        |   f |   POST-safe prob (G1 observers) |   FRESH-safe prob rho=60s |   FRESH-safe prob rho=300s |   ESCROW catch prob |
 |:------------|----:|--------------------------------:|--------------------------:|---------------------------:|--------------------:|

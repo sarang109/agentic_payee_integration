@@ -1,4 +1,4 @@
-### E4b: anchoring against real phishing domains (PhiUSIIL; 2000 Tranco brands; theta=0.9, tau=0.075)
+### E4b: anchoring against real phishing domains (PhiUSIIL; 2000 Tranco brands; theta=0.7, tau=0.075)
 
 | trial                                                                    |    n | committed to phishing domain   | committed to genuine brand   | stepped up           |
 |:-------------------------------------------------------------------------|-----:|:-------------------------------|:-----------------------------|:---------------------|

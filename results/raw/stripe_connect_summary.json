@@ -3,11 +3,11 @@
     {
       "breach certificate verifies": true,
       "case": "X2 seller substitution",
-      "committed destination": "...sq9LHc",
+      "committed destination": "...Qaas7k",
       "deviation detected": true,
-      "observe_s": 1.381,
-      "observed destination": "...jzOwya",
-      "reversal_s": 0.899,
+      "observe_s": 1.192,
+      "observed destination": "...aruJTc",
+      "reversal_s": 0.826,
       "transfer reversed": true
     },
     {

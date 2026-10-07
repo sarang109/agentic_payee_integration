@@ -1,7 +1,7 @@
 quantity,p50_ms,p95_ms
-Groth16 prove (prover side),580.25,632.45
-Groth16 verify (payer side),9.68,13.61
-V4 payer-side verify in bench (wall),10.0,12.7
-M3 pre-check (V1+V2) in bench,2.56,29.95
-"BBS derive, k=3 (prover side)",190.62,254.19
-"BBS verify, k=3 (payer side)",213.69,230.25
+Groth16 prove (prover side),559.12,576.93
+Groth16 verify (payer side),8.99,13.1
+V4 payer-side verify in bench (wall),10.08,11.08
+M3 pre-check (V1+V2) in bench,2.4,3.06
+"BBS derive, k=3 (prover side)",186.23,187.44
+"BBS verify, k=3 (payer side)",209.44,220.87

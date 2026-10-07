@@ -1,10 +1,12 @@
 {
   "H3": {
     "card_first_hop_POST_undone": "400/400",
+    "card_first_hop_POST_undone_with_modelled_void": "399/400",
     "card_post_safe_probability": 1.0,
     "instant_late_evidence_ESCROW_undone": "2389/2400",
     "instant_late_evidence_POST_undone": "0/2400",
-    "supported": true
+    "supported": true,
+    "void_latency_source": "stripe-test-mode (archived measurement of 2026-10-07T02:32:18Z)"
   },
   "toy": {
     "corrected_fastest_corrupted": 0.47593535,
@@ -24,9 +26,9 @@
     }
   },
   "void": {
-    "backend": "stripe-test-mode",
-    "void_p50_s": 0.40899908350547776,
-    "void_p95_s": 0.5100370688916882,
+    "backend": "stripe-test-mode (archived measurement of 2026-10-07T02:32:18Z)",
+    "void_p50_s": 0.39701535450876685,
+    "void_p95_s": 0.7313036337101948,
     "void_success": 1.0
   }
 }
