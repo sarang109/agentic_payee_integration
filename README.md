@@ -1,5 +1,11 @@
 # MERIDIAN
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23218455.svg)](https://doi.org/10.5281/zenodo.23218455)
+
+The badge is the concept DOI, which always resolves to the latest archived
+release. A paper cites the version DOI of the release it used, from that
+release's Zenodo record. `v0.9.0` is `10.5281/zenodo.23218456`.
+
 Merchant-to-Endpoint Receiving-authority Integrity with Delegation, Intent
 anchoring and Notarized receipts: a payer-side check that the party about to
 receive an agent's payment is authorized to receive for the brand the user

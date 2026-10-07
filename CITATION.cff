@@ -7,6 +7,13 @@ authors:
     given-names: Sarang
     orcid: "https://orcid.org/0000-0002-3122-8353"
 license: Apache-2.0
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23218455"
+    description: "Concept DOI: all archived versions of MERIDIAN (resolves to the latest release)."
+  - type: doi
+    value: "10.5281/zenodo.23218456"
+    description: "Version DOI of the v0.9.0 pre-submission snapshot."
 repository-code: "https://github.com/sarang109/agentic_payee_integration"
 keywords:
   - agentic payments
