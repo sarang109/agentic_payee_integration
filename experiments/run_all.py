@@ -5,31 +5,31 @@
     python -m experiments.run_all --only e2,e6
 
 Order matters: E4 calibrates anchoring before E2 uses it. E2-E6 refuse to
-run if the pre-registration file changed after it was locked.
+run if the pre-registration file changed after it was locked; E11 refuses
+unless preregistration/hypotheses_v2.yaml is locked in LOCK_V2 and records
+the v1 hash (`python -m experiments.prereg lock-v2`).
 """
 
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import sys
 import time
 import traceback
 
-from .common import RESULTS, ROOT, Timer, environment, manifest, write_json
+from . import prereg
+from .common import RESULTS, Timer, environment, manifest, write_json
 
-STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "x402", "e7", "e8", "e9", "e10", "ablations"]
+STEPS = ["formal", "toys", "e4", "e4b", "e4c", "e1", "e2", "e5", "e6", "stripe", "x402", "e7", "e8", "e9", "e11", "e10",
+         "ablations"]
 PREREG_GATED = {"e2", "e5", "e6"}
+PREREG_V2_GATED = {"e11"}  # H6 has its own registration and lock
 
 
 def prereg_ok() -> tuple[bool, str]:
-    with open(os.path.join(ROOT, "preregistration", "hypotheses.yaml"), "rb") as fh:
-        h = hashlib.sha256(fh.read()).hexdigest()
-    with open(os.path.join(ROOT, "preregistration", "LOCK")) as fh:
-        lock = fh.read().strip()
-    return h == lock, h
+    return prereg.v1_ok()
 
 
 def _run(step: str):
@@ -75,6 +75,9 @@ def _run(step: str):
     if step == "e9":
         from .e9_agents import run_e9
         return run_e9()
+    if step == "e11":
+        from .e11_exposure import run_e11
+        return run_e11()
     if step == "e10":
         from .e10_coverage import run_e10
         return run_e10()
@@ -91,7 +94,9 @@ def main() -> int:
     args = ap.parse_args()
     steps = [s for s in STEPS if (not args.only or s in args.only.split(",")) and s not in args.skip.split(",")]
     ok, h = prereg_ok()
-    status = {"environment": environment(), "preregistration_sha256": h, "preregistration_locked": ok, "steps": {}}
+    v2 = prereg.v2_status()
+    status = {"environment": environment(), "preregistration_sha256": h, "preregistration_locked": ok,
+              "preregistration_v2_sha256": v2["v2_sha256"], "preregistration_v2_locked": v2["ok"], "steps": {}}
     prev_path = os.path.join(RESULTS, "run_status.json")
     if args.only and os.path.exists(prev_path):
         # a partial rerun keeps the record of the steps it did not touch
@@ -102,6 +107,10 @@ def main() -> int:
         if step in PREREG_GATED and not ok:
             status["steps"][step] = {"status": "refused: pre-registration changed after lock"}
             print(f"!! {step} refused: preregistration/hypotheses.yaml does not match preregistration/LOCK")
+            continue
+        if step in PREREG_V2_GATED and not v2["ok"]:
+            status["steps"][step] = {"status": f"refused: {v2['reason']}"}
+            print(f"!! {step} refused: {v2['reason']}")
             continue
         t0 = time.perf_counter()
         try:

@@ -1,0 +1,106 @@
+# MERIDIAN pre-registration, second file (H6, funded routes, experiment E11)
+#
+# The v1 file (preregistration/hypotheses.yaml, hypotheses H1-H5) is locked and
+# is not edited. This file has its own lock (preregistration/LOCK_V2). It must
+# be locked BEFORE E11 runs; the runner refuses E11 unless
+#   * SHA-256(preregistration/hypotheses.yaml)  == preregistration/LOCK
+#   * `v1_sha256` below                          == preregistration/LOCK
+#   * SHA-256(this file)                         == preregistration/LOCK_V2
+# Every number E11 uses is read from the `experiment` block, so it is frozen by
+# the lock. Thresholds marked `target` are design goals, not results.
+
+version: 2
+registered: 2026-10-07
+v1_file: preregistration/hypotheses.yaml
+v1_sha256: 278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99
+seeds: {e11: 11011}
+
+hypotheses:
+  H6:
+    statement: >
+      Under the exposure-capped admission rule (F6), (a) rational-custodian
+      A13 losses are zero at every detection probability q from 0.3 to 1
+      whenever the detection probability the rule assumes (q_hat) is at most
+      the true q, and (b) the refusal rate on legitimate payments is at most
+      the stated threshold when capacity is provisioned at 1.5 times mean
+      exposure.
+    measures:
+      - E11 rational-custodian losses with the rule on, per q and rule
+      - E11 refusal rate on legitimate payments, per q, rule and workload
+      - E11 required bond per unit of mean exposure, per q_hat
+    target: {refusal_rate_legitimate_payments: {max: 0.05}}
+    decision_rule: >
+      Supported iff, for the rules `oracle` (q_hat = q) and `floor` (q_hat =
+      0.3) and every q in detection_grid: (a) the number of rational
+      custodians that deviate is exactly 0 in the provisioned population, and
+      (b) the pooled refusal rate on legitimate payments at the reference
+      workload (payments_in_flight = 30) is at most 0.05. The 0.05 threshold
+      is the H2 step-up target, reused and not tuned. The `optimistic` rule
+      (q_hat above q) is reported as the misspecification case and is not part
+      of the criterion. Wilson and cluster-bootstrap (by custodian) intervals
+      are reported; the decision uses the point estimate.
+    kill_rule: >
+      If H6 is not supported, or q cannot be bounded credibly from below (the
+      illustrative calibration from public dispute-reporting statistics gives
+      no defensible lower bound of at least 0.3), drop funded routes (F6,
+      Theorem 4) from the paper and state in the limitations that A13 remains
+      attributable (Theorem 2) but is not deterred.
+
+experiment:
+  # detection probability q cannot be measured in the sandbox: it is swept
+  detection_grid: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+  rules:
+    oracle: {q_hat: "q"}
+    floor: {q_hat: 0.3}
+    optimistic: {q_hat: 0.8}
+  capacity_factor: 1.5            # capacity = factor x mean exposure
+  capacity_factors_reported: [1.25, 2.0]   # sensitivity, not part of the decision
+  custodians_per_cell: 200
+  workloads:                      # mean number of payments in flight per custodian
+    payments_in_flight: [10, 30, 100]
+    reference: 30
+  time_unit: day
+  payment_amount:                 # cents; the PayeeBench amount distribution
+    lognormal_mu: 8.7
+    lognormal_sigma: 0.9
+    floor: 100
+    cap: 200000
+  custodian:
+    hold_days: {median: 2.0, sigma: 0.5, min: 0.25, max: 14.0}      # lognormal, clipped
+    discount_rate_per_day: {low: 0.0005, high: 0.5}                 # log-uniform; the top end is a fly-by-night custodian
+    margin_rate: {low: 0.002, high: 0.02}                           # uniform; fee per unit of daily volume
+  horizon_hold_times: 40          # simulated length, in multiples of the custodian's hold time
+  warmup_hold_times: 3            # excluded from refusal statistics
+  unprovisioned_population:       # for the rule-off versus rule-on comparison
+    bond_over_mean_exposure: {median: 0.5, sigma: 1.0}              # lognormal
+  compromised:
+    fraction: 0.1                 # custodians that deviate at a random time whatever the incentives
+  coalition:
+    route_length: 3
+    sizes: [1, 2, 3]
+    external_detection: 0.1       # channel that does not depend on custodian evidence
+    detection_model: >
+      q is the detection probability of one custodian deviating alone. It is
+      split into an external channel and equal per-hop evidence from the other
+      custodians on the route (meridian.core.exposure.per_hop_detection); a
+      coalition withholds its own members' evidence (coalition_q). Members are
+      evaluated with exposures at their individual admission caps, the worst
+      case the rule admits.
+    draws_per_cell: 2000
+  a13_bench:                      # PayeeBench A13 cases generated from the rational-deviation condition
+    cases: 60
+    true_q: 0.5
+    rule: oracle
+  bootstrap: {resamples: 2000}
+
+configurations:
+  M5: "M3 plus funded routes (F6). M4 is already V4 (M3 plus private payee checks)."
+
+analysis:
+  constructed_cases: exact counts, no intervals
+  sampled_measurements: Wilson 95% intervals
+  clustering: cluster bootstrap by custodian
+  partitions: rational and compromised custodians reported separately
+  limitation: >
+    q is an input, not a measurement. Bond cost to custodians is reported as
+    bond per unit of mean exposure and is not priced.

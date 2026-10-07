@@ -2,7 +2,7 @@
 
 Statements follow the research blueprint (v2 core, 3 October 2026);
 definitions are restated where a proof depends on them. Paper 1 uses
-Sections 1-6, Paper 2 uses Sections 7-8. Each result is tagged with how it
+Sections 1-6, Paper 2 uses Sections 7-9 (Section 9 only if funded routes survive the kill rule). Each result is tagged with how it
 is established: **proof** (here), **mechanized** (Tamarin or ProVerif,
 `formal/`), **checked** (tests or toy cases).
 
@@ -381,3 +381,93 @@ keys; the statement is about the scheme. *Mechanized:* the ProVerif model
 `formal/proverif/private_lookup.pv` proves observational equivalence of
 the k-anonymous lookup (and `private_lookup_full_hash.pv` shows the
 equivalence fails when the full hash is sent).
+
+## 9. Theorem 4 (funded routes) — proof
+
+Funded routes (F6) bound what a custodian holds relative to what it would
+lose by stealing it. The statements are about the economic model below, not
+about any deployed custodian; the detection probability q is an input that
+cannot be measured in the sandbox. The model, closed forms and admission
+rule are in `meridian/core/exposure.py`; the closed forms are checked
+against an independent value-iteration solution in `tests/test_exposure.py`.
+These proofs have not been reviewed by anyone outside the project.
+
+**Model.** Time is discrete with discount factor β ∈ (0,1). A custodian holds
+exposure X (cents in flight) and, while honest, earns margin m per period, so
+the franchise is worth V = m/(1−β). Stealing X succeeds undetected with
+probability 1−q (the custodian keeps X and carries on); with probability q the
+theft is detected, the franchise ends from the next period, and the bond B is
+slashed after the hold time T (to pay the victims), worth β^T B today.
+Let κ = βV + β^T B.
+
+**Theorem 4.**
+
+(i) *Deviation condition.* Honest operation is optimal iff
+(1−q)X ≤ m + qκ.
+
+(ii) *Deterrence cap.* Define D(q) = (m + qκ)/(1−q) for q < 1 and D(1) = ∞.
+Deviation is not profitable iff X ≤ D(q). D is increasing in q and decreasing
+in the hold time T.
+
+(iii) *Admission safety.* Let the verifier admit a payment only if the
+custodian's in-flight exposure afterwards stays within
+cap(q̂) = min(D(q̂), B). If the true detection probability satisfies q ≥ q̂,
+then at every time the custodian's exposure is at most D(q), so a rational
+custodian never finds theft profitable. The bond covers every admitted
+exposure.
+
+(iv) *Hold-time threshold.* For fixed X, B, m, β and q, deviation is
+unprofitable iff β^T ≥ ((1−q)X − m − qβV)/(qB). Hence the longest safe hold
+time is T* = ln(need)/ln β when need ∈ (0,1], unbounded when need ≤ 0
+(margin and franchise alone deter), and nonexistent when need > 1 (the bond
+is too small even for immediate release) or q B = 0.
+
+(v) *Required bond.* For a target capacity C, the smallest B with
+cap(q̂) = C is max(C, ((1−q̂)C − m − q̂βV)/(q̂β^T)), which is non-increasing
+in q̂.
+
+(vi) *No deterrence of compromised or over-optimistic cases.* A custodian
+that deviates irrespective of incentives is not deterred by any cap. If
+q < q̂ the cap may exceed D(q), and theft at the cap pays.
+
+**Proof.** (i) With continuation value V after honest play, the one-shot
+deviation principle for discounted problems with bounded payoffs says honest
+play is optimal iff no single deviation, followed by honest play, pays more.
+Honest play now yields m + βV. Stealing yields (1−q)(X + βV) − qβ^T B, since
+a detected theft ends the franchise (continuation 0) and costs the discounted
+bond. Honest play is optimal iff m + βV ≥ (1−q)(X + βV) − qβ^T B, which
+rearranges to (1−q)X ≤ m + qβV + qβ^T B = m + qκ.
+(ii) Dividing (i) by 1−q gives X ≤ D(q). For q < 1, D′(q) =
+(κ + m)/(1−q)² > 0 since κ, m ≥ 0. β^T decreases in T, hence so does κ and D.
+(iii) Admission keeps exposure ≤ cap(q̂) ≤ D(q̂) ≤ D(q) by monotonicity, so (i)
+fails for every admitted state; and exposure ≤ B gives coverage.
+(iv) Rearranging (i) for β^T gives the stated inequality; solving for T uses
+ln β < 0, which reverses the inequality. The edge cases are the signs of the
+numerator and whether need exceeds β⁰ = 1.
+(v) cap(q̂) = C needs B ≥ C and D(q̂) ≥ C. The second is (i) at X = C solved
+for B. Writing the bound as C/q̂ − C − m/q̂ − βV, its derivative in q̂ is
+−(C − m)/q̂² ≤ 0 whenever the bound is positive (which requires C > m).
+(vi) The first claim is the definition. For the second, take q < q̂ and X
+slightly above D(q) ≤ D(q̂) with X ≤ B. ∎
+
+**Indifference.** A custodian exactly at its cap is indifferent. The code
+treats it as honest (relative tolerance 1e-9), so that rounding cannot decide
+an experiment's count.
+
+**Proposition 5 (coalitions).** Suppose n custodians sit on a route, each
+detected with probability q when it deviates alone, split into an external
+channel e and equal per-hop evidence p from the other n−1 custodians
+(1 − (1−e)(1−p)^{n−1} = q). A coalition S of size k that withholds its own
+members' evidence is detected with probability q_S = 1 − (1−e)(1−p)^{n−k}
+(which equals e at k = n and q at k = 1). Joint deviation, with free side
+payments, pays iff Σ_{i∈S} [(1−q_S)X_i − (m_i + q_S κ_i)] > 0, so a coalition
+can profit while every member sits within its individual cap whenever
+q_S < q. *Proof.* Apply (i) to the sum, using that q_S is lower than the q the
+individual caps assumed. ∎ This is computed, not mitigated, in E11
+(`e11_coalition`); it states what a per-custodian cap does not cover.
+
+**Prior art.** The incentive logic (a franchise or bond that outweighs the
+gain from cheating) is the quality-assuring-rents argument of Klein and
+Leffler (1981) and the stake-requirement analyses used for staking systems.
+The sources listed in `prior_art.md` for F6 must be read in full before any
+of them is cited; none is relied on here.

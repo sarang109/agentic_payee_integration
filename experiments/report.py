@@ -52,6 +52,11 @@ SECTIONS = [
     ("E6 rail scheduling", ["e6_timing_sources", "e6_residual_loss_f0", "e6_observer_corruption", "e6_rws_choice",
                             "e6_theorem3", "f4_toy"], "e6_rail_residual.png", "", [MODELLED,
                                                                                    "card void latency " + SANDBOX], "2"),
+    ("E11 funded routes (F6), hypothesis H6", ["e11_loss", "e11_refusal", "e11_refusal_by_workload", "e11_capacity",
+                                                "e11_bond", "e11_tstar", "e11_compromised", "e11_coalition",
+                                                "e11_a13_bench"], None,
+     "Registered in preregistration/hypotheses_v2.yaml and locked in LOCK_V2 before the run. The detection "
+     "probability q is swept, not measured.", [MODELLED + "; no custodian or detection process is measured"], "2"),
     ("X2 / X3 on Stripe Connect test mode", ["stripe_connect"], None,
      "Runs only with a Stripe test key on an account with Connect enabled; otherwise the table records why it was "
      "skipped.", [SANDBOX], "1"),
@@ -257,6 +262,21 @@ def build_report() -> str:
                  f"({h5.get('legacy_latency_tiebreak')}); that verdict rested on the 0/0 cell and is withdrawn. "
                  f"Exploratory, with the BNPL supplement: best on every rail {ex5.get('best_on_every_rail')}. "
                  f"See rq5_pareto for the security versus friction trade-off |")
+    e11 = _load("e11_summary") or {}
+    if e11:
+        h6 = e11["H6"]
+        a13 = e11["a13_bench"]
+        lines.append(
+            f"| H6 funded routes: rational-custodian A13 losses zero for every q in [0.3, 1] when q_hat <= q; refusal "
+            f"<= {h6['b_threshold']} at capacity 1.5x mean exposure (hypotheses_v2.yaml) | 2 | "
+            f"{_verdict(h6['supported'])}{' (smoke run, not evidence)' if e11.get('quick') else ''} | "
+            f"(a) at most {h6['a_max_deviating']} rational custodians deviate over {h6['a_cells']} cells (oracle and "
+            f"floor rules, provisioned); (b) worst refusal rate {h6['b_worst_refusal_rate']:.4f} at the reference "
+            f"workload ({h6['reference_workload']} payments in flight). The optimistic rule (q_hat above q) lets "
+            f"{h6['optimistic_rule_deviating_total']} custodian-cells deviate. PayeeBench A13: M3 loses "
+            f"{a13['M3_losses']}/{a13['cases']}, M5 (M3 + F6) {a13['M5_losses']}/{a13['cases']} with "
+            f"{a13['M5_refused']} refused. q is swept, not measured. Kill rule triggered: "
+            f"{h6['kill_rule_triggered']} |")
     lines += ["", f"Formal models: {'all results as expected' if formal.get('all_as_expected') else 'see table'} "
               f"({formal.get('n', '?')} lemma results). F3 toy table: {toys.get('f3_matches_blueprint', '?')} rows "
               f"match the blueprint (the mismatch is corrected in the f3_toy caption). T4 mutation tests: "
