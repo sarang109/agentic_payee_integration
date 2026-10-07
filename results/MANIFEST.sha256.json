@@ -3,10 +3,10 @@
     "python": "3.12.0",
     "platform": "macOS-26.6.2-arm64-arm-64bit",
     "machine": "arm64",
-    "git": "95bca579db3c7664efd086a0f614124b5ade27b8",
+    "git": "2ccfda6ee577c5e2045a2fcf1de602f46a6b0a99",
     "seed": 7,
     "quick": false,
-    "time_utc": "2026-10-07T11:09:19Z",
+    "time_utc": "2026-10-07T15:32:25Z",
     "numpy": "2.5.3",
     "scipy": "1.18.1",
     "pandas": "3.0.6",
@@ -102,8 +102,8 @@
     },
     {
       "path": "results/raw/e12_records.csv",
-      "sha256": "b076d4bad612bd6c368dd2253c59fad821c7a98609d23216910e08819f0e6180",
-      "bytes": 120577
+      "sha256": "aa206b749d7fdc9c544901ccc5634c1bcf79663c73ead21ef2501bffa4aea3fc",
+      "bytes": 120588
     },
     {
       "path": "results/raw/e12_summary.json",
@@ -437,8 +437,8 @@
     },
     {
       "path": "results/tables/e12_attack_matrix.md",
-      "sha256": "a5e19a2a310991137b94faea2d68bb5c0f5ac54a11ccb54f66467f3eb054baeb",
-      "bytes": 683
+      "sha256": "c00fcac33f7c5b62373a0a208e1c56415c646ec2d1af9026573e79b3dbb9454a",
+      "bytes": 779
     },
     {
       "path": "results/tables/e12_by_author.csv",
@@ -447,8 +447,8 @@
     },
     {
       "path": "results/tables/e12_by_author.md",
-      "sha256": "35af80d14bcfb536e3678216dad8b7bb1b120d5c60431b788e9bf70b731ab403",
-      "bytes": 412
+      "sha256": "8c7d75dbee9b2e8023372a79bfe9ea3389333e3ce5d82ebf8c64ce8de0a32d79",
+      "bytes": 487
     },
     {
       "path": "results/tables/e12_by_scenario.csv",

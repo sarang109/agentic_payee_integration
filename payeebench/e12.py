@@ -1,7 +1,8 @@
-"""E12: independently authored attacks.
+"""E12: author-written attacks.
 
-Authors who have not seen the PayeeBench generator write attacks in a small
-declarative schema (docs/e12/AUTHORING.md). This module validates a spec and
+Attacks are written in a small declarative schema (docs/e12/AUTHORING.md). The
+frozen set was written by the same side that built the generator, so it is not
+independent of it (e12/ERRATA.md); the schema also supports an independent run. This module validates a spec and
 compiles it into a PayeeBench ``Case`` against a fresh world. The author
 chooses the scenario, the victim structure and rail, and the parameters; the
 compiler picks nothing about the attack itself except, with a seed derived

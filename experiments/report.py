@@ -56,11 +56,13 @@ SECTIONS = [
      "Runs the AP2 SDK payee check at the pinned commit (fetched into data/upstream/src, git-ignored); skipped "
      "without network. B5 has no reference implementation and stays re-specified.",
      [MEASURED + " by running upstream code on constructed cases"], "1"),
-    ("E12 independently authored attacks (Gate A)", ["e12_attack_matrix", "e12_mcnemar", "e12_by_scenario",
+    ("E12 author-written attacks (Gate A; not independent)", ["e12_attack_matrix", "e12_mcnemar", "e12_by_scenario",
                                                        "e12_by_author"], None,
-     "The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated "
-     "against ground truth only, and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this "
-     "run. The attacks are compiled onto the same world builder as the main benchmark.",
+     "The attack set was written from the schema in docs/e12/AUTHORING.md by the same side that built the "
+     "generator, with the generator in view, so it is author-dependent and does not answer the circular-evaluation "
+     "objection (e12/ERRATA.md). It was validated against ground truth only and frozen (e12/LOCK) with the "
+     "decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder "
+     "as the main benchmark. The two author labels are batches, not independent people.",
      [CONSTRUCTED], "1"),
     ("E11 funded routes (F6), hypothesis H6", ["e11_loss", "e11_refusal", "e11_refusal_by_workload", "e11_capacity",
                                                 "e11_bond", "e11_tstar", "e11_compromised", "e11_coalition",
@@ -282,11 +284,12 @@ def build_report() -> str:
     if e12:
         d = e12["decision"]
         lines.append(
-            f"| E12 independent attacks: {d['comparison']} (decision rule e12/DECISION_RULE.md) | 1 | "
+            f"| E12 author-written attacks: {d['comparison']} (decision rule e12/DECISION_RULE.md) | 1 | "
             f"{d['label']} | {d['attacks_in_model']} in-model attacks by {len(e12['authors'])} authors; "
             f"M2 {d['M2_losses']} losses, B7 {d['B7_losses']}; {d['loss_only_under_M2']} lost only under M2, "
             f"{d['loss_only_under_B7']} only under B7 (exact McNemar p = {d['p_exact_mcnemar']:.3g}); "
-            f"{d['wording']}. First run reproduced: {e12['matches_first_run']} |")
+            f"rule wording \"{d['wording']}\" was written for an independent set and does not apply to this "
+            f"author-written one (e12/ERRATA.md). First run reproduced: {e12['matches_first_run']} |")
     e11 = _load("e11_summary") or {}
     if e11:
         h6 = e11["H6"]

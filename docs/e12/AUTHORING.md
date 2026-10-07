@@ -1,5 +1,10 @@
 # Writing attacks for E12
 
+> **Status.** This is the protocol written for independent authors. The frozen
+> E12 set was not written under it: the attacks were written by the same side
+> that built the generator, with the repository in view. See `e12/ERRATA.md`.
+> The text below is kept unchanged as the design of an independent run.
+
 You are asked to write at least 8 attacks against a payer-side payee check for
 agentic payments. Read only this file. Please do not read the rest of the
 repository, its results, or any code, until your attacks are delivered: the

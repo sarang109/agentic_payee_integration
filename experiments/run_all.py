@@ -8,7 +8,7 @@ Order matters: E4 calibrates anchoring before E2 uses it. E2-E6 refuse to
 run if the pre-registration file changed after it was locked; E11 refuses
 unless preregistration/hypotheses_v2.yaml is locked in LOCK_V2 and records
 the v1 hash (`python -m experiments.prereg lock-v2`). E12 runs only on the
-frozen independent attack set (e12/LOCK) and is skipped until it exists.
+frozen author-written attack set (e12/LOCK) and is skipped until it exists.
 """
 
 from __future__ import annotations

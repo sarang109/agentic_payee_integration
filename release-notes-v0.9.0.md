@@ -30,7 +30,7 @@ not supported. Failed targets are reported as failed.
   built from one generator and grammar, so a 0% false-block rate on those
   structures is partly by construction. Baselines B1-B7 are re-specified from
   their public descriptions, not independent reimplementations. The
-  independently authored attack set (E12) is not in this snapshot.
+  author-written attack set (E12, which is not independent of the generator) is not in this snapshot.
 - The proofs of Theorems 1 and 2 and Proposition 4 have not been reviewed by
   anyone outside the project; treat them as proof sketches.
 - ISO 8583 authorization data is simulated; no real issuer data was available.

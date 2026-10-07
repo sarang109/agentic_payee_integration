@@ -1,4 +1,8 @@
-"""E12: independently authored attack set (Gate A of the publication plan).
+"""E12: author-written attack set (Gate A of the publication plan).
+
+The attacks were written by the same side that built the generator, with the
+generator in view; they are not independent (see e12/ERRATA.md). The module
+name is kept so that the lock, the Makefile and the tests keep working.
 
     python -m experiments.e12_independent validate [e12/attacks.json]
     python -m experiments.e12_independent freeze   [e12/attacks.json]
@@ -202,9 +206,10 @@ def run_e12() -> dict:
     mat = long[long.scenario == "all"].pivot(index="set", columns="config", values="loss")[order]
     cnt = long[long.scenario == "all"].groupby("set").attacks.first()
     mat = mat.astype(int).astype(str).apply(lambda col: col + "/" + cnt.reindex(mat.index).astype(int).astype(str))
-    write_table("e12_attack_matrix", mat, "E12: losses on the independently authored attacks",
+    write_table("e12_attack_matrix", mat, "E12: losses on the author-written attacks",
                 "Exact counts of attacks whose money reached an illegitimate terminal and was not undone. The "
-                "attack set was frozen (e12/LOCK) before this run and is the same for every configuration.")
+                "attack set was frozen (e12/LOCK) before this run and is the same for every configuration. The "
+                "attacks were written with the generator in view, so this is not an independent set (e12/ERRATA.md).")
     by = long[(long.set == "in-model") & (long.scenario != "all")].pivot(index="scenario", columns="config",
                                                                         values="loss")[order]
     write_table("e12_by_scenario", by, "E12: losses by scenario kind (in-model)",
@@ -231,7 +236,7 @@ def run_e12() -> dict:
         ba_rows.append({"author": au, "attacks": len(g), "M2 losses": int(g.M2.sum()), "B7 losses": int(g.B7.sum()),
                         "only M2": int((g.M2 & ~g.B7).sum()), "only B7": int((~g.M2 & g.B7).sum())})
     write_table("e12_by_author", pd.DataFrame(ba_rows), "E12: M2 against B7 by author (in-model)",
-                "Shows whether the result depends on one author's attacks.", index=False)
+                "Shows whether the result depends on one batch of attacks; the two author labels are batches, not independent people (e12/ERRATA.md).", index=False)
 
     summary = {"decision": dec, "attacks": n_all, "in_model": int(inm.case_id.nunique()),
                "premise_violation": int(n_all - inm.case_id.nunique()), "lock": st["lock"], "seed": E12_SEED,

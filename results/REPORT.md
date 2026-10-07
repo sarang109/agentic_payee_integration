@@ -35,7 +35,7 @@ Generated 2026-10-07T11:08:53Z from commit `95bca579db3c7664efd086a0f614124b5ade
 | H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | 2 | supported | card: POST-safe probability 1.0, first-hop swaps voided before capture 400/400 = 1.0000, 95% CI [0.990, 1.000] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2389/2400; card void latency from stripe-test-mode (archived measurement of 2026-10-07T02:32:18Z) (p50 0.40 s, success 1.0). Sensitivity: with the modelled void latency and success from config/rails.yaml instead, the same runs give 399/400, which also meets the 0.99 threshold |
 | H4 V4 keeps decisions; payer p95 <= 150 ms | 2 | supported for the SNARK variant | agreement 1.000 [0.985, 1.000] on 250 cases; SNARK payer-side p95 11.1 ms; prover p95 577 ms. The BBS variant was not part of the agreement test; its payer-side verify p95 is 221 ms, above the 150 ms target |
 | H5 no single version dominates every rail | 2 | not supported | lowest (loss, step-up) per rail, ties kept: {'a2a_instant': ['M3'], 'card': ['M3'], 'psp_token': ['M2', 'M3'], 'stablecoin': ['M3'], 'wallet': ['M2', 'M3']}; among the best on every rail with attack data: ['M3']; rails without attack cases: ['bnpl']. An earlier computation broke ties by decision latency and counted the BNPL rail, which has no attack cases, and reported 'supported' ({'a2a_instant': 'M3', 'bnpl': 'M1', 'card': 'M3', 'psp_token': 'M2', 'stablecoin': 'M3', 'wallet': 'M3'}); that verdict rested on the 0/0 cell and is withdrawn. Exploratory, with the BNPL supplement: best on every rail ['M3']. See rq5_pareto for the security versus friction trade-off |
-| E12 independent attacks: M2 vs B7 (decision rule e12/DECISION_RULE.md) | 1 | advantage-holds | 50 in-model attacks by 2 authors; M2 14 losses, B7 23; 4 lost only under M2, 13 only under B7 (exact McNemar p = 0.049); outperforms language is permitted for M2 against B7 on this set. First run reproduced: True |
+| E12 author-written attacks: M2 vs B7 (decision rule e12/DECISION_RULE.md) | 1 | advantage-holds | 50 in-model attacks by 2 authors; M2 14 losses, B7 23; 4 lost only under M2, 13 only under B7 (exact McNemar p = 0.049); rule wording "outperforms language is permitted for M2 against B7 on this set" was written for an independent set and does not apply to this author-written one (e12/ERRATA.md). First run reproduced: True |
 | H6 funded routes: rational-custodian A13 losses zero for every q in [0.3, 1] when q_hat <= q; refusal <= 0.05 at capacity 1.5x mean exposure (hypotheses_v2.yaml) | 2 | supported | (a) at most 0 rational custodians deviate over 48 cells (oracle and floor rules, provisioned); (b) worst refusal rate 0.0116 at the reference workload (30 payments in flight). The optimistic rule (q_hat above q) lets 1011 custodian-cells deviate. PayeeBench A13: M3 loses 60/60, M5 (M3 + F6) 0/60 with 60 refused. q is swept, not measured. Kill rule triggered: False |
 
 Formal models: all results as expected (30 lemma results). F3 toy table: 13/14 rows match the blueprint (the mismatch is corrected in the f3_toy caption). T4 mutation tests: 36/36 pass. E1 V1a/V1b agreement: 1.000 [0.995, 1.000] on allow vs block, 0.957 [0.941, 0.969] exact.
@@ -988,20 +988,20 @@ Upstream code was run, not copied. G1 is the mapping documented in experiments/u
 The earlier AP2 reference reported in arXiv 2609.00060 matched any payee here; the pinned SDK is run, the earlier behaviour is the one kept in meridian.protocols.ap2.reference_allowed_payee_check.
 
 
-## E12 independently authored attacks (Gate A)
+## E12 author-written attacks (Gate A; not independent)
 
 _Evidence: exact counts over constructed cases. Paper 1._
 
-The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated against ground truth only, and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark.
+The attack set was written from the schema in docs/e12/AUTHORING.md by the same side that built the generator, with the generator in view, so it is author-dependent and does not answer the circular-evaluation objection (e12/ERRATA.md). It was validated against ground truth only and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark. The two author labels are batches, not independent people.
 
-#### E12: losses on the independently authored attacks
+#### E12: losses on the author-written attacks
 
 | set               | B1    | B2    | B3    | B4    | B5    | B6    | B7    | M1-G1   | M1    | M2    | M3   |
 |:------------------|:------|:------|:------|:------|:------|:------|:------|:--------|:------|:------|:-----|
 | in-model          | 36/50 | 45/50 | 45/50 | 47/50 | 50/50 | 47/50 | 23/50 | 32/50   | 28/50 | 14/50 | 7/50 |
 | premise-violation | 2/2   | 2/2   | 2/2   | 2/2   | 2/2   | 2/2   | 0/2   | 2/2     | 2/2   | 2/2   | 2/2  |
 
-Exact counts of attacks whose money reached an illegitimate terminal and was not undone. The attack set was frozen (e12/LOCK) before this run and is the same for every configuration.
+Exact counts of attacks whose money reached an illegitimate terminal and was not undone. The attack set was frozen (e12/LOCK) before this run and is the same for every configuration. The attacks were written with the generator in view, so this is not an independent set (e12/ERRATA.md).
 
 
 #### E12: paired exact McNemar tests (in-model)
@@ -1044,7 +1044,7 @@ Exploratory; small counts per kind.
 | author-1 |        26 |           6 |          12 |         2 |         8 |
 | author-2 |        24 |           8 |          11 |         2 |         5 |
 
-Shows whether the result depends on one author's attacks.
+Shows whether the result depends on one batch of attacks; the two author labels are batches, not independent people (e12/ERRATA.md).
 
 
 ## E11 funded routes (F6), hypothesis H6
