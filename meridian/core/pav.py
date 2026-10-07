@@ -9,7 +9,7 @@ meet.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Sequence, Tuple
+from typing import TYPE_CHECKING, Dict, List, Optional, Sequence, Tuple
 
 from . import grammar
 from .canon import canonical, digest
@@ -20,7 +20,11 @@ from .policy import Policy, TrustStore, allowed
 from .scope import PaymentTuple, Scope
 from .status import StatusSnapshot
 
-TAMPER_REASONS = {"sig-authorize", "sig-accept", "beta-sig", "beta-mismatch", "chain-break", "payee-mismatch", "status-sig"}
+if TYPE_CHECKING:
+    from .nonces import SpentNonces
+
+TAMPER_REASONS = {"sig-authorize", "sig-accept", "beta-sig", "beta-mismatch", "chain-break", "payee-mismatch", "status-sig",
+                  "nonce-spent"}
 
 
 @dataclass(frozen=True)
@@ -171,8 +175,10 @@ def verify_binding(beta: Optional[BindingToken], payment: Payment, last_edge: Ed
     return True, ""
 
 
-def pav(rap: Optional[RAP], payment: Payment, anchor: Optional[str], policy: Policy, trust: TrustStore) -> Decision:
-    """Algorithm 1: Path-Authorized Verification (V1b)."""
+def pav(rap: Optional[RAP], payment: Payment, anchor: Optional[str], policy: Policy, trust: TrustStore,
+        spent: Optional["SpentNonces"] = None) -> Decision:
+    """Algorithm 1: Path-Authorized Verification (V1b). With a ``spent`` store, an
+    ALLOW claims the binding token and a token already claimed is refused."""
     start = SIG_CHECKS.value
     if rap is None or not rap.edges:
         return Decision(STEP_UP, reasons=["no-path"], sig_checks=0, stage="pav")
@@ -194,6 +200,9 @@ def pav(rap: Optional[RAP], payment: Payment, anchor: Optional[str], policy: Pol
             return Decision(DENY, reasons=["path-to-different-entity"], root=root, principal=pc.principal,
                             sig_checks=checks, stage="pav")
         if beta_ok:
+            if spent is not None and not spent.claim(rap.binding, payment.t):
+                return Decision(DENY if policy.deny_on_tamper else STEP_UP, reasons=["nonce-spent"], root=root,
+                                principal=pc.principal, sig_checks=checks, stage="pav")
             return Decision(ALLOW, G1, [], root, pc.principal, pc.scope, sig_checks=checks, stage="pav")
     tamper = pc.tamper or any(r in TAMPER_REASONS for r in reasons)
     verdict = DENY if (policy.deny_on_tamper and tamper) else STEP_UP

@@ -11,7 +11,7 @@ current principal's legal entity to T.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import TYPE_CHECKING, Dict, List, Optional
 
 from . import grammar
 from .canon import canonical
@@ -22,6 +22,9 @@ from .keys import SIG_CHECKS, KeyPair
 from .pav import RAP, check_edges, pav
 from .policy import Policy, TrustStore
 from .status import StatusSnapshot
+
+if TYPE_CHECKING:
+    from .nonces import SpentNonces
 
 REMIT, PAYOUT = "remit", "payout"
 
@@ -114,9 +117,21 @@ class RouteBundle:
 
 
 def verify_route(bundle: Optional[RouteBundle], payment: Payment, anchor: Optional[str], policy: Policy,
-                 trust: TrustStore, allow_g1: bool = False) -> Decision:
+                 trust: TrustStore, allow_g1: bool = False, spent: Optional["SpentNonces"] = None) -> Decision:
     """Verifiable discharge: ALLOW at G2 only with a committed route whose
-    terminal account is bound to the current principal."""
+    terminal account is bound to the current principal. With a ``spent`` store,
+    an ALLOW claims the binding token and a token already claimed is refused;
+    a decision that is not ALLOW claims nothing."""
+    d = _verify_route(bundle, payment, anchor, policy, trust, allow_g1)
+    if spent is not None and d.verdict == ALLOW and bundle is not None and bundle.rap.binding is not None:
+        if not spent.claim(bundle.rap.binding, payment.t):
+            return Decision(DENY if policy.deny_on_tamper else STEP_UP, G1, ["nonce-spent"], d.root, d.principal,
+                            sig_checks=d.sig_checks, stage="route")
+    return d
+
+
+def _verify_route(bundle: Optional[RouteBundle], payment: Payment, anchor: Optional[str], policy: Policy,
+                  trust: TrustStore, allow_g1: bool) -> Decision:
     if bundle is None:
         return Decision(STEP_UP, reasons=["no-path"], stage="route")
     start = SIG_CHECKS.value
@@ -176,6 +191,13 @@ def verify_route(bundle: Optional[RouteBundle], payment: Payment, anchor: Option
         if c.payment_id != payment.payment_id or c.beta_digest != beta_digest or c.valid_until < payment.t:
             return Decision(STEP_UP, G1, ["commitment-binding"], d.root,
                             sig_checks=SIG_CHECKS.value - start, stage="route")
+        # the commitment must cover exactly this payment: a smaller amount would
+        # let the custodian forward less without a breach (verify_certificate
+        # compares against the committed amount), and a different currency is
+        # a different obligation
+        if c.amount != payment.amount or c.currency != payment.currency:
+            return Decision(STEP_UP, G1, ["commitment-amount" if c.amount != payment.amount else "commitment-currency"],
+                            d.root, sig_checks=SIG_CHECKS.value - start, stage="route")
         if i + 1 < len(custodians):
             if c.next_hop != custodians[i + 1]:
                 # the custodian has committed to send the money somewhere the
