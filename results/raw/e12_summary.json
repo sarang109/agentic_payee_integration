@@ -1,0 +1,36 @@
+{
+  "attacks": 52,
+  "authors": [
+    "author-1",
+    "author-2"
+  ],
+  "decision": {
+    "B7_losses": 23,
+    "M2_losses": 14,
+    "alpha": 0.05,
+    "attacks_in_model": 50,
+    "comparison": "M2 vs B7",
+    "label": "advantage-holds",
+    "loss_only_under_B7": 13,
+    "loss_only_under_M2": 4,
+    "p_exact_mcnemar": 0.049041748046875,
+    "wording": "outperforms language is permitted for M2 against B7 on this set"
+  },
+  "in_model": 50,
+  "lock": {
+    "attacks": 52,
+    "attacks_sha256": "366e8cea82d4275eae3765c2e12ad75b2e241d5fe672205be3dc964ee68a01af",
+    "authors": [
+      "author-1",
+      "author-2"
+    ],
+    "decision_rule_sha256": "3bd63da0bc8924df840e51695ae01c483479cd1b562cc4dbab7d12bff5f76537",
+    "frozen_utc": "2026-10-07T11:08:32Z",
+    "git": "c64f04db6686a5aebd4d1474db3bfe307884c10a",
+    "schema": "meridian-e12/1"
+  },
+  "matches_first_run": true,
+  "premise_violation": 2,
+  "result_sha256": "4814eb9a14e2c459487badaab499596537fdc74ab9cb423cb6482e4415b065e8",
+  "seed": 12012
+}

@@ -1,6 +1,6 @@
 # MERIDIAN results
 
-Generated 2026-10-07T11:05:11Z from commit `774eb7b2584f3eabe014ecd4d3934d5fa6c4bf7c`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
+Generated 2026-10-07T11:08:53Z from commit `95bca579db3c7664efd086a0f614124b5ade27b8`, seed 7. Pre-registration SHA-256 `278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99` (matches the lock).
 
 ## Run status
 
@@ -10,7 +10,8 @@ Generated 2026-10-07T11:05:11Z from commit `774eb7b2584f3eabe014ecd4d3934d5fa6c4
 | e1 | ok | 3.8 |
 | e10 | ok | 224.0 |
 | e11 | ok | 8.1 |
-| e2 | ok | 18.5 |
+| e12 | ok | 2.6 |
+| e2 | ok | 20.3 |
 | e4 | ok | 82.1 |
 | e4b | ok | 50.5 |
 | e4c | ok | 123.7 |
@@ -22,6 +23,7 @@ Generated 2026-10-07T11:05:11Z from commit `774eb7b2584f3eabe014ecd4d3934d5fa6c4
 | formal | ok | 10.8 |
 | stripe | ok | 16.1 |
 | toys | ok | 109.1 |
+| upstream | ok | 1.1 |
 | x402 | ok | 0.5 |
 
 ## Hypotheses (decision rules fixed in preregistration/hypotheses.yaml)
@@ -33,6 +35,7 @@ Generated 2026-10-07T11:05:11Z from commit `774eb7b2584f3eabe014ecd4d3934d5fa6c4
 | H3 card POST detection when POST-safe holds; instant rails need PRE or escrow | 2 | supported | card: POST-safe probability 1.0, first-hop swaps voided before capture 400/400 = 1.0000, 95% CI [0.990, 1.000] against the 0.99 threshold; instant and stablecoin late evidence: POST undone 0/2400, ESCROW undone 2389/2400; card void latency from stripe-test-mode (archived measurement of 2026-10-07T02:32:18Z) (p50 0.40 s, success 1.0). Sensitivity: with the modelled void latency and success from config/rails.yaml instead, the same runs give 399/400, which also meets the 0.99 threshold |
 | H4 V4 keeps decisions; payer p95 <= 150 ms | 2 | supported for the SNARK variant | agreement 1.000 [0.985, 1.000] on 250 cases; SNARK payer-side p95 11.1 ms; prover p95 577 ms. The BBS variant was not part of the agreement test; its payer-side verify p95 is 221 ms, above the 150 ms target |
 | H5 no single version dominates every rail | 2 | not supported | lowest (loss, step-up) per rail, ties kept: {'a2a_instant': ['M3'], 'card': ['M3'], 'psp_token': ['M2', 'M3'], 'stablecoin': ['M3'], 'wallet': ['M2', 'M3']}; among the best on every rail with attack data: ['M3']; rails without attack cases: ['bnpl']. An earlier computation broke ties by decision latency and counted the BNPL rail, which has no attack cases, and reported 'supported' ({'a2a_instant': 'M3', 'bnpl': 'M1', 'card': 'M3', 'psp_token': 'M2', 'stablecoin': 'M3', 'wallet': 'M3'}); that verdict rested on the 0/0 cell and is withdrawn. Exploratory, with the BNPL supplement: best on every rail ['M3']. See rq5_pareto for the security versus friction trade-off |
+| E12 independent attacks: M2 vs B7 (decision rule e12/DECISION_RULE.md) | 1 | advantage-holds | 50 in-model attacks by 2 authors; M2 14 losses, B7 23; 4 lost only under M2, 13 only under B7 (exact McNemar p = 0.049); outperforms language is permitted for M2 against B7 on this set. First run reproduced: True |
 | H6 funded routes: rational-custodian A13 losses zero for every q in [0.3, 1] when q_hat <= q; refusal <= 0.05 at capacity 1.5x mean exposure (hypotheses_v2.yaml) | 2 | supported | (a) at most 0 rational custodians deviate over 48 cells (oracle and floor rules, provisioned); (b) worst refusal rate 0.0116 at the reference workload (30 payments in flight). The optimistic rule (q_hat above q) lets 1011 custodian-cells deviate. PayeeBench A13: M3 loses 60/60, M5 (M3 + F6) 0/60 with 60 refused. q is swept, not measured. Kill rule triggered: False |
 
 Formal models: all results as expected (30 lemma results). F3 toy table: 13/14 rows match the blueprint (the mismatch is corrected in the f3_toy caption). T4 mutation tests: 36/36 pass. E1 V1a/V1b agreement: 1.000 [0.995, 1.000] on allow vs block, 0.957 [0.941, 0.969] exact.
@@ -383,7 +386,16 @@ Scenarios from AIP-Bench (arXiv 2607.21824; Hugging Face anonymos-2321135/aip-be
 
 _Evidence: exact counts over constructed cases. Paper 1._
 
-_(e3_cost_vs_benefit not produced in this run)_
+#### E3: attacks lost next to legitimate payments stepped up to the user
+
+| config   | in-model attacks lost   | step-ups, established structures (S1-S9, S12, S13)   | step-ups, S10 newly onboarded   | step-ups, S11 no credentials   | step-ups, S9 multi-brand group   | step-ups, S12 direct stablecoin merchant   | step-ups, S1 direct card merchant   |
+|:---------|:------------------------|:-----------------------------------------------------|:--------------------------------|:-------------------------------|:---------------------------------|:-------------------------------------------|:------------------------------------|
+| B7       | 283/780                 | 36/990                                               | 4/90                            | 90/90                          | 2/90                             | 3/90                                       | 1/90                                |
+| M1       | 420/780                 | 0/990                                                | 0/90                            | 90/90                          | 0/90                             | 0/90                                       | 0/90                                |
+| M2       | 131/780                 | 176/990                                              | 26/90                           | 90/90                          | 44/90                            | 59/90                                      | 20/90                               |
+| M3       | 53/780                  | 176/990                                              | 26/90                           | 90/90                          | 44/90                            | 59/90                                      | 20/90                               |
+
+Exact counts. A step-up is a legitimate payment the user must confirm, so M2's lower loss comes with the step-up cost on the right; S11 steps up for every configuration that requires a credential. Read this table before quoting M2's advantage over B7.
 
 
 #### E3: false blocks on legitimate structures (count / payments)
@@ -474,72 +486,72 @@ _Evidence: exact counts over constructed cases; rq5_pareto and the BNPL suppleme
 
 | rail        | config   | attack_loss   |   loss_rate |   benign_step_up |   benign_false_block |   p95_decision_ms |
 |:------------|:---------|:--------------|------------:|-----------------:|---------------------:|------------------:|
-| a2a_instant | B1       | 60/60         |      1      |           0      |                    0 |            0.002  |
+| a2a_instant | B1       | 60/60         |      1      |           0      |                    0 |            0.0013 |
 | a2a_instant | B2       | 58/60         |      0.9667 |           0      |                    0 |            0.0006 |
 | a2a_instant | B3       | 60/60         |      1      |           0      |                    0 |            0.0006 |
 | a2a_instant | B4       | 60/60         |      1      |           0      |                    0 |            0.0006 |
-| a2a_instant | B5       | 40/60         |      0.6667 |           0      |                    0 |            0.0036 |
+| a2a_instant | B5       | 40/60         |      0.6667 |           0      |                    0 |            0.0037 |
 | a2a_instant | B6       | 60/60         |      1      |           0      |                    0 |            0.0006 |
-| a2a_instant | B7       | 30/60         |      0.5    |           0.3206 |                    0 |            0.4172 |
-| a2a_instant | M1       | 30/60         |      0.5    |           0.313  |                    0 |            0.876  |
-| a2a_instant | M1-G1    | 30/60         |      0.5    |           0.313  |                    0 |            0.8813 |
-| a2a_instant | M2       | 29/60         |      0.4833 |           0.3435 |                    0 |            1.965  |
-| a2a_instant | M3       | 1/60          |      0.0167 |           0.3435 |                    0 |            1.8414 |
-| bnpl        | B1       | 0/0           |    nan      |           0      |                    0 |            0.0022 |
+| a2a_instant | B7       | 30/60         |      0.5    |           0.3206 |                    0 |            0.3139 |
+| a2a_instant | M1       | 30/60         |      0.5    |           0.313  |                    0 |            0.6406 |
+| a2a_instant | M1-G1    | 30/60         |      0.5    |           0.313  |                    0 |            0.6697 |
+| a2a_instant | M2       | 29/60         |      0.4833 |           0.3435 |                    0 |            1.8868 |
+| a2a_instant | M3       | 1/60          |      0.0167 |           0.3435 |                    0 |            1.7676 |
+| bnpl        | B1       | 0/0           |    nan      |           0      |                    0 |            0.0014 |
 | bnpl        | B2       | 0/0           |    nan      |           0      |                    0 |            0.0006 |
 | bnpl        | B3       | 0/0           |    nan      |           0      |                    0 |            0.0007 |
 | bnpl        | B4       | 0/0           |    nan      |           0      |                    0 |            0.0006 |
 | bnpl        | B5       | 0/0           |    nan      |           0      |                    0 |            0.0006 |
 | bnpl        | B6       | 0/0           |    nan      |           0      |                    0 |            0.0006 |
-| bnpl        | B7       | 0/0           |    nan      |           0.0667 |                    0 |            0.8221 |
-| bnpl        | M1       | 0/0           |    nan      |           0      |                    0 |            1.7665 |
-| bnpl        | M1-G1    | 0/0           |    nan      |           0      |                    0 |            1.2857 |
-| bnpl        | M2       | 0/0           |    nan      |           0      |                    0 |            2.9071 |
-| bnpl        | M3       | 0/0           |    nan      |           0      |                    0 |            2.8167 |
-| card        | B1       | 492/535       |      0.9196 |           0      |                    0 |            0.002  |
+| bnpl        | B7       | 0/0           |    nan      |           0.0667 |                    0 |            0.6175 |
+| bnpl        | M1       | 0/0           |    nan      |           0      |                    0 |            1.3095 |
+| bnpl        | M1-G1    | 0/0           |    nan      |           0      |                    0 |            0.9425 |
+| bnpl        | M2       | 0/0           |    nan      |           0      |                    0 |            2.7682 |
+| bnpl        | M3       | 0/0           |    nan      |           0      |                    0 |            2.6988 |
+| card        | B1       | 492/535       |      0.9196 |           0      |                    0 |            0.0014 |
 | card        | B2       | 523/535       |      0.9776 |           0      |                    0 |            0.0006 |
 | card        | B3       | 441/535       |      0.8243 |           0      |                    0 |            0.0007 |
 | card        | B4       | 535/535       |      1      |           0      |                    0 |            0.0006 |
 | card        | B5       | 535/535       |      1      |           0      |                    0 |            0.0006 |
 | card        | B6       | 503/535       |      0.9402 |           0      |                    0 |            0.0008 |
-| card        | B7       | 190/535       |      0.3551 |           0.1063 |                    0 |            0.646  |
-| card        | M1       | 274/535       |      0.5121 |           0.0734 |                    0 |            1.6743 |
-| card        | M1-G1    | 294/535       |      0.5495 |           0.0734 |                    0 |            1.0403 |
-| card        | M2       | 64/535        |      0.1196 |           0.238  |                    0 |            3.0757 |
-| card        | M3       | 26/535        |      0.0486 |           0.238  |                    0 |            3.1016 |
-| psp_token   | B1       | 68/77         |      0.8831 |           0      |                    0 |            0.002  |
+| card        | B7       | 190/535       |      0.3551 |           0.1063 |                    0 |            0.5707 |
+| card        | M1       | 274/535       |      0.5121 |           0.0734 |                    0 |            1.5061 |
+| card        | M1-G1    | 294/535       |      0.5495 |           0.0734 |                    0 |            0.902  |
+| card        | M2       | 64/535        |      0.1196 |           0.238  |                    0 |            2.8989 |
+| card        | M3       | 26/535        |      0.0486 |           0.238  |                    0 |            2.8872 |
+| psp_token   | B1       | 68/77         |      0.8831 |           0      |                    0 |            0.0013 |
 | psp_token   | B2       | 74/77         |      0.961  |           0      |                    0 |            0.0006 |
 | psp_token   | B3       | 70/77         |      0.9091 |           0      |                    0 |            0.0007 |
 | psp_token   | B4       | 77/77         |      1      |           0      |                    0 |            0.0006 |
 | psp_token   | B5       | 77/77         |      1      |           0      |                    0 |            0.0006 |
-| psp_token   | B6       | 69/77         |      0.8961 |           0      |                    0 |            0.0025 |
-| psp_token   | B7       | 45/77         |      0.5844 |           0.0471 |                    0 |            0.6865 |
-| psp_token   | M1       | 54/77         |      0.7013 |           0      |                    0 |            2.0468 |
-| psp_token   | M1-G1    | 54/77         |      0.7013 |           0      |                    0 |            1.0999 |
-| psp_token   | M2       | 25/77         |      0.3247 |           0.1353 |                    0 |            3.2533 |
-| psp_token   | M3       | 25/77         |      0.3247 |           0.1353 |                    0 |            3.3304 |
-| stablecoin  | B1       | 76/80         |      0.95   |           0      |                    0 |            0.002  |
+| psp_token   | B6       | 69/77         |      0.8961 |           0      |                    0 |            0.0027 |
+| psp_token   | B7       | 45/77         |      0.5844 |           0.0471 |                    0 |            0.5838 |
+| psp_token   | M1       | 54/77         |      0.7013 |           0      |                    0 |            1.5464 |
+| psp_token   | M1-G1    | 54/77         |      0.7013 |           0      |                    0 |            0.9069 |
+| psp_token   | M2       | 25/77         |      0.3247 |           0.1353 |                    0 |            3.0696 |
+| psp_token   | M3       | 25/77         |      0.3247 |           0.1353 |                    0 |            3.1188 |
+| stablecoin  | B1       | 76/80         |      0.95   |           0      |                    0 |            0.0015 |
 | stablecoin  | B2       | 76/80         |      0.95   |           0      |                    0 |            0.0006 |
-| stablecoin  | B3       | 74/80         |      0.925  |           0      |                    0 |            0.0006 |
-| stablecoin  | B4       | 28/80         |      0.35   |           0      |                    0 |            0.0008 |
+| stablecoin  | B3       | 74/80         |      0.925  |           0      |                    0 |            0.0007 |
+| stablecoin  | B4       | 28/80         |      0.35   |           0      |                    0 |            0.0009 |
 | stablecoin  | B5       | 80/80         |      1      |           0      |                    0 |            0.0006 |
-| stablecoin  | B6       | 70/80         |      0.875  |           0      |                    0 |            0.0024 |
-| stablecoin  | B7       | 12/80         |      0.15   |           0.0333 |                    0 |            0.4454 |
-| stablecoin  | M1       | 50/80         |      0.625  |           0      |                    0 |            0.8945 |
-| stablecoin  | M1-G1    | 50/80         |      0.625  |           0      |                    0 |            0.9193 |
-| stablecoin  | M2       | 13/80         |      0.1625 |           0.6556 |                    0 |            1.9975 |
-| stablecoin  | M3       | 1/80          |      0.0125 |           0.6556 |                    0 |            1.8664 |
-| wallet      | B1       | 24/28         |      0.8571 |           0      |                    0 |            0.0021 |
+| stablecoin  | B6       | 70/80         |      0.875  |           0      |                    0 |            0.0025 |
+| stablecoin  | B7       | 12/80         |      0.15   |           0.0333 |                    0 |            0.383  |
+| stablecoin  | M1       | 50/80         |      0.625  |           0      |                    0 |            0.6678 |
+| stablecoin  | M1-G1    | 50/80         |      0.625  |           0      |                    0 |            0.7257 |
+| stablecoin  | M2       | 13/80         |      0.1625 |           0.6556 |                    0 |            1.8728 |
+| stablecoin  | M3       | 1/80          |      0.0125 |           0.6556 |                    0 |            1.7623 |
+| wallet      | B1       | 24/28         |      0.8571 |           0      |                    0 |            0.0017 |
 | wallet      | B2       | 22/28         |      0.7857 |           0      |                    0 |            0.0006 |
 | wallet      | B3       | 23/28         |      0.8214 |           0      |                    0 |            0.0007 |
 | wallet      | B4       | 28/28         |      1      |           0      |                    0 |            0.0006 |
 | wallet      | B5       | 28/28         |      1      |           0      |                    0 |            0.0006 |
-| wallet      | B6       | 24/28         |      0.8571 |           0      |                    0 |            0.0027 |
-| wallet      | B7       | 6/28          |      0.2143 |           0      |                    0 |            0.4153 |
-| wallet      | M1       | 12/28         |      0.4286 |           0      |                    0 |            1.3621 |
-| wallet      | M1-G1    | 12/28         |      0.4286 |           0      |                    0 |            0.8834 |
-| wallet      | M2       | 0/28          |      0      |           0.2857 |                    0 |            2.6162 |
-| wallet      | M3       | 0/28          |      0      |           0.2857 |                    0 |            2.5624 |
+| wallet      | B6       | 24/28         |      0.8571 |           0      |                    0 |            0.0035 |
+| wallet      | B7       | 6/28          |      0.2143 |           0      |                    0 |            0.2983 |
+| wallet      | M1       | 12/28         |      0.4286 |           0      |                    0 |            1.0204 |
+| wallet      | M1-G1    | 12/28         |      0.4286 |           0      |                    0 |            0.6645 |
+| wallet      | M2       | 0/28          |      0      |           0.2857 |                    0 |            2.5126 |
+| wallet      | M3       | 0/28          |      0      |           0.2857 |                    0 |            2.4385 |
 
 
 #### RQ5 (exploratory): security versus friction per rail
@@ -956,10 +968,24 @@ _Evidence: measured (timing or passive web measurement) by running upstream code
 
 Runs the AP2 SDK payee check at the pinned commit (fetched into data/upstream/src, git-ignored); skipped without network. B5 has no reference implementation and stays re-specified.
 
-_(upstream_b2_agreement not produced in this run)_
+#### Gate A2: in-repo B2 against the AP2 SDK payee check (upstream commit e1ea56db72a6)
+
+| group                               |   cases |   B2 denies |   upstream reports a violation |   agree |   B2 stricter |   upstream stricter |
+|:------------------------------------|--------:|------------:|-------------------------------:|--------:|--------------:|--------------------:|
+| G1 ids present                      |    1950 |          27 |                             27 |    1950 |             0 |                   0 |
+| G2 ids empty, display fields copied |      27 |          27 |                              0 |       0 |            27 |                   0 |
+| G3 ids empty, display fields differ |      27 |          27 |                             27 |      27 |             0 |                   0 |
+
+Upstream code was run, not copied. G1 is the mapping documented in experiments/upstream_check.py. In G2-G4 the mandate carries no merchant id, so the upstream rule falls back to name and website; 'B2 stricter' counts cases where B2 denies and the SDK accepts. No upstream reference code exists for B5 (EPC Verification of Payee): the rulebook specifies messages and codes, not the matching; B5 stays re-specified.
 
 
-_(upstream_empty_id_wildcard not produced in this run)_
+#### Gate A2: an allowed payee with an empty merchant id, presented a different payee
+
+|   swapped cases |   earlier reference accepts |   this pin accepts |
+|----------------:|----------------------------:|-------------------:|
+|              27 |                          27 |                  0 |
+
+The earlier AP2 reference reported in arXiv 2609.00060 matched any payee here; the pinned SDK is run, the earlier behaviour is the one kept in meridian.protocols.ap2.reference_allowed_payee_check.
 
 
 ## E12 independently authored attacks (Gate A)
@@ -968,16 +994,57 @@ _Evidence: exact counts over constructed cases. Paper 1._
 
 The attack set was written from docs/e12/AUTHORING.md by authors who had not seen the generator, validated against ground truth only, and frozen (e12/LOCK) with the decision rule (e12/DECISION_RULE.md) before this run. The attacks are compiled onto the same world builder as the main benchmark.
 
-_(e12_attack_matrix not produced in this run)_
+#### E12: losses on the independently authored attacks
+
+| set               | B1    | B2    | B3    | B4    | B5    | B6    | B7    | M1-G1   | M1    | M2    | M3   |
+|:------------------|:------|:------|:------|:------|:------|:------|:------|:--------|:------|:------|:-----|
+| in-model          | 36/50 | 45/50 | 45/50 | 47/50 | 50/50 | 47/50 | 23/50 | 32/50   | 28/50 | 14/50 | 7/50 |
+| premise-violation | 2/2   | 2/2   | 2/2   | 2/2   | 2/2   | 2/2   | 0/2   | 2/2     | 2/2   | 2/2   | 2/2  |
+
+Exact counts of attacks whose money reached an illegitimate terminal and was not undone. The attack set was frozen (e12/LOCK) before this run and is the same for every configuration.
 
 
-_(e12_mcnemar not produced in this run)_
+#### E12: paired exact McNemar tests (in-model)
+
+| A   | B     |   loss only under A |   loss only under B |   p (exact McNemar) | role                 |
+|:----|:------|--------------------:|--------------------:|--------------------:|:---------------------|
+| M2  | B7    |                   4 |                  13 |         0.0490417   | pre-declared primary |
+| M1  | B7    |                  10 |                   5 |         0.301758    | exploratory          |
+| M2  | M1    |                   0 |                  14 |         0.00012207  | exploratory          |
+| M3  | M2    |                   0 |                   7 |         0.015625    | exploratory          |
+| M1  | M1-G1 |                   0 |                   4 |         0.125       | exploratory          |
+| M3  | B7    |                   1 |                  17 |         0.000144958 | exploratory          |
+
+Only the first row is the pre-declared confirmatory test (e12/DECISION_RULE.md); the others are exploratory and are not corrected for multiple comparisons.
 
 
-_(e12_by_scenario not produced in this run)_
+#### E12: losses by scenario kind (in-model)
+
+| scenario                |   B1 |   B2 |   B3 |   B4 |   B5 |   B6 |   B7 |   M1-G1 |   M1 |   M2 |   M3 |
+|:------------------------|-----:|-----:|-----:|-----:|-----:|-----:|-----:|--------:|-----:|-----:|-----:|
+| custodian_redirect      |    3 |    4 |    4 |    4 |    4 |    4 |    3 |       4 |    4 |    3 |    3 |
+| first_hop_mismatch      |    4 |    2 |    4 |    4 |    4 |    4 |    2 |       4 |    4 |    4 |    0 |
+| fresh_fake_delegation   |    1 |    2 |    2 |    2 |    2 |    2 |    2 |       2 |    2 |    0 |    0 |
+| irreversible_revocation |    4 |    4 |    4 |    2 |    4 |    4 |    2 |       4 |    4 |    3 |    0 |
+| lookalike               |    3 |    9 |    8 |    9 |    9 |    7 |    4 |       9 |    9 |    1 |    1 |
+| payee_swap              |    5 |    4 |    5 |    6 |    7 |    7 |    0 |       0 |    0 |    0 |    0 |
+| processor_payout_change |    4 |    4 |    4 |    4 |    4 |    4 |    3 |       4 |    0 |    0 |    0 |
+| revoked_delegation      |    4 |    4 |    4 |    4 |    4 |    4 |    2 |       2 |    2 |    2 |    2 |
+| rogue_submerchant       |    2 |    4 |    2 |    4 |    4 |    3 |    2 |       0 |    0 |    0 |    0 |
+| scope_abuse             |    4 |    5 |    5 |    5 |    5 |    5 |    0 |       0 |    0 |    0 |    0 |
+| split_view              |    2 |    3 |    3 |    3 |    3 |    3 |    3 |       3 |    3 |    1 |    1 |
+
+Exploratory; small counts per kind.
 
 
-_(e12_by_author not produced in this run)_
+#### E12: M2 against B7 by author (in-model)
+
+| author   |   attacks |   M2 losses |   B7 losses |   only M2 |   only B7 |
+|:---------|----------:|------------:|------------:|----------:|----------:|
+| author-1 |        26 |           6 |          12 |         2 |         8 |
+| author-2 |        24 |           8 |          11 |         2 |         5 |
+
+Shows whether the result depends on one author's attacks.
 
 
 ## E11 funded routes (F6), hypothesis H6

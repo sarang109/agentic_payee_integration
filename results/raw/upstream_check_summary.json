@@ -1,0 +1,39 @@
+{
+  "B5": "no reference implementation; re-specified",
+  "empty_id_wildcard": {
+    "earlier reference accepts": 27,
+    "swapped cases": 27,
+    "this pin accepts": 0
+  },
+  "g1_all_agree": true,
+  "groups": [
+    {
+      "B2 denies": 27,
+      "B2 stricter": 0,
+      "agree": 1950,
+      "cases": 1950,
+      "group": "G1 ids present",
+      "upstream reports a violation": 27,
+      "upstream stricter": 0
+    },
+    {
+      "B2 denies": 27,
+      "B2 stricter": 27,
+      "agree": 0,
+      "cases": 27,
+      "group": "G2 ids empty, display fields copied",
+      "upstream reports a violation": 0,
+      "upstream stricter": 0
+    },
+    {
+      "B2 denies": 27,
+      "B2 stricter": 0,
+      "agree": 27,
+      "cases": 27,
+      "group": "G3 ids empty, display fields differ",
+      "upstream reports a violation": 27,
+      "upstream stricter": 0
+    }
+  ],
+  "upstream_commit": "e1ea56db72a6385bce3e5c1112b3a56ce60acb43"
+}

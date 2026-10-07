@@ -2,7 +2,7 @@
   "environment": {
     "agentdojo": "?",
     "cryptography": "50.0.2",
-    "git": "774eb7b2584f3eabe014ecd4d3934d5fa6c4bf7c",
+    "git": "95bca579db3c7664efd086a0f614124b5ade27b8",
     "machine": "arm64",
     "numpy": "2.5.3",
     "pandas": "3.0.6",
@@ -12,7 +12,7 @@
     "scipy": "1.18.1",
     "seed": 7,
     "sentence_transformers": "6.1.0",
-    "time_utc": "2026-10-07T11:05:11Z"
+    "time_utc": "2026-10-07T11:08:53Z"
   },
   "preregistration_locked": true,
   "preregistration_sha256": "278ce8f17fe374e7ae7e424d83346b8ee559f779093b3c8f2ae740558d43cc99",
@@ -35,8 +35,12 @@
       "seconds": 8.1,
       "status": "ok"
     },
+    "e12": {
+      "seconds": 2.6,
+      "status": "ok"
+    },
     "e2": {
-      "seconds": 18.5,
+      "seconds": 20.3,
       "status": "ok"
     },
     "e4": {
@@ -83,10 +87,14 @@
       "seconds": 109.1,
       "status": "ok"
     },
+    "upstream": {
+      "seconds": 1.1,
+      "status": "ok"
+    },
     "x402": {
       "seconds": 0.5,
       "status": "ok"
     }
   },
-  "total_seconds": 8.9
+  "total_seconds": 22.3
 }

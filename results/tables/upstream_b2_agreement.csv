@@ -1,0 +1,4 @@
+group,cases,B2 denies,upstream reports a violation,agree,B2 stricter,upstream stricter
+G1 ids present,1950,27,27,1950,0,0
+"G2 ids empty, display fields copied",27,27,0,0,27,0
+"G3 ids empty, display fields differ",27,27,27,27,0,0

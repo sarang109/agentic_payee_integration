@@ -1,0 +1,7 @@
+A,B,loss only under A,loss only under B,p (exact McNemar),role
+M2,B7,4,13,0.049041748046875,pre-declared primary
+M1,B7,10,5,0.30175781249999994,exploratory
+M2,M1,0,14,0.0001220703125,exploratory
+M3,M2,0,7,0.015625,exploratory
+M1,M1-G1,0,4,0.125,exploratory
+M3,B7,1,17,0.00014495849609375,exploratory
