@@ -162,6 +162,12 @@ def limitations(e6: dict, e23: dict, e7: dict, e9: dict) -> List[str]:
     if h4.get("bbs_verify_p95_ms") is not None and not h4.get("bbs_meets_latency_target", True):
         out.append(f"H4 holds for the SNARK variant only; the BBS variant's payer-side verify p95 is "
                    f"{h4['bbs_verify_p95_ms']:.0f} ms, above the 150 ms target.")
+    hm = e9.get("hosted_models")
+    if hm:
+        models = [hm] if isinstance(hm, str) else list(hm)
+        if len(models) == 1:
+            out.append(f"Hosted-model evidence (E9) covers a single model ({models[0]}); results may not carry over "
+                       f"to other models, and no second model was run.")
     out.append("V4 hides acquiring relationships and the terminal account but not the brand or payee identifier; "
                "proofs for one merchant are linkable, and the k-anonymous lookup's anonymity set shrinks with the "
                "prefix length and log size (e7_leakage, e7_lookups).")
