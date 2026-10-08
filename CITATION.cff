@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software or PayeeBench, please cite the archived release you used (see the DOI on its Zenodo record)."
 title: "MERIDIAN: reference implementation, PayeeBench benchmark, formal models and experiment harness for payee verification in agentic payments"
 type: software
-version: "v1.0.0"
+version: "v1.0.1"
 date-released: 2026-10-07
 authors:
   - family-names: Kulkarni
