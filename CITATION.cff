@@ -8,6 +8,7 @@ authors:
   - family-names: Kulkarni
     given-names: Sarang
     orcid: "https://orcid.org/0000-0002-3122-8353"
+abstract: "Reference implementation, PayeeBench benchmark, formal models and experiment harness for Paper 1, 'Authority to Receive: Verifiable Payee Chains for Agentic Payments'. Earlier release notes, code comments and results in this archive call that paper by its working title, 'Verifiable Discharge'; it is the same paper."
 license: Apache-2.0
 identifiers:
   - type: doi
