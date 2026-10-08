@@ -10,7 +10,7 @@ move a tag after submission.
 | | Snapshot | Paper 1 (IEEE TDSC) | Paper 2 (ACM TOPS, else IEEE TIFS) | Paper 3 (optional) |
 |---|---|---|---|---|
 | Tag | `v0.9.0` | `v1.0.0` | `v2.0.0` | `v3.0.0` |
-| Release title | MERIDIAN pre-submission snapshot | MERIDIAN artifact for Paper 1: Verifiable Discharge | MERIDIAN artifact for Paper 2: After Authorization | settled with the scoped claim and venue |
+| Release title | MERIDIAN pre-submission snapshot | MERIDIAN artifact for Paper 1: Authority to Receive (v1.0.0 and v1.0.1 used the working title "Verifiable Discharge") | MERIDIAN artifact for Paper 2: After Authorization | settled with the scoped claim and venue |
 | Cut when | now; it is not the release a paper cites | Gate A passed and Paper 1 results frozen, before the preprint | Gate B passed and Paper 2 results frozen | scoped claim and venue settled |
 | Hypotheses in the release | `hypotheses.yaml` H1-H5 and its lock, unchanged | same file; H1 and H2 verdicts | same file for H3-H5, plus `hypotheses_v2.yaml` and its lock for H6 | H4 privacy part |
 | After reviews | none | `v1.1.0`, `v1.2.0` | `v2.1.0`, `v2.2.0` | |

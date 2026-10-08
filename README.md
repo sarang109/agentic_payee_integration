@@ -45,10 +45,10 @@ paper draws on):
 
 | Paper | Experiments |
 |---|---|
-| Paper 1: Verifiable Discharge (IEEE TDSC) | E2, E3, E4/E4b/E4c, E5, E10/E10b, E12 (author-written, not independent; `e12/ERRATA.md`), the Tamarin models in `formal/`, T4 mutation tests, Stripe Connect X2/X3 |
+| Paper 1: Authority to Receive (IEEE TDSC; working title "Verifiable Discharge") | E2, E3, E4/E4b/E4c, E5, E10/E10b, E12 (author-written, not independent; `e12/ERRATA.md`), the Tamarin models in `formal/`, T4 mutation tests, Stripe Connect X2/X3 |
 | Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | E6, E9, E11, and the A11-A13 rows of E2/E3 |
 
-| | Paper 1: Verifiable Discharge (IEEE TDSC) | Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | Paper 3 (optional): Private Payee Checks |
+| | Paper 1: Authority to Receive (IEEE TDSC; working title "Verifiable Discharge") | Paper 2: After Authorization (ACM TOPS, else IEEE TIFS) | Paper 3 (optional): Private Payee Checks |
 |---|---|---|---|
 | Release | v1.x | v2.x | v3.x |
 | Hypotheses | H1, H2 | H3, H4 (SNARK variant), H5, and H6 (pre-registered in `preregistration/hypotheses_v2.yaml`) | H4 privacy part |
