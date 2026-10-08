@@ -29,7 +29,7 @@ e11:
 	$(PY) -m experiments.run_all --only e11
 
 e12:
-	$(PY) -m experiments.e12_independent run
+	$(PY) -m experiments.e12_author_written run
 
 formal:
 	$(PY) -m experiments.formal_check

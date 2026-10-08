@@ -37,6 +37,11 @@ history of the files this commit corrected. History is not rewritten, so this
 file is the correction for all of them: wherever the repository's history says
 the E12 attacks were independent, read it as author-written.
 
+The runner module was named `experiments/e12_independent.py` in those
+commits. It is now `experiments/e12_author_written.py`, and the Makefile `e12`
+target calls it. `DECISION_RULE.md` is hash-locked and still names the old
+module in its validation command; read that as the new name.
+
 ## Consequence for the decision rule
 
 The rule's wording consequences ("outperforms" may be used on the

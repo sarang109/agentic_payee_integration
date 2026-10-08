@@ -80,7 +80,7 @@ def _run(step: str):
         from .upstream_check import run_upstream_check
         return run_upstream_check()
     if step == "e12":
-        from .e12_independent import run_e12
+        from .e12_author_written import run_e12
         return run_e12()
     if step == "e11":
         from .e11_exposure import run_e11

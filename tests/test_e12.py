@@ -12,7 +12,7 @@ import pandas as pd
 import pytest
 
 from experiments import common
-from experiments import e12_independent as e12
+from experiments import e12_author_written as e12
 from payeebench import e12 as spec_mod
 from payeebench.world import World
 

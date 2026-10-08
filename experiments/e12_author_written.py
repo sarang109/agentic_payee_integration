@@ -1,12 +1,11 @@
 """E12: author-written attack set (Gate A of the publication plan).
 
 The attacks were written by the same side that built the generator, with the
-generator in view; they are not independent (see e12/ERRATA.md). The module
-name is kept so that the lock, the Makefile and the tests keep working.
+generator in view; they are not independent (see e12/ERRATA.md).
 
-    python -m experiments.e12_independent validate [e12/attacks.json]
-    python -m experiments.e12_independent freeze   [e12/attacks.json]
-    python -m experiments.e12_independent run
+    python -m experiments.e12_author_written validate [e12/attacks.json]
+    python -m experiments.e12_author_written freeze   [e12/attacks.json]
+    python -m experiments.e12_author_written run
 
 ``validate`` checks the schema and compiles every attack on a fresh world. It
 uses ground truth only (does the money reach a wrong terminal if every check
